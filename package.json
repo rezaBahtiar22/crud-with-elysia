@@ -1,0 +1,17 @@
+{
+  "name": "crud-with-elysia",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.2.0",
+    "elysia": "^1.4.21",
+    "prisma": "^7.2.0"
+  }
+}
