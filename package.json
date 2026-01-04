@@ -10,7 +10,7 @@
     "typescript": "^5"
   },
   "scripts": {
-    "dev": "bun run --watch server.ts"
+    "dev": "bun run --watch src/server.ts"
   },
   "dependencies": {
     "@prisma/client": "^7.2.0",
