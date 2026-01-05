@@ -1,7 +1,6 @@
-import { Elysia } from "elysia";
+import app from "./server.js";
 
-const app = new Elysia()
-    .get("/", () => "Hello Jogja!")
-
-
-export default app;
+app.listen(7777);
+console.log(
+    `🚀 Server running at ${app.server?.hostname}:${app.server?.port}`
+);
