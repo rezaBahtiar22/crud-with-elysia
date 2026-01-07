@@ -1,3 +1,4 @@
+// response error untuk custom error handling
 export class ResponseError extends Error {
     public status: number
     public error: string

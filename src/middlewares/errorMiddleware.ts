@@ -25,7 +25,7 @@ export const ErrorMiddleware = new Elysia()
 
             // stackTrace hanya ditampilkan di development
             const isProduction = (Bun.env.NODE_ENV ?? "development") === "production"
-            if (isProduction) {
+            if (!isProduction) {
                 response.stackTrace = error.stack
             }
 
@@ -37,7 +37,7 @@ export const ErrorMiddleware = new Elysia()
         return {
             error: "Internal_Server_Error",
             message: "Something went wrong",
-            ...(process.env.NODE_ENV !== "production" &&
+            ...(Bun.env.NODE_ENV !== "production" &&
                 ("stack" in error ? { stackTrace: (error as Error).stack } : {})
             ),
         }
