@@ -1,5 +1,5 @@
 import { AuthService } from "../services/authUserService";
-import type { AuthUserRegisterRequest } from "../interfaces/authUserInterfaces";
+import type { AuthUserRegisterRequest } from "../interfaces/authUserRegister";
 
 export class AuthController {
 

@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import { AuthController } from "../controllers/authController";
-import type { AuthUserRegisterRequest } from "../interfaces/authUserInterfaces";
+import type { AuthUserRegisterRequest } from "../interfaces/authUserRegister";
 
 // route untuk auth user
 export const AuthRoute = new Elysia({ prefix: "/auth" })

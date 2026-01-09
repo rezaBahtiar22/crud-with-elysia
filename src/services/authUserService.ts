@@ -1,5 +1,5 @@
-import type { AuthUserRegisterRequest, AuthUserRegisterResponse } from "../interfaces/authUserInterfaces"
-import { toAuthUserRegisterResponse } from "../interfaces/authUserInterfaces"
+import type { AuthUserRegisterRequest, AuthUserRegisterResponse } from "../interfaces/authUserRegister"
+import { toAuthUserRegisterResponse } from "../interfaces/authUserRegister"
 import { prisma } from "../database/prisma"
 import { ResponseError } from "../utils/responseError"
 import * as argon2 from "argon2"
