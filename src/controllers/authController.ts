@@ -1,5 +1,6 @@
 import { AuthService } from "../services/authUserService";
 import type { AuthUserRegisterRequest } from "../interfaces/authUserRegister";
+import type { AuthUserLoginRequest } from "../interfaces/authUserLogin";
 
 export class AuthController {
 
@@ -8,6 +9,11 @@ export class AuthController {
         body: AuthUserRegisterRequest
     ) {
         return await AuthService.register(body);
+    }
+
+    // controller untuk login user
+    static async login(body: AuthUserLoginRequest) {
+        return await AuthService.login(body);
     }
 
 }

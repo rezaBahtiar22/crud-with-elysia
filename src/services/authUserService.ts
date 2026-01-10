@@ -1,5 +1,10 @@
 import type { AuthUserRegisterRequest, AuthUserRegisterResponse } from "../interfaces/authUserRegister"
 import { toAuthUserRegisterResponse } from "../interfaces/authUserRegister"
+
+import type { AuthUserLoginRequest, AuthUserLoginResponse } from "../interfaces/authUserLogin"
+import { toAuthUserLoginResponse } from "../interfaces/authUserLogin"
+
+import { generateToken } from "../utils/jwt"
 import { prisma } from "../database/prisma"
 import { ResponseError } from "../utils/responseError"
 import * as argon2 from "argon2"
@@ -46,6 +51,51 @@ export class AuthService {
 
         // kembalikan response user register
         return toAuthUserRegisterResponse(user);
+    }
+
+    static async login(
+        request: AuthUserLoginRequest
+    ): Promise<AuthUserLoginResponse> {
+        // validasi request body
+        const loginUser = Validation.validate<AuthUserLoginRequest>(UserValidation.login, request);
+
+        // cari user bedasarkan email
+        const user = await prisma.user.findUnique({
+            where: {email: loginUser.email}
+        });
+
+        // cek jika user tidak ditemukan
+        if (!user) {
+            throw new ResponseError(
+                401,
+                "Invalid_Credentials",
+                "Email or password is incorrect"
+            );
+        }
+
+        // verifikasi password
+        const isPasswordValid = await argon2.verify(
+            user.password,
+            loginUser.password
+        );
+
+        // cek jika password tidak valid
+        if (!isPasswordValid) {
+            throw new ResponseError(
+                401,
+                "Invalid_Credentials",
+                "Email or password is incorrect"
+            );
+        }
+
+        // generate tokeen
+        const token = generateToken({
+            userId: user.id,
+            role: user.role
+        });
+
+        // kembalikan response user login
+        return toAuthUserLoginResponse(user, token);
     }
 
 }

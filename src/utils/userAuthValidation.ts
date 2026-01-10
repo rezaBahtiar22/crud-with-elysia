@@ -22,4 +22,17 @@ export class UserValidation {
                 "Password harus mengandung huruf kecil, besar, angka, dan simbol"
             )
     });
+
+    // schema untuk user login validasi
+    static readonly login = z.object({
+        email: z.string()
+        .trim()
+        .email("Invalid email address")
+        .max(100),
+
+        password: z.string()
+            .trim()
+            .min(8)
+            .max(255)
+    });
 }
