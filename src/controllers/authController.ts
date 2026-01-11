@@ -16,4 +16,9 @@ export class AuthController {
         return await AuthService.login(body);
     }
 
+    // controller untuk logout user
+    static async logout(user: any) {
+        return await AuthService.logout(user);
+    }
+
 }

@@ -4,12 +4,16 @@ import { toAuthUserRegisterResponse } from "../interfaces/authUserRegister"
 import type { AuthUserLoginRequest, AuthUserLoginResponse } from "../interfaces/authUserLogin"
 import { toAuthUserLoginResponse } from "../interfaces/authUserLogin"
 
+import type { AuthUserLogout } from "../interfaces/AuthUserLogout"
+import { toAuthUserLogoutResponse } from "../interfaces/AuthUserLogout"
+
 import { generateToken } from "../utils/jwt"
 import { prisma } from "../database/prisma"
 import { ResponseError } from "../utils/responseError"
 import * as argon2 from "argon2"
 import { UserValidation } from "../utils/userAuthValidation"
 import { Validation } from "../utils/validation"
+import type { User } from "../../generated/prisma/client"
 
 
 export class AuthService {
@@ -96,6 +100,26 @@ export class AuthService {
 
         // kembalikan response user login
         return toAuthUserLoginResponse(user, token);
+    }
+
+    static async logout(
+        request: User
+    ): Promise<AuthUserLogout> {
+        // cek jika user tidak ditemukan
+        if (!request) {
+            throw new ResponseError(
+                4011,
+                "Unauthorized",
+                "Authentication is required"
+            );
+        }
+
+        // hapus token
+        // await prisma.tokens.deleteMany({
+        //     where: {  tokens }
+        // });
+
+        return toAuthUserLogoutResponse();
     }
 
 }

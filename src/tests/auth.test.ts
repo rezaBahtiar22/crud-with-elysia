@@ -144,4 +144,4 @@ describe("POST /auth/login", () => {
 
         expect(mockedArgon2.verify).toHaveBeenCalled();
     });
-})
+});
