@@ -102,24 +102,24 @@ export class AuthService {
         return toAuthUserLoginResponse(user, token);
     }
 
-    static async logout(
-        request: User
-    ): Promise<AuthUserLogout> {
-        // cek jika user tidak ditemukan
-        if (!request) {
-            throw new ResponseError(
-                4011,
-                "Unauthorized",
-                "Authentication is required"
-            );
-        }
+    // static async logout(
+    //     request: User
+    // ): Promise<AuthUserLogout> {
+    //     // cek jika user tidak ditemukan
+    //     if (!request) {
+    //         throw new ResponseError(
+    //             4011,
+    //             "Unauthorized",
+    //             "Authentication is required"
+    //         );
+    //     }
 
-        // hapus token
-        // await prisma.tokens.deleteMany({
-        //     where: {  tokens }
-        // });
+    //     // hapus token
+    //     // await prisma.tokens.deleteMany({
+    //     //     where: {  tokens }
+    //     // });
 
-        return toAuthUserLogoutResponse();
-    }
+    //     return toAuthUserLogoutResponse();
+    // }
 
 }
