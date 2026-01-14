@@ -3,7 +3,6 @@ import type { AuthUserRegisterRequest } from "../interfaces/authUserRegister";
 import type { AuthUserLoginRequest } from "../interfaces/authUserLogin";
 
 export class AuthController {
-
     // controller untuk register user
     static async register(
         body: AuthUserRegisterRequest
@@ -17,8 +16,10 @@ export class AuthController {
     }
 
     // controller untuk logout user
-    // static async logout(user: any) {
-    //     return await AuthService.logout(user);
-    // }
-
+    static async logout(
+        user: { userId: string },
+        token: string
+    ) {
+        return await AuthService.logout(user, token);
+    }
 }

@@ -19,6 +19,7 @@ vi.mock("../database/prisma", async () => {
 
 import { prisma } from "../database/prisma";
 import { AuthService } from "../services/authUserService";
+import { logger } from "../utils/logging";
 import * as argon2 from "argon2";
 
 const mockedPrisma = vi.mocked(prisma, true);
@@ -52,6 +53,7 @@ describe("POST /auth/register", () => {
             password: "Testing@#$123"
         });
 
+        logger.debug(result.data);
         expect(result.data.email).toBe("test@email.com");
     });
 
@@ -68,12 +70,14 @@ describe("POST /auth/register", () => {
         });
 
         await expect(
-        AuthService.register({
-            name: "Qin Shi Huang",
-            email: "test@email.com",
-            password: "Testing@#$123"
-        })
+            AuthService.register({
+                name: "Qin Shi Huang",
+                email: "test@email.com",
+                password: "Testing@#$123"
+            })
         ).rejects.toThrow("Email is already registered");
+
+        logger.debug(mockedPrisma.user.findUnique);
     });
 });
 
@@ -103,6 +107,7 @@ describe("POST /auth/login", () => {
             password: "Testing@#$123"
         });
 
+        logger.debug(result.data);
         expect(result.data.email).toBe("test@email.com");
         expect(result.data.token).toBeDefined();
     });
@@ -117,6 +122,7 @@ describe("POST /auth/login", () => {
             })
         ).rejects.toThrow("Email or password is incorrect");
 
+        logger.debug(mockedPrisma.user.findUnique);
         expect(mockedPrisma.user.findUnique).toHaveBeenCalled();
         expect(mockedArgon2.verify).not.toHaveBeenCalled();
     });
@@ -142,6 +148,7 @@ describe("POST /auth/login", () => {
             })
         ).rejects.toThrow("Email or password is incorrect");
 
+        logger.debug(mockedPrisma.user.findUnique);
         expect(mockedArgon2.verify).toHaveBeenCalled();
     });
 });

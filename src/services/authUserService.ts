@@ -13,11 +13,11 @@ import { ResponseError } from "../utils/responseError"
 import * as argon2 from "argon2"
 import { UserValidation } from "../utils/userAuthValidation"
 import { Validation } from "../utils/validation"
-import type { User } from "../../generated/prisma/client"
+import { logger } from "../utils/logging"
 
 
 export class AuthService {
-
+    // controller untuk register user
     static async register(
         request: AuthUserRegisterRequest
     ): Promise<AuthUserRegisterResponse> {
@@ -57,6 +57,7 @@ export class AuthService {
         return toAuthUserRegisterResponse(user);
     }
 
+    // controller untuk login user
     static async login(
         request: AuthUserLoginRequest
     ): Promise<AuthUserLoginResponse> {
@@ -102,24 +103,24 @@ export class AuthService {
         return toAuthUserLoginResponse(user, token);
     }
 
-    // static async logout(
-    //     request: User
-    // ): Promise<AuthUserLogout> {
-    //     // cek jika user tidak ditemukan
-    //     if (!request) {
-    //         throw new ResponseError(
-    //             4011,
-    //             "Unauthorized",
-    //             "Authentication is required"
-    //         );
-    //     }
+    // controller untuk logout user
+    static async logout(
+        user: { userId: string },
+        token: string
+    ): Promise<AuthUserLogout> {
+        // cek jika user tidak ditemukan
+        if (!user || !token) {
+            throw new ResponseError(
+                401,
+                "Unauthorized",
+                "Authentication is required"
+            );
+        }
 
-    //     // hapus token
-    //     // await prisma.tokens.deleteMany({
-    //     //     where: {  tokens }
-    //     // });
+        logger.info("user logout", {
+            userId: user.userId
+        });
 
-    //     return toAuthUserLogoutResponse();
-    // }
-
+        return toAuthUserLogoutResponse();
+    }
 }
