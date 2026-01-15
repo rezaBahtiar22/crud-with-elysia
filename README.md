@@ -31,7 +31,7 @@ bun run index.ts
 - Semua endpoint CRUD dan autentikasi menggunakan Elysia.
 - Prisma digunakan untuk menghubungkan aplikasi ke database PostgreSQL.
 - JWT digunakan untuk mengamankan endpoint yang membutuhkan autentikasi.
-- Proyek ini masih sangat dasar dan cocok untuk latihan.
+- Proyek ini masih sangat dasar dan hanya untuk latihan.
 
 ---
 Proyek dibuat dengan `bun init` pada Bun v1.2.16. [Bun](https://bun.sh) adalah runtime JavaScript/TypeScript yang cepat dan modern.
