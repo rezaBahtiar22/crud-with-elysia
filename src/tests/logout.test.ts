@@ -8,8 +8,8 @@ vi.mock("../utils/logging", () => ({
     }
 }));
 
-import { AuthService } from "../services/authUserService";
 import { logger } from "../utils/logging";
+import { AuthService } from "../services/authUserService";
 
 describe("POST /user/logout", () => {
     beforeEach(() => {
@@ -43,8 +43,6 @@ describe("POST /user/logout", () => {
     });
 
     it("should throw error and log warning if user is missing", async () => {
-        const warnSpy = vi.spyOn(logger, "warn");
-
         await expect(
             AuthService.logout(
                 null as any,
@@ -52,14 +50,12 @@ describe("POST /user/logout", () => {
             )
         ).rejects.toThrow("Authentication is required");
 
-        expect(warnSpy).toHaveBeenCalledWith(
-            "Logout failed: Unauthenticated request",
+        expect(logger.warn).toHaveBeenCalledWith(
+            expect.stringContaining("Logout failed: Unauthenticated request")
         );
     });
 
     it("should throw error and log warning if token is missing", async () => {
-        const warnSpy = vi.spyOn(logger, "warn");
-
         await expect(
             AuthService.logout(
                 {  userId: "1" },
@@ -67,8 +63,8 @@ describe("POST /user/logout", () => {
             )
         ).rejects.toThrow("Authentication is required");
 
-        expect(warnSpy).toHaveBeenCalledWith(
+        expect(logger.warn).toHaveBeenCalledWith(
             "Logout failed: Unauthenticated request",
         );
     })
-})
+});

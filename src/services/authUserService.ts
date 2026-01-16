@@ -110,6 +110,7 @@ export class AuthService {
     ): Promise<AuthUserLogout> {
         // cek jika user tidak ditemukan
         if (!user || !token) {
+            logger.warn("Logout failed: Unauthenticated request");
             throw new ResponseError(
                 401,
                 "Unauthorized",
