@@ -7,6 +7,11 @@ import { toAuthUserLoginResponse } from "../interfaces/authUserLogin"
 import type { AuthUserLogout } from "../interfaces/AuthUserLogout"
 import { toAuthUserLogoutResponse } from "../interfaces/AuthUserLogout"
 
+import type { AuthUserUpdateRequest, AuthUserUpdateResponse } from "../interfaces/authUserUpdateProfile"
+import {  toAuthUserUpdateResponse } from "../interfaces/authUserUpdateProfile"
+
+import type { AuthUserUpdatePasswordRequest, AuthUserUpdatePasswordResponse } from "../interfaces/authUserUpdatePassword"
+
 import { generateToken } from "../utils/jwt"
 import { prisma } from "../database/prisma"
 import { ResponseError } from "../utils/responseError"
