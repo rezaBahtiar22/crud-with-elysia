@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { AuthRoute } from "./routes/authRoute";
+import { UserRoute } from "./routes/userRoute";
 import { ErrorMiddleware } from "./middlewares/errorMiddleware";
 
 
@@ -11,6 +12,7 @@ const app = new Elysia()
     }))
     .get("/", () => "Hello Jogja!")
     .use(AuthRoute)
+    .use(UserRoute)
     .use(ErrorMiddleware)
 
 

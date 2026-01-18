@@ -1,10 +1,12 @@
 import { Elysia } from "elysia";
 import jwt from "jsonwebtoken";
 import { ResponseError } from "../utils/responseError";
+import { logger } from "../utils/logging";
+import { error } from "winston";
 
-export const AuthMiddleware = new Elysia()
+export const AuthMiddleware = (app: Elysia) => app
     .decorate("user", null as null | {
-        userId: string;
+        userId: number;
         role: string;
         iat: number;
         exp: number;
@@ -12,10 +14,13 @@ export const AuthMiddleware = new Elysia()
     .decorate("token", null as null | string)
     .onBeforeHandle((ctx) => {
         // ambil toke dari header
-        const authHeader = ctx.headers.authorization;
+        const authHeader = ctx.request.headers.get("authorization");
+
+        // console.log("RAW AUTH HEADER:", authHeader);
 
         // cek jika token tidak ada
-        if (!authHeader?.startsWith("Bearer ")) {
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            logger.warn("Token not found");
             throw new ResponseError(
                 401,
                 "Unauthorized",
@@ -38,7 +43,7 @@ export const AuthMiddleware = new Elysia()
         try {
             // verify token
             const payload = jwt.verify(token, process.env.JWT_SECRET as string) as {
-                userId: string;
+                userId: number;
                 role: string;
                 iat: number;
                 exp: number;
@@ -47,7 +52,16 @@ export const AuthMiddleware = new Elysia()
             // set ke context
             ctx.user = payload;
             ctx.token = token;
-        } catch {
+
+
+            // log sementara dengan logger
+            // logger.info("User authenticated", { userId: payload.userId });
+            // logger.info("Auth Header", { authHeader });
+
+            // return ctx;
+
+        } catch (error) {
+            logger.warn("Invalid or Expired token", { error })
             throw new ResponseError(
                 401,
                 "Unauthorized",

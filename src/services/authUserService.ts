@@ -123,9 +123,9 @@ export class AuthService {
             );
         }
 
-        logger.info("user logout", {
-            userId: user.userId
-        });
+        // logger.info("user logout", {
+        //     userId: user.userId
+        // });
 
         return toAuthUserLogoutResponse();
     }
