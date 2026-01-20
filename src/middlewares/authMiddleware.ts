@@ -16,8 +16,6 @@ export const AuthMiddleware = (app: Elysia) => app
         // ambil toke dari header
         const authHeader = ctx.request.headers.get("authorization");
 
-        // console.log("RAW AUTH HEADER:", authHeader);
-
         // cek jika token tidak ada
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             logger.warn("Token not found");
@@ -52,13 +50,6 @@ export const AuthMiddleware = (app: Elysia) => app
             // set ke context
             ctx.user = payload;
             ctx.token = token;
-
-
-            // log sementara dengan logger
-            // logger.info("User authenticated", { userId: payload.userId });
-            // logger.info("Auth Header", { authHeader });
-
-            // return ctx;
 
         } catch (error) {
             logger.warn("Invalid or Expired token", { error })

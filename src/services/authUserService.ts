@@ -15,6 +15,7 @@ import type { AuthUserUpdatePasswordRequest, AuthUserUpdatePasswordResponse } fr
 import { generateToken } from "../utils/jwt"
 import { prisma } from "../database/prisma"
 import { ResponseError } from "../utils/responseError"
+import type { User } from "../../generated/prisma/client"
 import * as argon2 from "argon2"
 import { UserValidation } from "../utils/userAuthValidation"
 import { Validation } from "../utils/validation"
@@ -22,7 +23,7 @@ import { logger } from "../utils/logging"
 
 
 export class AuthService {
-    // controller untuk register user
+    // service untuk register user
     static async register(
         request: AuthUserRegisterRequest
     ): Promise<AuthUserRegisterResponse> {
@@ -62,7 +63,7 @@ export class AuthService {
         return toAuthUserRegisterResponse(user);
     }
 
-    // controller untuk login user
+    // service untuk login user
     static async login(
         request: AuthUserLoginRequest
     ): Promise<AuthUserLoginResponse> {
@@ -108,7 +109,72 @@ export class AuthService {
         return toAuthUserLoginResponse(user, token);
     }
 
-    // controller untuk logout user
+    // service untuk update user profile(username dan email)
+    static async updateProfile(
+        user:{ userId: number, role: string }, 
+        request: AuthUserUpdateRequest
+    ): Promise<AuthUserUpdateResponse> {
+        // validasi request body
+        const updateUser = Validation.validate<AuthUserUpdateRequest>(UserValidation.updateProfile, request);
+
+        // cek jika user ada atau tidak
+        if (!user) {
+            throw new ResponseError(
+                401,
+                "Unauthorized",
+                "Authentication is required"
+            );
+        }
+
+        // update user
+        const dataUpdate: {
+            name?: string
+            email?: string
+        } = {};
+
+        // cek jika ada data name yang diupdate
+        if (updateUser.name) {
+            dataUpdate.name = updateUser.name;
+        }
+
+        // cek jika ada data email yang diupdate
+        if (updateUser.email) {
+            const existing = await prisma.user.findUnique({
+                where: { email: updateUser.email }
+            });
+
+            // jika email sudah digunakan oleh user lain, lempar error
+            if (existing && existing.id !== user.userId) {
+                throw new ResponseError(
+                    409,
+                    "Email_Already_Exists",
+                    "Email is already registered"
+                );
+            }
+            dataUpdate.email = updateUser.email;
+        }
+
+        // guard untuk mencegah user mengirim field kosong
+        if (Object.keys(dataUpdate).length === 0) {
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "Please provide at least one field to update"
+            );
+        }
+
+        const result = await prisma.user.update({
+            where: {
+                id: user.userId,
+            },
+            data: dataUpdate
+        });
+
+        // kembalikan response user update
+        return toAuthUserUpdateResponse(result);
+    }
+
+    // service untuk logout user
     static async logout(
         user: { userId: string },
         token: string
@@ -122,10 +188,6 @@ export class AuthService {
                 "Authentication is required"
             );
         }
-
-        // logger.info("user logout", {
-        //     userId: user.userId
-        // });
 
         return toAuthUserLogoutResponse();
     }

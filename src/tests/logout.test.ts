@@ -25,23 +25,6 @@ describe("POST /user/logout", () => {
         expect(result.message).toBe("User logged out successfully");
     });
 
-    it("should log logout event", async () => {
-        const loggerSpy = vi.spyOn(logger, "info");
-
-        await AuthService.logout(
-            { userId: "1" },
-            "fake token"
-        );
-
-        expect(loggerSpy).toHaveBeenCalledTimes(1);
-        expect(loggerSpy).toHaveBeenCalledWith(
-            "user logout",
-            expect.objectContaining({
-                userId: "1"
-            })
-        );
-    });
-
     it("should throw error and log warning if user is missing", async () => {
         await expect(
             AuthService.logout(
