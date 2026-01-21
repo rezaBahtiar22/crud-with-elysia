@@ -13,7 +13,8 @@
   "scripts": {
     "dev": "bun run --watch src/server.ts",
     "test": "vitest",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "seed:admin": "bun run src/database/seeds/SeedAdmin.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.4.1",

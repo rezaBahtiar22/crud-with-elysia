@@ -15,7 +15,6 @@ import type { AuthUserUpdatePasswordRequest, AuthUserUpdatePasswordResponse } fr
 import { generateToken } from "../utils/jwt"
 import { prisma } from "../database/prisma"
 import { ResponseError } from "../utils/responseError"
-import type { User } from "../../generated/prisma/client"
 import * as argon2 from "argon2"
 import { UserValidation } from "../utils/userAuthValidation"
 import { Validation } from "../utils/validation"
@@ -132,12 +131,12 @@ export class AuthService {
             email?: string
         } = {};
 
-        // cek jika ada data name yang diupdate
+        // cek jika ada data name yang di update
         if (updateUser.name) {
             dataUpdate.name = updateUser.name;
         }
 
-        // cek jika ada data email yang diupdate
+        // cek jika ada data email yang di update
         if (updateUser.email) {
             const existing = await prisma.user.findUnique({
                 where: { email: updateUser.email }
@@ -172,6 +171,89 @@ export class AuthService {
 
         // kembalikan response user update
         return toAuthUserUpdateResponse(result);
+    }
+
+    // service untuk update user password
+    static async updatePassword(
+        user:{ userId: number, role: string }, 
+        request: AuthUserUpdatePasswordRequest
+    ): Promise<AuthUserUpdatePasswordResponse> {
+        // validasi request body
+        const updatePassword = Validation.validate<AuthUserUpdatePasswordRequest>(UserValidation.updatePassword, request);
+
+        // cek auth jika user sudah login
+        if (!user) {
+            throw new ResponseError(
+                401,
+                "Unauthorized",
+                "Authentication is required"
+            );
+        }
+
+        // ambil user dari DB
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                id: user.userId
+            },
+            select: {
+                id: true,
+                password: true
+            }
+        });
+
+        // cek jika user tidak ditemukan
+        if (!existingUser) {
+            throw new ResponseError(
+                404,
+                "Not_Found",
+                "User not found"
+            );
+        }
+
+        // cek password lama
+        const isPasswordValid = await argon2.verify(
+            existingUser.password,
+            updatePassword.currentPassword
+        );
+        
+        // jika password lama tidak valid
+        if (!isPasswordValid) {
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "Current password is incorrect"
+            );
+        }
+
+        // block password yang baru dengan yang lama
+        if (updatePassword.newPassword === updatePassword.currentPassword) {
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "New password cannot be the same as the current password"
+            );
+        }
+
+        // hash password baru
+        const hashPassword = await argon2.hash(updatePassword.newPassword, {
+            type: argon2.argon2id,
+            hashLength: 64
+        });
+
+        // update password
+        await prisma.user.update({
+            where: {
+                id: user.userId
+            },
+            data: {
+                password: hashPassword
+            }
+        });
+        
+        // kemablikan response user update password
+        return {
+            message: "Password updated successfully"
+        }
     }
 
     // service untuk logout user

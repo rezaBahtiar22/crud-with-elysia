@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { AuthController } from "../controllers/authController";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
 import { ResponseError } from "../utils/responseError";
+import type { AuthUserUpdatePasswordRequest } from "../interfaces/authUserUpdatePassword";
 
 // route untuk user
 export const UserRoute = new Elysia({ prefix: "/user" })
@@ -31,4 +32,20 @@ export const UserRoute = new Elysia({ prefix: "/user" })
             )
         }
         return AuthController.updateProfile(user, body);
+    })
+
+    // untuk user update password
+    .patch("/update/password", async (ctx) => {
+        if (!ctx.user) {
+            throw new ResponseError(
+                401,
+                "Unauthorized",
+                "Authentication is required"
+            )
+        }
+
+        return AuthController.updatePassword(
+            ctx.user,
+            ctx.body as AuthUserUpdatePasswordRequest
+        )
     })

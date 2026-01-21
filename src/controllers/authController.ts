@@ -2,6 +2,7 @@ import { AuthService } from "../services/authUserService";
 import type { AuthUserRegisterRequest, AuthUserRegisterResponse } from "../interfaces/authUserRegister";
 import type { AuthUserLoginRequest, AuthUserLoginResponse } from "../interfaces/authUserLogin";
 import type { AuthUserUpdateRequest, AuthUserUpdateResponse } from "../interfaces/authUserUpdateProfile";
+import type { AuthUserUpdatePasswordRequest, AuthUserUpdatePasswordResponse } from "../interfaces/authUserUpdatePassword";
 
 export class AuthController {
     // controller untuk register user
@@ -24,6 +25,14 @@ export class AuthController {
         body: AuthUserUpdateRequest
     ): Promise<AuthUserUpdateResponse> {
         return AuthService.updateProfile(user, body);
+    }
+
+    // controller untuk user update password
+    static async updatePassword(
+        user:{ userId: number, role: string }, 
+        body: AuthUserUpdatePasswordRequest
+    ): Promise<AuthUserUpdatePasswordResponse> {
+        return AuthService.updatePassword(user, body);
     }
 
     // controller untuk logout user

@@ -3,8 +3,8 @@ import { ResponseError } from "../utils/responseError";
 
 // rate limiter
 const loginRateLimiter = new RateLimiterMemory({
-    points: 3,        // 3 requests
-    duration: 180,     // per 1 minutes
+    points: 3,         // 3 requests
+    duration: 180,     // per 3 minutes
 });
 
 // fungsi untuk rate limiter
