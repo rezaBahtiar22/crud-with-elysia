@@ -44,3 +44,8 @@ export { Prisma }
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model EmailOTP
+ * 
+ */
+export type EmailOTP = Prisma.EmailOTPModel
