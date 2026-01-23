@@ -15,6 +15,7 @@ export interface AuthUserLoginResponseData {
     role: Role
 };
 
+// interface untuk user login response
 export interface AuthUserLoginResponse {
     message: string
     data: AuthUserLoginResponseData

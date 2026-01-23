@@ -2,7 +2,6 @@ import { Elysia } from "elysia";
 import jwt from "jsonwebtoken";
 import { ResponseError } from "../utils/responseError";
 import { logger } from "../utils/logging";
-import { error } from "winston";
 
 export const AuthMiddleware = (app: Elysia) => app
     .decorate("user", null as null | {
@@ -13,7 +12,7 @@ export const AuthMiddleware = (app: Elysia) => app
     })
     .decorate("token", null as null | string)
     .onBeforeHandle((ctx) => {
-        // ambil toke dari header
+        // ambil token dari header
         const authHeader = ctx.request.headers.get("authorization");
 
         // cek jika token tidak ada
