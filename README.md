@@ -1,3 +1,7 @@
+![Bun](https://img.shields.io/badge/Bun-%23000000.svg?style=for-the-badge&logo=bun&logoColor=white)
+![ElysiaJS](https://img.shields.io/badge/ElysiaJS-%23212121.svg?style=for-the-badge&logo=elysia&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 # crud-with-elysia
 
 ## Deskripsi
