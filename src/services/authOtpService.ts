@@ -5,6 +5,7 @@ import { AuthOtpValidation } from "../utils/otpValidation"
 import { ResponseError } from "../utils/responseError"
 import { generateToken } from "../utils/jwt"
 import { sendOTPEmail } from "../utils/mailer"
+import { otpRateLimit } from "../middlewares/otpRateLimiter"
 
 export class AuthOtpService {
 
@@ -12,6 +13,10 @@ export class AuthOtpService {
     static async requestOtp(email: string) {
         // validasi email
         const data = Validation.validate(AuthOtpValidation.requestOtp, { email });
+
+        // rate limiter
+        const key = `Otp_${data.email}`;
+        await otpRateLimit(key);
 
         // cek user ada atau tidak
         const user = await prisma.user.findUnique({

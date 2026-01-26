@@ -614,6 +614,8 @@ export const EmailOTPScalarFieldEnum = {
   purpose: 'purpose',
   expiresAt: 'expiresAt',
   used: 'used',
+  attempts: 'attempts',
+  blockedUntill: 'blockedUntill',
   created_at: 'created_at'
 } as const
 

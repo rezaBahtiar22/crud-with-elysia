@@ -29,11 +29,13 @@ export type AggregateEmailOTP = {
 export type EmailOTPAvgAggregateOutputType = {
   id: number | null
   userId: number | null
+  attempts: number | null
 }
 
 export type EmailOTPSumAggregateOutputType = {
   id: number | null
   userId: number | null
+  attempts: number | null
 }
 
 export type EmailOTPMinAggregateOutputType = {
@@ -44,6 +46,8 @@ export type EmailOTPMinAggregateOutputType = {
   purpose: $Enums.OtpPurpose | null
   expiresAt: Date | null
   used: boolean | null
+  attempts: number | null
+  blockedUntill: Date | null
   created_at: Date | null
 }
 
@@ -55,6 +59,8 @@ export type EmailOTPMaxAggregateOutputType = {
   purpose: $Enums.OtpPurpose | null
   expiresAt: Date | null
   used: boolean | null
+  attempts: number | null
+  blockedUntill: Date | null
   created_at: Date | null
 }
 
@@ -66,6 +72,8 @@ export type EmailOTPCountAggregateOutputType = {
   purpose: number
   expiresAt: number
   used: number
+  attempts: number
+  blockedUntill: number
   created_at: number
   _all: number
 }
@@ -74,11 +82,13 @@ export type EmailOTPCountAggregateOutputType = {
 export type EmailOTPAvgAggregateInputType = {
   id?: true
   userId?: true
+  attempts?: true
 }
 
 export type EmailOTPSumAggregateInputType = {
   id?: true
   userId?: true
+  attempts?: true
 }
 
 export type EmailOTPMinAggregateInputType = {
@@ -89,6 +99,8 @@ export type EmailOTPMinAggregateInputType = {
   purpose?: true
   expiresAt?: true
   used?: true
+  attempts?: true
+  blockedUntill?: true
   created_at?: true
 }
 
@@ -100,6 +112,8 @@ export type EmailOTPMaxAggregateInputType = {
   purpose?: true
   expiresAt?: true
   used?: true
+  attempts?: true
+  blockedUntill?: true
   created_at?: true
 }
 
@@ -111,6 +125,8 @@ export type EmailOTPCountAggregateInputType = {
   purpose?: true
   expiresAt?: true
   used?: true
+  attempts?: true
+  blockedUntill?: true
   created_at?: true
   _all?: true
 }
@@ -209,6 +225,8 @@ export type EmailOTPGroupByOutputType = {
   purpose: $Enums.OtpPurpose
   expiresAt: Date
   used: boolean
+  attempts: number
+  blockedUntill: Date | null
   created_at: Date
   _count: EmailOTPCountAggregateOutputType | null
   _avg: EmailOTPAvgAggregateOutputType | null
@@ -243,6 +261,8 @@ export type EmailOTPWhereInput = {
   purpose?: Prisma.EnumOtpPurposeFilter<"EmailOTP"> | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFilter<"EmailOTP"> | Date | string
   used?: Prisma.BoolFilter<"EmailOTP"> | boolean
+  attempts?: Prisma.IntFilter<"EmailOTP"> | number
+  blockedUntill?: Prisma.DateTimeNullableFilter<"EmailOTP"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"EmailOTP"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -255,6 +275,8 @@ export type EmailOTPOrderByWithRelationInput = {
   purpose?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  attempts?: Prisma.SortOrder
+  blockedUntill?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -270,6 +292,8 @@ export type EmailOTPWhereUniqueInput = Prisma.AtLeast<{
   purpose?: Prisma.EnumOtpPurposeFilter<"EmailOTP"> | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFilter<"EmailOTP"> | Date | string
   used?: Prisma.BoolFilter<"EmailOTP"> | boolean
+  attempts?: Prisma.IntFilter<"EmailOTP"> | number
+  blockedUntill?: Prisma.DateTimeNullableFilter<"EmailOTP"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"EmailOTP"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
@@ -282,6 +306,8 @@ export type EmailOTPOrderByWithAggregationInput = {
   purpose?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  attempts?: Prisma.SortOrder
+  blockedUntill?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   _count?: Prisma.EmailOTPCountOrderByAggregateInput
   _avg?: Prisma.EmailOTPAvgOrderByAggregateInput
@@ -301,6 +327,8 @@ export type EmailOTPScalarWhereWithAggregatesInput = {
   purpose?: Prisma.EnumOtpPurposeWithAggregatesFilter<"EmailOTP"> | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"EmailOTP"> | Date | string
   used?: Prisma.BoolWithAggregatesFilter<"EmailOTP"> | boolean
+  attempts?: Prisma.IntWithAggregatesFilter<"EmailOTP"> | number
+  blockedUntill?: Prisma.DateTimeNullableWithAggregatesFilter<"EmailOTP"> | Date | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"EmailOTP"> | Date | string
 }
 
@@ -310,6 +338,8 @@ export type EmailOTPCreateInput = {
   purpose: $Enums.OtpPurpose
   expiresAt: Date | string
   used?: boolean
+  attempts?: number
+  blockedUntill?: Date | string | null
   created_at?: Date | string
   user: Prisma.UserCreateNestedOneWithoutOtpsInput
 }
@@ -322,6 +352,8 @@ export type EmailOTPUncheckedCreateInput = {
   purpose: $Enums.OtpPurpose
   expiresAt: Date | string
   used?: boolean
+  attempts?: number
+  blockedUntill?: Date | string | null
   created_at?: Date | string
 }
 
@@ -331,6 +363,8 @@ export type EmailOTPUpdateInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  blockedUntill?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutOtpsNestedInput
 }
@@ -343,6 +377,8 @@ export type EmailOTPUncheckedUpdateInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  blockedUntill?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -354,6 +390,8 @@ export type EmailOTPCreateManyInput = {
   purpose: $Enums.OtpPurpose
   expiresAt: Date | string
   used?: boolean
+  attempts?: number
+  blockedUntill?: Date | string | null
   created_at?: Date | string
 }
 
@@ -363,6 +401,8 @@ export type EmailOTPUpdateManyMutationInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  blockedUntill?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -374,6 +414,8 @@ export type EmailOTPUncheckedUpdateManyInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  blockedUntill?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -395,12 +437,15 @@ export type EmailOTPCountOrderByAggregateInput = {
   purpose?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  attempts?: Prisma.SortOrder
+  blockedUntill?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
 
 export type EmailOTPAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  attempts?: Prisma.SortOrder
 }
 
 export type EmailOTPMaxOrderByAggregateInput = {
@@ -411,6 +456,8 @@ export type EmailOTPMaxOrderByAggregateInput = {
   purpose?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  attempts?: Prisma.SortOrder
+  blockedUntill?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
 
@@ -422,12 +469,15 @@ export type EmailOTPMinOrderByAggregateInput = {
   purpose?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  attempts?: Prisma.SortOrder
+  blockedUntill?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
 
 export type EmailOTPSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  attempts?: Prisma.SortOrder
 }
 
 export type EmailOTPCreateNestedManyWithoutUserInput = {
@@ -480,12 +530,18 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type EmailOTPCreateWithoutUserInput = {
   email: string
   code: string
   purpose: $Enums.OtpPurpose
   expiresAt: Date | string
   used?: boolean
+  attempts?: number
+  blockedUntill?: Date | string | null
   created_at?: Date | string
 }
 
@@ -496,6 +552,8 @@ export type EmailOTPUncheckedCreateWithoutUserInput = {
   purpose: $Enums.OtpPurpose
   expiresAt: Date | string
   used?: boolean
+  attempts?: number
+  blockedUntill?: Date | string | null
   created_at?: Date | string
 }
 
@@ -536,6 +594,8 @@ export type EmailOTPScalarWhereInput = {
   purpose?: Prisma.EnumOtpPurposeFilter<"EmailOTP"> | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFilter<"EmailOTP"> | Date | string
   used?: Prisma.BoolFilter<"EmailOTP"> | boolean
+  attempts?: Prisma.IntFilter<"EmailOTP"> | number
+  blockedUntill?: Prisma.DateTimeNullableFilter<"EmailOTP"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"EmailOTP"> | Date | string
 }
 
@@ -546,6 +606,8 @@ export type EmailOTPCreateManyUserInput = {
   purpose: $Enums.OtpPurpose
   expiresAt: Date | string
   used?: boolean
+  attempts?: number
+  blockedUntill?: Date | string | null
   created_at?: Date | string
 }
 
@@ -555,6 +617,8 @@ export type EmailOTPUpdateWithoutUserInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  blockedUntill?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -565,6 +629,8 @@ export type EmailOTPUncheckedUpdateWithoutUserInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  blockedUntill?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -575,6 +641,8 @@ export type EmailOTPUncheckedUpdateManyWithoutUserInput = {
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  blockedUntill?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -588,6 +656,8 @@ export type EmailOTPSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   purpose?: boolean
   expiresAt?: boolean
   used?: boolean
+  attempts?: boolean
+  blockedUntill?: boolean
   created_at?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["emailOTP"]>
@@ -600,6 +670,8 @@ export type EmailOTPSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   purpose?: boolean
   expiresAt?: boolean
   used?: boolean
+  attempts?: boolean
+  blockedUntill?: boolean
   created_at?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["emailOTP"]>
@@ -612,6 +684,8 @@ export type EmailOTPSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   purpose?: boolean
   expiresAt?: boolean
   used?: boolean
+  attempts?: boolean
+  blockedUntill?: boolean
   created_at?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["emailOTP"]>
@@ -624,10 +698,12 @@ export type EmailOTPSelectScalar = {
   purpose?: boolean
   expiresAt?: boolean
   used?: boolean
+  attempts?: boolean
+  blockedUntill?: boolean
   created_at?: boolean
 }
 
-export type EmailOTPOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "email" | "code" | "purpose" | "expiresAt" | "used" | "created_at", ExtArgs["result"]["emailOTP"]>
+export type EmailOTPOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "email" | "code" | "purpose" | "expiresAt" | "used" | "attempts" | "blockedUntill" | "created_at", ExtArgs["result"]["emailOTP"]>
 export type EmailOTPInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -651,6 +727,8 @@ export type $EmailOTPPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     purpose: $Enums.OtpPurpose
     expiresAt: Date
     used: boolean
+    attempts: number
+    blockedUntill: Date | null
     created_at: Date
   }, ExtArgs["result"]["emailOTP"]>
   composites: {}
@@ -1083,6 +1161,8 @@ export interface EmailOTPFieldRefs {
   readonly purpose: Prisma.FieldRef<"EmailOTP", 'OtpPurpose'>
   readonly expiresAt: Prisma.FieldRef<"EmailOTP", 'DateTime'>
   readonly used: Prisma.FieldRef<"EmailOTP", 'Boolean'>
+  readonly attempts: Prisma.FieldRef<"EmailOTP", 'Int'>
+  readonly blockedUntill: Prisma.FieldRef<"EmailOTP", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"EmailOTP", 'DateTime'>
 }
     
