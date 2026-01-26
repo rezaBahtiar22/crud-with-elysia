@@ -76,12 +76,8 @@ export class AuthOtpService {
         const otp = await prisma.emailOTP.findFirst({
             where: {
                 email: data.email,
-                code: data.code,
                 purpose: "LOGIN",
                 used: false,
-                expiresAt: {
-                    gt: new Date(),
-                }
             },
             orderBy: {
                 created_at: "desc"
@@ -97,11 +93,39 @@ export class AuthOtpService {
             );
         }
 
-        // tandai otp sudah digunakan
-        await prisma.emailOTP.update({
-            where: { id: otp.id },
-            data: { used: true }
-        });
+        // cek apakah sedang diblok
+        if (otp.code !== data.code || otp.expiresAt < new Date()) {
+            const attempts = otp.attempts + 1;
+
+            // kalau sudah 3x salah -> block 3 menit
+            if (attempts >= 3) {
+                await prisma.emailOTP.update({
+                    where: { id: otp.id },
+                    data: {
+                        attempts,
+                        blockedUntil: new Date(Date.now() + 3 * 60 * 1000)
+                    }
+                });
+
+                throw new ResponseError(
+                    429,
+                    "Too_Many_Requests",
+                    "Too many requests, please try again later in 3 minutes"
+                )
+            }
+
+            // tandai otp sudah digunakan
+            await prisma.emailOTP.update({
+                where: { id: otp.id },
+                data: { used: true }
+            });
+
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "Invalid OTP"
+            )
+        }
 
         // ambil user
         const user = await prisma.user.findUnique({
@@ -131,5 +155,4 @@ export class AuthOtpService {
             token
         };
     }
-
 }
