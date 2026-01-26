@@ -1,99 +1,24 @@
 import { prisma } from "../database/prisma"
 import { generateOTP, generateOtpExpired } from "../utils/otp"
 import { Validation } from "../utils/validation"
-import { RequestOtpSchema, VerifyOtpSchema } from "../utils/otpValidation"
+import { AuthOtpValidation } from "../utils/otpValidation"
 import { ResponseError } from "../utils/responseError"
 import { generateToken } from "../utils/jwt"
-// import { sendOtpEmail } from "../utils/mailer"
+import { sendOTPEmail } from "../utils/mailer"
 
 export class AuthOtpService {
 
-    // kirim OTP ke email (login / register)
-    static async requestOTP(req: unknown) {
-        // validasi data request
-        const data = Validation.validate(RequestOtpSchema, req);
+    // request otp
+    static async requestOtp(email: string) {
+        // validasi email
+        const data = Validation.validate(AuthOtpValidation.requestOtp, { email });
 
-        // cek apakah user ada
+        // cek user ada atau tidak
         const user = await prisma.user.findUnique({
-            where: {
-                email: data.email
-            }
-        })
-
-        if (!user) {
-            throw new ResponseError(
-                404,
-                "Not_Found",
-                "Email not found"
-            );
-        }
-
-        // generate OTP
-        const code = generateOTP();
-        const expiresAt = generateOtpExpired(3);
-
-        // simpan ke DB
-        await prisma.emailOTP.create({
-            data: {
-                userId: user.id,
-                email: data.email,
-                code,
-                purpose: "LOGIN",
-                expiresAt
-            }
+            where: { email: data.email }
         });
 
-        // kirim email
-        // await sendOtpEmail({
-        //     to: data.email,
-        //     subject: "Your Login OTP Code",
-        //     text: `Your OTP code is: ${code} berlaku sampai ${expiresAt}`
-        // });
-
-        // return sementara
-        return {
-            message: "OTP sent successfully",
-            otp: code
-        };
-    }
-
-    // verifikasi OTP (login)
-    static async verifyOTP(req: unknown) {
-        // validasi data request
-        const data = Validation.validate(VerifyOtpSchema, req);
-
-        // cari OTP terbaru yang belum digunakan & belum expired
-        const otpRecord = await prisma.emailOTP.findFirst({
-            where: {
-                email: data.email,
-                code: data.code,
-                purpose: "LOGIN",
-                used: false,
-                expiresAt: {
-                    gt: new Date()
-                }
-            },
-            orderBy: {
-                created_at: "desc"
-            }
-        });
-
-        if (!otpRecord) {
-            throw new ResponseError(
-                400,
-                "Invalid_OTP",
-                "OTP doeOTP is invalid or has expired"
-            );
-        }
-
-        // ambil user
-        const user = await prisma.user.findUnique({
-            where: {
-                id: otpRecord.userId
-            }
-        });
-
-        // cek user
+        // cek jika user tidak ditemukan
         if (!user) {
             throw new ResponseError(
                 404,
@@ -102,41 +27,104 @@ export class AuthOtpService {
             );
         }
 
-        // tandai OTP yang sudah terpakai
-        await prisma.emailOTP.update({
+        // generate OTP
+        const code = generateOTP();
+        const expiresAt = generateOtpExpired();
+
+        // hapus otp lama sebelum insert baru
+        await prisma.emailOTP.updateMany({
             where: {
-                id: otpRecord.id
+                email: user.email,
+                purpose: "LOGIN",
+                used: false
             },
             data: {
                 used: true
             }
+        })
+
+        // simpan Otp ke DB
+        await prisma.emailOTP.create({
+            data: {
+                userId: user.id,
+                email: user.email,
+                code,
+                purpose: "LOGIN",
+                expiresAt
+            }
         });
 
-        // buat token lagi
-        const token = generateToken({ 
-            userId: user.id, role: user.role 
+        // kirim email
+        await sendOTPEmail(user.email, code);
+
+        return {
+            message: "OTP has been sent to your email"
+        };
+    }
+
+    // verifikasi otp & login
+    static async verifyOtp(email: string, code: string) {
+        // validasi email & code
+        const data = Validation.validate(AuthOtpValidation.verifyOtp, { email, code });
+
+        // cari otp valid yang belum digunakan
+        const otp = await prisma.emailOTP.findFirst({
+            where: {
+                email: data.email,
+                code: data.code,
+                purpose: "LOGIN",
+                used: false,
+                expiresAt: {
+                    gt: new Date(),
+                }
+            },
+            orderBy: {
+                created_at: "desc"
+            }
         });
+
+        // cek jika otp tidak ditemukan
+        if (!otp) {
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "Invalid OTP"
+            );
+        }
+
+        // tandai otp sudah digunakan
+        await prisma.emailOTP.update({
+            where: { id: otp.id },
+            data: { used: true }
+        });
+
+        // ambil user
+        const user = await prisma.user.findUnique({
+            where: { id: otp.userId }
+        });
+
+        // cek jika user tidak ditemukan
+        if (!user) {
+            throw new ResponseError(
+                404,
+                "Not_Found",
+                "User not found"
+            );
+        }
+
+        // buat token jwt
+        const token = generateToken({ userId: user.id, role: user.role });
 
         // simpan token ke user
         await prisma.user.update({
-            where: {
-                id: user.id
-            },
-            data: {
-                tokens: token
-            }
+            where: { id: user.id },
+            data: { tokens: token }
         });
 
         return {
-            message: "OTP verified successfully",
-            token,
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
-        }
+            message: "Login Success",
+            token
+        };
     }
 
 }

@@ -1,10 +1,6 @@
 // Generate OTP numerik 6 digit
-export function generateOTP(length: number = 6): string {
-    let otp = "";
-    for (let n = 0; n < length; n++) {
-        otp += Math.floor(Math.random() * 10).toString();
-    }
-    return otp;
+export function generateOTP(): string {
+    return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 // Generate expired time (default 3 minutes)

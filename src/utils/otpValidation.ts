@@ -1,15 +1,17 @@
 import { z } from "zod";
 
-// Request kirim OTP (login / register)
-export const RequestOtpSchema = z.object({
-  email: z.string().email()
-});
+export class AuthOtpValidation {
 
-// Request verifikasi OTP (login)
-export const VerifyOtpSchema = z.object({
-  email: z.string().email(),
-  code: z.string().length(6, "OTP harus 6 digit")
-});
+  // request kirim OTP
+  static readonly requestOtp = z.object({
+    email: z.string().email("Invalid email address"),
+  });
 
-export type RequestOtpRequest = z.infer<typeof RequestOtpSchema>;
-export type VerifyOtpRequest = z.infer<typeof VerifyOtpSchema>;
+  // verify OTP
+  static readonly verifyOtp = z.object({
+    email: z.string().email("Invalid email address"),
+    code: z.string()
+      .length(6, "OTP must be 6 digits")
+      .regex(/^\d+$/, "OTP must be numeric"),
+  });
+}
