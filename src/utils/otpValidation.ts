@@ -13,5 +13,8 @@ export class AuthOtpValidation {
     code: z.string()
       .length(6, "OTP must be 6 digits")
       .regex(/^\d+$/, "OTP must be numeric"),
+    name: z.string()
+      .min(4, "Name must be at least 4 characters long")
+      .max(100),
   });
 }
