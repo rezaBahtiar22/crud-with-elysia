@@ -117,7 +117,7 @@ export class AuthOtpService {
             // tandai otp sudah digunakan
             await prisma.emailOTP.update({
                 where: { id: otp.id },
-                data: { used: true }
+                data: { attempts }
             });
 
             throw new ResponseError(
@@ -155,4 +155,107 @@ export class AuthOtpService {
             token
         };
     }
+
+    static async requestRegisterOtp(email: string) {
+        // validasi email
+        const data = Validation.validate(AuthOtpValidation.requestOtp, { email });
+
+        // cek apakah email sudah dipakai atau belum
+        const emailExists = await prisma.user.findUnique({
+            where: {
+                email: data.email
+            }
+        });
+
+        // jika email sudah dipakai
+        if (emailExists) {
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "Email already exists"
+            );
+        }
+
+        // generate OTP & expired
+        const code = generateOTP();
+        const expiresAt = generateOtpExpired();
+
+        await prisma.emailOTP.create({
+            data: {
+                email: data.email,
+                userId: 0,
+                code,
+                purpose: "REGISTER",
+                expiresAt
+            }
+        });
+
+        // kirim email
+        await sendOTPEmail(data.email, code);
+
+        return {
+            message: "OTP has been sent to your email"
+        }
+    }
+
+    // register otp + create user
+    static async verifyRegisterOtp(email: string, code: string, name: string) {
+        // validasi email & code
+        const data = Validation.validate(AuthOtpValidation.verifyOtp, { email, code });
+
+        // cari otp valid
+        const otp = await prisma.emailOTP.findFirst({
+            where: {
+                email,
+                code,
+                purpose: "REGISTER",
+                used: false,
+                expiresAt: {
+                    gt: new Date()
+                }
+            },
+            orderBy: {
+                created_at: "desc"
+            }
+        });
+
+        // jika otp tidak ditemukan
+        if (!otp) {
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "Invalid OTP"
+            );
+        }
+
+        // buat user tanpa password
+        const newUser = await prisma.user.create({
+            data: {
+                email,
+                name,
+                password: "",
+                role: "USER"
+            }
+        });
+
+        // tandai otp yang terpakai
+        await prisma.emailOTP.update({
+            where: { id: otp.id },
+            data: { used: true }
+        });
+
+        // langsung login
+        const token = generateToken({ userId: newUser.id, role: newUser.role });
+
+        await prisma.user.update({
+            where: { id: newUser.id },
+            data: { tokens: token }
+        });
+
+        return {
+            message: "Register Success",
+            token
+        }
+    }
+
 }
