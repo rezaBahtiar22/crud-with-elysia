@@ -6,8 +6,22 @@ import { ResponseError } from "../utils/responseError"
 import { generateToken } from "../utils/jwt"
 import { sendOTPEmail } from "../utils/mailer"
 import { otpRateLimit } from "../middlewares/otpRateLimiter"
-import type { AuthOtpLoginRequest, AuthOtpVerifyLoginRequest, AuthOtpLoginResponse, AuthOtpVerifyLoginResponse } from "../interfaces/authOtpLogin"
-import type { AuthRegisterOtpRequest, AuthVerifyRegisterOtpRequest, AuthOtpRegisterResponse, AuthOtpVerifyRegisterResponse } from "../interfaces/authOtpRegister"
+
+import type { 
+    AuthOtpLoginRequest, 
+    AuthOtpVerifyLoginRequest, 
+    AuthOtpLoginResponse, 
+    AuthOtpVerifyLoginResponse 
+} from "../interfaces/authOtpLogin"
+
+import type { 
+    AuthRegisterOtpRequest, 
+    AuthVerifyRegisterOtpRequest, 
+    AuthOtpRegisterResponse, 
+    AuthOtpVerifyRegisterResponse 
+} from "../interfaces/authOtpRegister"
+
+
 
 export class AuthOtpService {
 
