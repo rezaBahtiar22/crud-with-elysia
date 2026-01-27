@@ -6,13 +6,17 @@ import { ResponseError } from "../utils/responseError"
 import { generateToken } from "../utils/jwt"
 import { sendOTPEmail } from "../utils/mailer"
 import { otpRateLimit } from "../middlewares/otpRateLimiter"
+import type { AuthOtpLoginRequest, AuthOtpVerifyLoginRequest, AuthOtpLoginResponse, AuthOtpVerifyLoginResponse } from "../interfaces/authOtpLogin"
+import type { AuthRegisterOtpRequest, AuthVerifyRegisterOtpRequest, AuthOtpRegisterResponse, AuthOtpVerifyRegisterResponse } from "../interfaces/authOtpRegister"
 
 export class AuthOtpService {
 
     // request otp
-    static async requestOtp(email: string) {
+    static async requestOtpLogin(
+        request: AuthOtpLoginRequest
+    ): Promise<AuthOtpLoginResponse> {
         // validasi email
-        const data = Validation.validate(AuthOtpValidation.requestOtp, { email });
+        const data = Validation.validate(AuthOtpValidation.requestOtp, request);
 
         // rate limiter
         const key = `Otp_${data.email}`;
@@ -55,7 +59,8 @@ export class AuthOtpService {
                 email: user.email,
                 code,
                 purpose: "LOGIN",
-                expiresAt
+                expiresAt,
+                attempts: 0
             }
         });
 
@@ -68,9 +73,11 @@ export class AuthOtpService {
     }
 
     // verifikasi otp & login
-    static async verifyOtp(email: string, code: string) {
+    static async verifyOtpLogin(
+        request: AuthOtpVerifyLoginRequest
+    ): Promise<AuthOtpVerifyLoginResponse> {
         // validasi email & code
-        const data = Validation.validate(AuthOtpValidation.verifyOtp, { email, code });
+        const data = Validation.validate(AuthOtpValidation.verifyOtp, request);
 
         // cari otp valid yang belum digunakan
         const otp = await prisma.emailOTP.findFirst({
@@ -93,7 +100,16 @@ export class AuthOtpService {
             );
         }
 
-        // cek apakah sedang diblok
+        // cek block
+        if (otp.blockedUntil && otp.blockedUntil > new Date()) {
+            throw new ResponseError(
+                429,
+                "Too_Many_Requests",
+                "Too many requests, please try again later in 3 minutes"
+            );
+        }
+
+        // cek apakah salah / expired
         if (otp.code !== data.code || otp.expiresAt < new Date()) {
             const attempts = otp.attempts + 1;
 
@@ -127,6 +143,12 @@ export class AuthOtpService {
             )
         }
 
+        // tandai otp sudah digunakan
+        await prisma.emailOTP.update({
+            where: { id: otp.id },
+            data: { used: true }
+        });
+
         // ambil user
         const user = await prisma.user.findUnique({
             where: { id: otp.userId }
@@ -144,21 +166,21 @@ export class AuthOtpService {
         // buat token jwt
         const token = generateToken({ userId: user.id, role: user.role });
 
-        // simpan token ke user
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { tokens: token }
-        });
-
         return {
             message: "Login Success",
             token
         };
     }
 
-    static async requestRegisterOtp(email: string) {
+    static async requestOtpRegister(
+        request: AuthRegisterOtpRequest
+    ): Promise<AuthOtpRegisterResponse> {
         // validasi email
-        const data = Validation.validate(AuthOtpValidation.requestOtp, { email });
+        const data = Validation.validate(AuthOtpValidation.requestOtp, request);
+
+        // rate limiter
+        const key = `Otp_${data.email}`;
+        await otpRateLimit(key);
 
         // cek apakah email sudah dipakai atau belum
         const emailExists = await prisma.user.findUnique({
@@ -186,7 +208,8 @@ export class AuthOtpService {
                 userId: 0,
                 code,
                 purpose: "REGISTER",
-                expiresAt
+                expiresAt,
+                attempts: 0
             }
         });
 
@@ -199,15 +222,17 @@ export class AuthOtpService {
     }
 
     // register otp + create user
-    static async verifyRegisterOtp(email: string, code: string, name: string) {
+    static async verifyRegisterOtp(
+        request: AuthVerifyRegisterOtpRequest
+    ): Promise<AuthOtpVerifyRegisterResponse> {
         // validasi email & code
-        const data = Validation.validate(AuthOtpValidation.verifyOtp, { email, code });
+        const data = Validation.validate(AuthOtpValidation.verifyOtp, request);
 
         // cari otp valid
         const otp = await prisma.emailOTP.findFirst({
             where: {
-                email,
-                code,
+                email: data.email,
+                code: data.code,
                 purpose: "REGISTER",
                 used: false,
                 expiresAt: {
@@ -231,8 +256,8 @@ export class AuthOtpService {
         // buat user tanpa password
         const newUser = await prisma.user.create({
             data: {
-                email,
-                name,
+                email: data.email,
+                name: data.name,
                 password: "",
                 role: "USER"
             }

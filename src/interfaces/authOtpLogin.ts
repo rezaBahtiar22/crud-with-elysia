@@ -9,9 +9,9 @@ export interface AuthOtpVerifyLoginRequest {
 
 export interface AuthOtpLoginResponse {
     message: string;
-}
+};
 
 export interface AuthOtpVerifyLoginResponse {
     message: string;
     token: string;
-}
+};
