@@ -27,7 +27,7 @@ export const AuthOtpRoute = new Elysia({ prefix: "auth/otp" })
     // req otp register
     .post("/register", async ({ body, set }) => {
         set.status = 200;
-        return AuthOtpController.requestOtpLogin(body as AuthRegisterOtpRequest);
+        return AuthOtpController.requestOtpRegister(body as AuthRegisterOtpRequest);
     })
 
     // verify register otp
@@ -40,10 +40,10 @@ export const AuthOtpRoute = new Elysia({ prefix: "auth/otp" })
     .post("/login", async ({ body, set }) => {
         set.status = 200;
         return AuthOtpController.requestOtpLogin(body as AuthOtpLoginRequest);
-    });
+    })
 
     // verify otp login
-    AuthOtpRoute.post("/login/verify", async ({ body, set }) => {
+    .post("/login/verify", async ({ body, set }) => {
         set.status = 200;
         return AuthOtpController.verifyOtpLogin(body as AuthOtpVerifyLoginRequest);
-    });
+    })

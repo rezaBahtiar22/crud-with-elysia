@@ -219,7 +219,7 @@ export type EmailOTPGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type EmailOTPGroupByOutputType = {
   id: number
-  userId: number
+  userId: number | null
   email: string
   code: string
   purpose: $Enums.OtpPurpose
@@ -255,7 +255,7 @@ export type EmailOTPWhereInput = {
   OR?: Prisma.EmailOTPWhereInput[]
   NOT?: Prisma.EmailOTPWhereInput | Prisma.EmailOTPWhereInput[]
   id?: Prisma.IntFilter<"EmailOTP"> | number
-  userId?: Prisma.IntFilter<"EmailOTP"> | number
+  userId?: Prisma.IntNullableFilter<"EmailOTP"> | number | null
   email?: Prisma.StringFilter<"EmailOTP"> | string
   code?: Prisma.StringFilter<"EmailOTP"> | string
   purpose?: Prisma.EnumOtpPurposeFilter<"EmailOTP"> | $Enums.OtpPurpose
@@ -264,12 +264,12 @@ export type EmailOTPWhereInput = {
   attempts?: Prisma.IntFilter<"EmailOTP"> | number
   blockedUntil?: Prisma.DateTimeNullableFilter<"EmailOTP"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"EmailOTP"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type EmailOTPOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   code?: Prisma.SortOrder
   purpose?: Prisma.SortOrder
@@ -286,7 +286,7 @@ export type EmailOTPWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EmailOTPWhereInput | Prisma.EmailOTPWhereInput[]
   OR?: Prisma.EmailOTPWhereInput[]
   NOT?: Prisma.EmailOTPWhereInput | Prisma.EmailOTPWhereInput[]
-  userId?: Prisma.IntFilter<"EmailOTP"> | number
+  userId?: Prisma.IntNullableFilter<"EmailOTP"> | number | null
   email?: Prisma.StringFilter<"EmailOTP"> | string
   code?: Prisma.StringFilter<"EmailOTP"> | string
   purpose?: Prisma.EnumOtpPurposeFilter<"EmailOTP"> | $Enums.OtpPurpose
@@ -295,12 +295,12 @@ export type EmailOTPWhereUniqueInput = Prisma.AtLeast<{
   attempts?: Prisma.IntFilter<"EmailOTP"> | number
   blockedUntil?: Prisma.DateTimeNullableFilter<"EmailOTP"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"EmailOTP"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type EmailOTPOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   code?: Prisma.SortOrder
   purpose?: Prisma.SortOrder
@@ -321,7 +321,7 @@ export type EmailOTPScalarWhereWithAggregatesInput = {
   OR?: Prisma.EmailOTPScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EmailOTPScalarWhereWithAggregatesInput | Prisma.EmailOTPScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"EmailOTP"> | number
-  userId?: Prisma.IntWithAggregatesFilter<"EmailOTP"> | number
+  userId?: Prisma.IntNullableWithAggregatesFilter<"EmailOTP"> | number | null
   email?: Prisma.StringWithAggregatesFilter<"EmailOTP"> | string
   code?: Prisma.StringWithAggregatesFilter<"EmailOTP"> | string
   purpose?: Prisma.EnumOtpPurposeWithAggregatesFilter<"EmailOTP"> | $Enums.OtpPurpose
@@ -341,12 +341,12 @@ export type EmailOTPCreateInput = {
   attempts?: number
   blockedUntil?: Date | string | null
   created_at?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutOtpsInput
+  user?: Prisma.UserCreateNestedOneWithoutOtpsInput
 }
 
 export type EmailOTPUncheckedCreateInput = {
   id?: number
-  userId: number
+  userId?: number | null
   email: string
   code: string
   purpose: $Enums.OtpPurpose
@@ -366,12 +366,12 @@ export type EmailOTPUpdateInput = {
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
   blockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutOtpsNestedInput
+  user?: Prisma.UserUpdateOneWithoutOtpsNestedInput
 }
 
 export type EmailOTPUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
@@ -384,7 +384,7 @@ export type EmailOTPUncheckedUpdateInput = {
 
 export type EmailOTPCreateManyInput = {
   id?: number
-  userId: number
+  userId?: number | null
   email: string
   code: string
   purpose: $Enums.OtpPurpose
@@ -408,7 +408,7 @@ export type EmailOTPUpdateManyMutationInput = {
 
 export type EmailOTPUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
-  userId?: Prisma.IntFieldUpdateOperationsInput | number
+  userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   purpose?: Prisma.EnumOtpPurposeFieldUpdateOperationsInput | $Enums.OtpPurpose
@@ -534,6 +534,14 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type EmailOTPCreateWithoutUserInput = {
   email: string
   code: string
@@ -588,7 +596,7 @@ export type EmailOTPScalarWhereInput = {
   OR?: Prisma.EmailOTPScalarWhereInput[]
   NOT?: Prisma.EmailOTPScalarWhereInput | Prisma.EmailOTPScalarWhereInput[]
   id?: Prisma.IntFilter<"EmailOTP"> | number
-  userId?: Prisma.IntFilter<"EmailOTP"> | number
+  userId?: Prisma.IntNullableFilter<"EmailOTP"> | number | null
   email?: Prisma.StringFilter<"EmailOTP"> | string
   code?: Prisma.StringFilter<"EmailOTP"> | string
   purpose?: Prisma.EnumOtpPurposeFilter<"EmailOTP"> | $Enums.OtpPurpose
@@ -659,7 +667,7 @@ export type EmailOTPSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   attempts?: boolean
   blockedUntil?: boolean
   created_at?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EmailOTP$userArgs<ExtArgs>
 }, ExtArgs["result"]["emailOTP"]>
 
 export type EmailOTPSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -673,7 +681,7 @@ export type EmailOTPSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   attempts?: boolean
   blockedUntil?: boolean
   created_at?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EmailOTP$userArgs<ExtArgs>
 }, ExtArgs["result"]["emailOTP"]>
 
 export type EmailOTPSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -687,7 +695,7 @@ export type EmailOTPSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   attempts?: boolean
   blockedUntil?: boolean
   created_at?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EmailOTP$userArgs<ExtArgs>
 }, ExtArgs["result"]["emailOTP"]>
 
 export type EmailOTPSelectScalar = {
@@ -705,23 +713,23 @@ export type EmailOTPSelectScalar = {
 
 export type EmailOTPOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "email" | "code" | "purpose" | "expiresAt" | "used" | "attempts" | "blockedUntil" | "created_at", ExtArgs["result"]["emailOTP"]>
 export type EmailOTPInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EmailOTP$userArgs<ExtArgs>
 }
 export type EmailOTPIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EmailOTP$userArgs<ExtArgs>
 }
 export type EmailOTPIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EmailOTP$userArgs<ExtArgs>
 }
 
 export type $EmailOTPPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "EmailOTP"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
-    userId: number
+    userId: number | null
     email: string
     code: string
     purpose: $Enums.OtpPurpose
@@ -1124,7 +1132,7 @@ readonly fields: EmailOTPFieldRefs;
  */
 export interface Prisma__EmailOTPClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.EmailOTP$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmailOTP$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1557,6 +1565,25 @@ export type EmailOTPDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many EmailOTPS to delete.
    */
   limit?: number
+}
+
+/**
+ * EmailOTP.user
+ */
+export type EmailOTP$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

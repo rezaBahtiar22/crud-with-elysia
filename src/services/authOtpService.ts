@@ -91,7 +91,7 @@ export class AuthOtpService {
         request: AuthOtpVerifyLoginRequest
     ): Promise<AuthOtpVerifyLoginResponse> {
         // validasi email & code
-        const data = Validation.validate(AuthOtpValidation.verifyOtp, request);
+        const data = Validation.validate(AuthOtpValidation.verifyLoginOtp, request);
 
         // cari otp valid yang belum digunakan
         const otp = await prisma.emailOTP.findFirst({
@@ -165,7 +165,7 @@ export class AuthOtpService {
 
         // ambil user
         const user = await prisma.user.findUnique({
-            where: { id: otp.userId }
+            where: { id: otp.userId ?? undefined }
         });
 
         // cek jika user tidak ditemukan
@@ -219,7 +219,6 @@ export class AuthOtpService {
         await prisma.emailOTP.create({
             data: {
                 email: data.email,
-                userId: 0,
                 code,
                 purpose: "REGISTER",
                 expiresAt,
