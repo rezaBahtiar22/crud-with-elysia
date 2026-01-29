@@ -279,12 +279,12 @@ export class AuthService {
 
     // service untuk auth me
     static async profile(
-        user: AuthMeData
+        user: { userId: number }
     ): Promise<AuthMeResponse> {
         // ambil user dari DB
         const dbUser = await prisma.user.findUnique({
             where: {
-                id: user.id
+                id: user.userId
             },
             select: {
                 id: true,

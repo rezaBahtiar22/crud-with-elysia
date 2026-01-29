@@ -16,15 +16,10 @@ export interface AuthMeResponse {
 
 // fungsi mapper untuk response user login
 export function toAuthGetUserLoginResponse(
-    user: AuthMeData
+    user: {  id: number; name: string; email: string; role: Role }
 ): AuthMeResponse {
     return {
         message: "User logged in successfully",
-        data: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role
-        }
+        data: user
     };
 }

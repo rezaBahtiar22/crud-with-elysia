@@ -3,6 +3,7 @@ import type { AuthUserRegisterRequest, AuthUserRegisterResponse } from "../inter
 import type { AuthUserLoginRequest, AuthUserLoginResponse } from "../interfaces/authUserLogin";
 import type { AuthUserUpdateRequest, AuthUserUpdateResponse } from "../interfaces/authUserUpdateProfile";
 import type { AuthUserUpdatePasswordRequest, AuthUserUpdatePasswordResponse } from "../interfaces/authUserUpdatePassword";
+import type { AuthMeResponse } from "../interfaces/authMeData";
 
 export class AuthController {
     // controller untuk register user
@@ -41,5 +42,13 @@ export class AuthController {
         token: string
     ) {
         return AuthService.logout(user, token);
+    }
+
+    // controller untuk get me
+    static async profile(
+        user: { userId: number }
+    ): Promise<AuthMeResponse> {
+        
+        return AuthService.profile(user);
     }
 }

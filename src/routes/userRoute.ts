@@ -49,3 +49,9 @@ export const UserRoute = new Elysia({ prefix: "/user" })
             ctx.body as AuthUserUpdatePasswordRequest
         )
     })
+
+    // get profile / auth me
+    .get("/profile", async ({ user, set }) => {
+        set.status = 200;
+        return AuthController.profile(user!);
+    })
