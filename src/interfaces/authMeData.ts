@@ -20,6 +20,11 @@ export function toAuthGetUserLoginResponse(
 ): AuthMeResponse {
     return {
         message: "User logged in successfully",
-        data: user
+        data: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        }
     };
 }

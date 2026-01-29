@@ -12,6 +12,9 @@ import {  toAuthUserUpdateResponse } from "../interfaces/authUserUpdateProfile"
 
 import type { AuthUserUpdatePasswordRequest, AuthUserUpdatePasswordResponse } from "../interfaces/authUserUpdatePassword"
 
+import type { AuthMeData, AuthMeResponse } from "../interfaces/authMeData"
+import { toAuthGetUserLoginResponse } from "../interfaces/authMeData"
+
 import { generateToken } from "../utils/jwt"
 import { prisma } from "../database/prisma"
 import { ResponseError } from "../utils/responseError"
@@ -272,5 +275,37 @@ export class AuthService {
         }
 
         return toAuthUserLogoutResponse();
+    }
+
+    // service untuk auth me
+    static async profile(
+        user: AuthMeData
+    ): Promise<AuthMeResponse> {
+        // ambil user dari DB
+        const dbUser = await prisma.user.findUnique({
+            where: {
+                id: user.id
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                created_at: true,
+                updated_at: true
+            }
+        });
+
+        // cek jika user tidak ada
+        if (!dbUser) {
+            throw new ResponseError(
+                404,
+                "Not_Found",
+                "User not found"
+            );
+        }
+
+        // return response
+        return toAuthGetUserLoginResponse(dbUser);
     }
 }
