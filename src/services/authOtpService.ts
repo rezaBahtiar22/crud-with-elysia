@@ -285,11 +285,6 @@ export class AuthOtpService {
         // langsung login
         const token = generateToken({ userId: newUser.id, role: newUser.role });
 
-        await prisma.user.update({
-            where: { id: newUser.id },
-            data: { tokens: token }
-        });
-
         return {
             message: "Register Success",
             token
