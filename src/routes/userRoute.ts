@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { AuthController } from "../controllers/authController";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
 import { ResponseError } from "../utils/responseError";
@@ -10,6 +10,12 @@ export const UserRoute = new Elysia({ prefix: "/user" })
     // logout user
     .post("/logout", (ctx) => {
         return AuthController.logout(ctx.user as any, ctx.token as any);
+    }, {
+        detail: {
+            tags: ["User Logout"],
+            summary: "Logout authenticated user",
+            security: [{ bearerAuth: [] }]
+        }
     })
 
     // update user profile(username dan email)
@@ -32,6 +38,14 @@ export const UserRoute = new Elysia({ prefix: "/user" })
             )
         }
         return AuthController.updateProfile(user, body);
+    }, {
+        tags: ["User Update Profile"],
+        summary: "Update user profile (name and email)",
+        security: [{ bearerAuth: [] }],
+        body: t.Object({
+            name: t.Optional(t.String()),
+            email: t.Optional(t.String())
+        })
     })
 
     // untuk user update password
@@ -48,10 +62,25 @@ export const UserRoute = new Elysia({ prefix: "/user" })
             ctx.user,
             ctx.body as AuthUserUpdatePasswordRequest
         )
+    }, {
+        tags: ["User Update Password"],
+        summary: "Update user password",
+        security: [{ bearerAuth: [] }],
+        body: t.Object({
+            currentPassword: t.String(),
+            newPassword: t.String(),
+            confirmNewPassword: t.String()
+        })
     })
 
     // get profile / auth me
     .get("/profile", async ({ user, set }) => {
         set.status = 200;
         return AuthController.profile(user!);
+    }, {
+        detail: {
+            tags: ["User Profile"],
+            summary: "Get authenticated user profile",
+            security: [{ bearerAuth: [] }]
+        }
     })
