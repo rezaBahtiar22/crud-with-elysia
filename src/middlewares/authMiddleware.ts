@@ -5,10 +5,8 @@ import { logger } from "../utils/logging";
 
 export const AuthMiddleware = (app: Elysia) => app
     .decorate("user", null as null | {
-        userId: number;
+        id: number;
         role: string;
-        iat: number;
-        exp: number;
     })
     .decorate("token", null as null | string)
     .onBeforeHandle((ctx) => {
@@ -42,12 +40,13 @@ export const AuthMiddleware = (app: Elysia) => app
             const payload = jwt.verify(token, process.env.JWT_SECRET as string) as {
                 userId: number;
                 role: string;
-                iat: number;
-                exp: number;
             };
             
             // set ke context
-            ctx.user = payload;
+            ctx.user = {
+                id: payload.userId,
+                role: payload.role
+            };
             ctx.token = token;
 
         } catch (error) {

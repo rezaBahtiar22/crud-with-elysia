@@ -22,7 +22,7 @@ export class AuthController {
 
     // controller untuk user update profile
     static async updateProfile(
-        user:{ userId: number, role: string }, 
+        user:{ id: number, role: string }, 
         body: AuthUserUpdateRequest
     ): Promise<AuthUserUpdateResponse> {
         return AuthService.updateProfile(user, body);
@@ -30,7 +30,7 @@ export class AuthController {
 
     // controller untuk user update password
     static async updatePassword(
-        user:{ userId: number, role: string }, 
+        user:{ id: number, role: string }, 
         body: AuthUserUpdatePasswordRequest
     ): Promise<AuthUserUpdatePasswordResponse> {
         return AuthService.updatePassword(user, body);
@@ -38,7 +38,7 @@ export class AuthController {
 
     // controller untuk logout user
     static async logout(
-        user: { userId: string },
+        user: { id: number },
         token: string
     ) {
         return AuthService.logout(user, token);
@@ -46,7 +46,7 @@ export class AuthController {
 
     // controller untuk get me
     static async profile(
-        user: { userId: number }
+        user: { id: number }
     ): Promise<AuthMeResponse> {
         
         return AuthService.profile(user);

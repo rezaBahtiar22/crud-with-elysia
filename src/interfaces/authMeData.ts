@@ -1,4 +1,4 @@
-import type { Role } from "../../generated/prisma/enums";
+import type { Role } from "../../generated/prisma/client";
 
 // interface untuk data user login
 export interface AuthMeData {

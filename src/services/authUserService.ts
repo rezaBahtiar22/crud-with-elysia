@@ -12,7 +12,7 @@ import {  toAuthUserUpdateResponse } from "../interfaces/authUserUpdateProfile"
 
 import type { AuthUserUpdatePasswordRequest, AuthUserUpdatePasswordResponse } from "../interfaces/authUserUpdatePassword"
 
-import type { AuthMeData, AuthMeResponse } from "../interfaces/authMeData"
+import type { AuthMeResponse } from "../interfaces/authMeData"
 import { toAuthGetUserLoginResponse } from "../interfaces/authMeData"
 
 import { generateToken } from "../utils/jwt"
@@ -113,7 +113,7 @@ export class AuthService {
 
     // service untuk update user profile(username dan email)
     static async updateProfile(
-        user:{ userId: number, role: string }, 
+        user:{ id: number, role: string }, 
         request: AuthUserUpdateRequest
     ): Promise<AuthUserUpdateResponse> {
         // validasi request body
@@ -146,7 +146,7 @@ export class AuthService {
             });
 
             // jika email sudah digunakan oleh user lain, lempar error
-            if (existing && existing.id !== user.userId) {
+            if (existing && existing.id !== user.id) {
                 throw new ResponseError(
                     409,
                     "Email_Already_Exists",
@@ -167,7 +167,7 @@ export class AuthService {
 
         const result = await prisma.user.update({
             where: {
-                id: user.userId,
+                id: user.id,
             },
             data: dataUpdate
         });
@@ -178,7 +178,7 @@ export class AuthService {
 
     // service untuk update user password
     static async updatePassword(
-        user:{ userId: number, role: string }, 
+        user:{ id: number, role: string }, 
         request: AuthUserUpdatePasswordRequest
     ): Promise<AuthUserUpdatePasswordResponse> {
         // validasi request body
@@ -196,7 +196,7 @@ export class AuthService {
         // ambil user dari DB
         const existingUser = await prisma.user.findUnique({
             where: {
-                id: user.userId
+                id: user.id
             },
             select: {
                 id: true,
@@ -246,7 +246,7 @@ export class AuthService {
         // update password
         await prisma.user.update({
             where: {
-                id: user.userId
+                id: user.id
             },
             data: {
                 password: hashPassword
@@ -261,7 +261,7 @@ export class AuthService {
 
     // service untuk logout user
     static async logout(
-        user: { userId: string },
+        user: { id: number },
         token: string
     ): Promise<AuthUserLogout> {
         // cek jika user tidak ditemukan
@@ -279,12 +279,12 @@ export class AuthService {
 
     // service untuk auth me
     static async profile(
-        user: { userId: number }
+        user: { id: number }
     ): Promise<AuthMeResponse> {
         // ambil user dari DB
         const dbUser = await prisma.user.findUnique({
             where: {
-                id: user.userId
+                id: user.id
             },
             select: {
                 id: true,

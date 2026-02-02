@@ -8,8 +8,15 @@ import type { AuthUserUpdatePasswordRequest } from "../interfaces/authUserUpdate
 export const UserRoute = new Elysia({ prefix: "/user" })
     .use(AuthMiddleware)
     // logout user
-    .post("/logout", (ctx) => {
-        return AuthController.logout(ctx.user as any, ctx.token as any);
+    .post("/logout", ({  user, token }) => {
+        if ( !user || !token) {
+            throw new ResponseError(
+                401,
+                "Unauthorized",
+                "Authentication is required"
+            )
+        }
+        return AuthController.logout(user, token);
     }, {
         detail: {
             tags: ["User Logout"],
@@ -49,8 +56,8 @@ export const UserRoute = new Elysia({ prefix: "/user" })
     })
 
     // untuk user update password
-    .patch("/update/password", async (ctx) => {
-        if (!ctx.user) {
+    .patch("/update/password", ({ body, user }) => {
+        if (!user) {
             throw new ResponseError(
                 401,
                 "Unauthorized",
@@ -59,8 +66,8 @@ export const UserRoute = new Elysia({ prefix: "/user" })
         }
 
         return AuthController.updatePassword(
-            ctx.user,
-            ctx.body as AuthUserUpdatePasswordRequest
+            user,
+            body as AuthUserUpdatePasswordRequest
         )
     }, {
         tags: ["User Update Password"],
@@ -74,9 +81,16 @@ export const UserRoute = new Elysia({ prefix: "/user" })
     })
 
     // get profile / auth me
-    .get("/profile", async ({ user, set }) => {
+    .get("/profile", ({ user, set }) => {
+        if (!user) {
+            throw new ResponseError(
+                401,
+                "Unauthorized",
+                "Authentication is required"
+            )
+        }
         set.status = 200;
-        return AuthController.profile(user!);
+        return AuthController.profile(user);
     }, {
         detail: {
             tags: ["User Profile"],
