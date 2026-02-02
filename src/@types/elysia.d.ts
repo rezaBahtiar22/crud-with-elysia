@@ -1,7 +1,7 @@
 import 'elysia';
 
 declare module 'elysia' {
-    interface Context {
+    interface Singleton {
         user: null | {
             id: number;
             role: string;
@@ -9,3 +9,5 @@ declare module 'elysia' {
         token: null | string;
     }
 }
+
+export {};
