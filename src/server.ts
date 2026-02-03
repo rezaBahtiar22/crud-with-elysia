@@ -4,6 +4,7 @@ import { cors } from "@elysiajs/cors";
 import { AuthRoute } from "./routes/authRoute";
 import { AuthOtpRoute } from "./routes/authRoute";
 import { UserRoute } from "./routes/userRoute";
+import { AdminRoute } from "./routes/adminRoute";
 import { ErrorMiddleware } from "./middlewares/errorMiddleware";
 import { startOtpCleanerJob } from "./helper/otpCleanerJob";
 import { swagger } from "@elysiajs/swagger";
@@ -42,6 +43,7 @@ const app = new Elysia()
     .use(AuthRoute)
     .use(AuthOtpRoute)
     .use(UserRoute)
+    .use(AdminRoute)
 
     // middleware error handler
     .use(ErrorMiddleware)
