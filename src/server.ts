@@ -1,3 +1,4 @@
+import "./@types/elysia.d.ts";
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { AuthRoute } from "./routes/authRoute";
