@@ -19,7 +19,7 @@ export function toAuthGetUserLoginResponse(
     user: {  id: number; name: string; email: string; role: Role }
 ): AuthMeResponse {
     return {
-        message: "User logged in successfully",
+        message: "Successfully fetched user profile",
         data: user
     };
 }

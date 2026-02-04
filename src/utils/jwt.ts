@@ -5,7 +5,7 @@ const EXPIRED_IN = "1d";
 
 // interface untuk payload JWT
 export interface JwtPayload {
-    userId: number
+    id: number
     role: string
 };
 

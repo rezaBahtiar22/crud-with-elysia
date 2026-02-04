@@ -178,7 +178,7 @@ export class AuthOtpService {
         }
 
         // buat token jwt
-        const token = generateToken({ userId: user.id, role: user.role });
+        const token = generateToken({ id: user.id, role: user.role });
 
         return {
             message: "Login Success",
@@ -283,7 +283,7 @@ export class AuthOtpService {
         });
 
         // langsung login
-        const token = generateToken({ userId: newUser.id, role: newUser.role });
+        const token = generateToken({ id: newUser.id, role: newUser.role });
 
         return {
             message: "Register Success",
