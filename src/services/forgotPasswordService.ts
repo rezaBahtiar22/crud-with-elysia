@@ -26,11 +26,9 @@ export class ForgotPassword {
 
         // jika user tidak ditemukan, lempar error
         if (!user) {
-            throw new ResponseError(
-                404,
-                "Not_Found",
-                "User not found"
-            );
+            return {
+                message: "If the email is exist, an OTP has been sent to your email"
+            }
         }
 
         // generate OTP
@@ -48,7 +46,7 @@ export class ForgotPassword {
         });
 
         // kirim email otp
-        await sendOTPEmail(user.email, code);
+        await sendOTPEmail(user.email, code, "RESET_PASSWORD");
 
         return {
             message: "OTP has been sent to your email"

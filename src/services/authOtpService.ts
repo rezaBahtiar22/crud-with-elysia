@@ -79,7 +79,7 @@ export class AuthOtpService {
         });
 
         // kirim email
-        await sendOTPEmail(user.email, code);
+        await sendOTPEmail(user.email, code, "LOGIN");
 
         return {
             message: "OTP has been sent to your email"
@@ -227,7 +227,7 @@ export class AuthOtpService {
         });
 
         // kirim email
-        await sendOTPEmail(data.email, code);
+        await sendOTPEmail(data.email, code, "REGISTER");
 
         return {
             message: "OTP has been sent to your email"
