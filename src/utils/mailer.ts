@@ -1,19 +1,37 @@
-import { Resend } from "resend"
+import { Resend } from "resend";
 
-// buat variabel resend 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// kirim OTP ke email
-export async function sendOTPEmail(email: string, code: string, purpose: "LOGIN" | "REGISTER" | "RESET_PASSWORD") {
-    const subject =
-        purpose === "RESET_PASSWORD"
-            ? "Reset Password OTP"
-            : "Login OTP";
+type OtpPurpose = "LOGIN" | "REGISTER" | "RESET_PASSWORD";
 
-    const title =
-        purpose === "RESET_PASSWORD"
-            ? "Reset Password Verification"
-            : "Login Verification";
+export async function sendOTPEmail(
+    email: string,
+    code: string,
+    purpose: OtpPurpose
+) {
+    let subject: string;
+    let title: string;
+
+    switch (purpose) {
+        case "REGISTER":
+            subject = "Register OTP";
+            title = "Register Verification";
+            break;
+
+        case "LOGIN":
+            subject = "Login OTP";
+            title = "Login Verification";
+            break;
+
+        case "RESET_PASSWORD":
+            subject = "Reset Password OTP";
+            title = "Reset Password Verification";
+            break;
+
+        default:
+            subject = "OTP Verification";
+            title = "OTP Verification";
+    }
 
     await resend.emails.send({
         from: process.env.MAIL_FROM!,
