@@ -2,8 +2,9 @@ import { Elysia } from "elysia";
 import { ZodError } from "zod";
 import { ResponseError } from "../utils/responseError";
 
-export const ErrorMiddleware = new Elysia()
+export const ErrorMiddleware = new Elysia({ name: "error-handler" })
     .onError(({ error, set }) => {
+        // console.log("Error Middleware Triggered:", error);
         // zod error validation
         if (error instanceof ZodError) {
             set.status = 422
@@ -18,18 +19,13 @@ export const ErrorMiddleware = new Elysia()
         if (error instanceof ResponseError) {
             set.status = error.status
 
-            const response: any = {
+            return {
                 error: error.error,
                 message: error.message,
+                ...(Bun.env.NODE_ENV !== "production" && {
+                    stackTrace: error.stack
+                })
             }
-
-            // stackTrace hanya ditampilkan di development
-            const isProduction = (Bun.env.NODE_ENV ?? "development") === "production"
-            if (!isProduction) {
-                response.stackTrace = error.stack
-            }
-
-            return response
         }
 
         // unknown error
@@ -37,8 +33,9 @@ export const ErrorMiddleware = new Elysia()
         return {
             error: "Internal_Server_Error",
             message: "Something went wrong",
-            ...(Bun.env.NODE_ENV !== "production" &&
-                ("stack" in error ? { stackTrace: (error as Error).stack } : {})
-            ),
+            ...(Bun.env.NODE_ENV !== "production" && {
+                stackTrace: (error as Error).stack
+            }),
         }
     })
+    .as("global");
