@@ -4,7 +4,6 @@ import { ResponseError } from "../utils/responseError";
 
 export const ErrorMiddleware = new Elysia({ name: "error-handler" })
     .onError(({ error, set }) => {
-        // console.log("Error Middleware Triggered:", error);
         // zod error validation
         if (error instanceof ZodError) {
             set.status = 422

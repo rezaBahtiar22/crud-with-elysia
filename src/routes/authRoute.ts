@@ -1,10 +1,6 @@
 import { Elysia, t } from "elysia";
 import { AuthController } from "../controllers/authController";
-import type { AuthUserRegisterRequest } from "../interfaces/authUserRegister";
-import type { AuthUserLoginRequest } from "../interfaces/authUserLogin";
 import { AuthOtpController } from "../controllers/authOtpController";
-import type { AuthRegisterOtpRequest, AuthVerifyRegisterOtpRequest } from "../interfaces/authOtpRegister";
-import type { AuthOtpLoginRequest, AuthOtpVerifyLoginRequest } from "../interfaces/authOtpLogin";
 import { LoginRateLimit } from "../middlewares/rateLimiter";
 
 // route untuk auth user
@@ -12,7 +8,7 @@ export const AuthRoute = new Elysia({ prefix: "/auth" })
     // register user
     .post("/register", async ({ body, set }) => {
         set.status = 201;
-        return AuthController.register(body as AuthUserRegisterRequest);
+        return AuthController.register(body);
     },{
         tags: ["Auth Register new User"],
         summary: "Register a new user",
@@ -26,7 +22,7 @@ export const AuthRoute = new Elysia({ prefix: "/auth" })
     .post("/login", async (ctx) => {
         ctx.set.status = 200;
         await LoginRateLimit(ctx);
-        return AuthController.login(ctx.body as AuthUserLoginRequest);
+        return AuthController.login(ctx.body);
     }, {
         tags: ["Auth Login User"],
         summary: "Login user with email and password",
@@ -42,7 +38,7 @@ export const AuthOtpRoute = new Elysia({ prefix: "/auth/otp" })
     // req otp register
     .post("/register", async ({ body, set }) => {
         set.status = 200;
-        return AuthOtpController.requestOtpRegister(body as AuthRegisterOtpRequest);
+        return AuthOtpController.requestOtpRegister(body);
     }, {
         tags: ["Auth OTP Register"],
         summary: "Register a new user with otp",
@@ -54,7 +50,7 @@ export const AuthOtpRoute = new Elysia({ prefix: "/auth/otp" })
     // verify register otp
     .post("/register/verify", async ({ body, set }) => {
         set.status = 200;
-        return AuthOtpController.verifyRegisterOtp(body as AuthVerifyRegisterOtpRequest);
+        return AuthOtpController.verifyRegisterOtp(body);
     }, {
         tags: ["Auth verify OTP Register"],
         summary: "Verify OTP for registering a new user",
@@ -68,7 +64,7 @@ export const AuthOtpRoute = new Elysia({ prefix: "/auth/otp" })
     // req otp login
     .post("/login", async ({ body, set }) => {
         set.status = 200;
-        return AuthOtpController.requestOtpLogin(body as AuthOtpLoginRequest);
+        return AuthOtpController.requestOtpLogin(body);
     }, {
         tags: ["Auth OTP Login"],
         summary: "Login user with otp",
@@ -80,7 +76,7 @@ export const AuthOtpRoute = new Elysia({ prefix: "/auth/otp" })
     // verify otp login
     .post("/login/verify", async ({ body, set }) => {
         set.status = 200;
-        return AuthOtpController.verifyOtpLogin(body as AuthOtpVerifyLoginRequest);
+        return AuthOtpController.verifyOtpLogin(body);
     }, {
         tags: ["Auth verify OTP Login"],
         summary: "Verify OTP for login user",
