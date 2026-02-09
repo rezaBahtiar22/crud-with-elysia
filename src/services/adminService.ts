@@ -16,7 +16,7 @@ export class AdminUserService {
       skip,
       take: limit,
       orderBy: {
-        created_at: "asc",
+        created_at: "desc",
       },
       select: {
         id: true,
