@@ -14,6 +14,7 @@ import { swagger } from "@elysiajs/swagger";
 startOtpCleanerJob();
 
 const app = new Elysia()
+    .use(ErrorMiddleware)
     .use(
         swagger({
             documentation: {
@@ -46,9 +47,6 @@ const app = new Elysia()
     .use(ForgotPasswordRoute)
     .use(UserRoute)
     .use(AdminRoute)
-
-    // middleware error handler
-    .use(ErrorMiddleware)
 
 
 export default app;
