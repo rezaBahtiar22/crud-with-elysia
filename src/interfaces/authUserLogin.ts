@@ -6,33 +6,44 @@ export interface AuthUserLoginRequest {
     password: string
 };
 
-// interface untuk user login response data
-export interface AuthUserLoginResponseData {
-    token?: string
+// interface untuk login user data
+export interface AuthUserLoginData {
     id: number
     name: string
     email: string
     role: Role
 };
 
+// tokens
+export interface AuthTokens {
+    accessToken: string
+    refreshToken: string
+}
+
 // interface untuk user login response
 export interface AuthUserLoginResponse {
     message: string
-    data: AuthUserLoginResponseData
+    user: AuthUserLoginData
+    tokens: AuthTokens
 };
 
 // fungsi mapper untuk response user login
 export function toAuthUserLoginResponse(
-    user: User, token: string
+    user: User, 
+    accessToken: string,
+    refreshToken: string
 ): AuthUserLoginResponse {
     return {
         message: "User logged in successfully",
-        data: {
-            token,
+        user: {
             id: user.id,
             name: user.name,
             email: user.email,
             role: user.role
+        },
+        tokens: {
+            accessToken,
+            refreshToken
         }
     }
 };

@@ -22,6 +22,7 @@ import * as argon2 from "argon2"
 import { UserValidation } from "../utils/userAuthValidation"
 import { Validation } from "../utils/validation"
 import { logger } from "../utils/logging"
+import crypto from "crypto"
 
 
 export class AuthService {
@@ -101,14 +102,32 @@ export class AuthService {
             );
         }
 
-        // generate tokeen
-        const token = generateToken({
+        // generate token
+        const accessToken = generateToken({
             id: user.id,
             role: user.role
         });
 
+        // refresh token (buat random string sebagai contoh)
+        const refreshToken = crypto.randomBytes(64).toString("hex");
+
+        const hashedRefreshToken = await argon2.hash(refreshToken, {
+            type: argon2.argon2id,
+            hashLength: 64
+        });
+
+        await prisma.refreshToken.create({
+            data: {
+                userId: user.id,
+                tokens: hashedRefreshToken,
+                expiresAt: new Date(
+                    Date.now() + 7 * 24 * 60 * 60 * 1000
+                )
+            }
+        })
+
         // kembalikan response user login
-        return toAuthUserLoginResponse(user, token);
+        return toAuthUserLoginResponse(user, accessToken, refreshToken);
     }
 
     // service untuk update user profile(username dan email)

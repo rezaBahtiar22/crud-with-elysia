@@ -7,6 +7,8 @@ const EXPIRED_IN = "1h"; // token berlaku selama 1 jam
 export interface JwtPayload {
     id: number
     role: string
+    iat?: number
+    exp?: number
 };
 
 // fungsi untuk generate token

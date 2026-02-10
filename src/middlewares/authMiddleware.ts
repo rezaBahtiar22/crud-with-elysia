@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import { ResponseError } from "../utils/responseError";
 import { logger } from "../utils/logging";
 import type { AuthContext } from "../@types/context";
@@ -8,7 +8,7 @@ export function AuthMiddleware(ctx: AuthContext) {
   const authHeader = ctx.request.headers.get("authorization");
 
   // cek jika token tidak ada
-  if (!authHeader?.startsWith("Bearer ")) {
+  if (!authHeader ||!authHeader?.startsWith("Bearer ")) {
     logger.warn("Token not found");
     throw new ResponseError(
       401,
@@ -18,10 +18,10 @@ export function AuthMiddleware(ctx: AuthContext) {
   }
 
   // parsing token
-  const token = authHeader.split(" ")[1];
+  const accessToken = authHeader.split(" ")[1];
 
   // cek jika token tidak valid
-  if (!token) {
+  if (!accessToken) {
     throw new ResponseError(
       401,
       "INVALID_TOKEN",
@@ -30,21 +30,42 @@ export function AuthMiddleware(ctx: AuthContext) {
   }
 
   try {
+    // verifikasi token
     const payload = jwt.verify(
-      token,
+      accessToken,
       process.env.JWT_SECRET!
-    ) as {
-      id: number;
-      role: string;
+    ) as JwtPayload;
+
+    // simpan data user ke context
+    ctx.user = {
+      id: payload.id,
+      role: payload.role,
     };
 
-    ctx.user = payload;
-    ctx.token = token;
-  } catch {
+    ctx.accessToken = accessToken;
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      logger.warn("Token has expired");
+      throw new ResponseError(
+        401,
+        "TOKEN_EXPIRED",
+        "Token has expired"
+      );
+    }
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      logger.warn("Invalid token");
+      throw new ResponseError(
+        401,
+        "INVALID_TOKEN",
+        "Invalid token"
+      );
+    }
+
     throw new ResponseError(
       401,
-      "INVALID_TOKEN",
-      "Invalid or expired token"
+      "AUTHENTICATION_FAILED",
+      "Authentication failed"
     );
   }
 }
