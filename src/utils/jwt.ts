@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET ? process.env.JWT_SECRET : "NanaErzaaJFNC128736SHAU@#$%!hd&%d";
-const EXPIRED_IN = "1d";
+const EXPIRED_IN = "1h"; // token berlaku selama 1 jam
 
 // interface untuk payload JWT
 export interface JwtPayload {

@@ -23,7 +23,8 @@ model User {
   created_at   DateTime     @default(now())
   updated_at   DateTime     @updatedAt
 
-  otps  EmailOTP[]
+  otps            EmailOTP[]
+  refreshTokens   RefreshToken[]
 }
 
 model EmailOTP {
@@ -35,12 +36,30 @@ model EmailOTP {
   expiresAt     DateTime
   used          Boolean      @default(false)
   attempts      Int          @default(0)
-  blockedUntil DateTime?
+  blockedUntil  DateTime?
   created_at    DateTime     @default(now())
 
   user  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([email])
+}
+
+model RefreshToken {
+  id            Int          @id @default(autoincrement())
+  userId        Int
+  tokens        String       @unique
+  device        String?
+  ipAddress     String?
+  userAgent     String?
+  expiresAt     DateTime
+  revoked       Boolean      @default(false)
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokens])
 }
 
 enum Role {
