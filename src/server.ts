@@ -5,6 +5,7 @@ import { AuthRoute } from "./routes/authRoute";
 import { AuthOtpRoute } from "./routes/authRoute";
 import { UserRoute } from "./routes/userRoute";
 import { AdminRoute } from "./routes/adminRoute";
+import { RefreshTokenRoute } from "./routes/refreshTokenRoute"
 import { ForgotPasswordRoute } from "./routes/forgotPasswordRoute.ts";
 import { ErrorMiddleware } from "./middlewares/errorMiddleware";
 import { startOtpCleanerJob } from "./helper/otpCleanerJob";
@@ -43,6 +44,7 @@ const app = new Elysia()
 
     // routes
     .use(AuthRoute)
+    .use(RefreshTokenRoute)
     .use(AuthOtpRoute)
     .use(ForgotPasswordRoute)
     .use(UserRoute)
