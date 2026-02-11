@@ -38,10 +38,9 @@ export class AuthController {
 
     // controller untuk logout user
     static async logout(
-        user: { id: number },
-        token: string
+        body: { refreshToken: string }
     ) {
-        return AuthService.logout(user, token);
+        return AuthService.logout(body.refreshToken);
     }
 
     // controller untuk get me

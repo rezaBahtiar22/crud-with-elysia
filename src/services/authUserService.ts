@@ -111,10 +111,10 @@ export class AuthService {
         // refresh token (buat random string sebagai contoh)
         const refreshToken = crypto.randomBytes(64).toString("hex");
 
-        const hashedRefreshToken = await argon2.hash(refreshToken, {
-            type: argon2.argon2id,
-            hashLength: 64
-        });
+        const hashedRefreshToken = crypto
+            .createHash("sha256")
+            .update(refreshToken)
+            .digest("hex");
 
         await prisma.refreshToken.create({
             data: {
@@ -280,18 +280,41 @@ export class AuthService {
 
     // service untuk logout user
     static async logout(
-        user: { id: number },
-        token: string
-    ): Promise<AuthUserLogout> {
-        // cek jika user tidak ditemukan
-        if (!user || !token) {
-            logger.warn("Logout failed: Unauthenticated request");
+        refreshToken: string
+    ) {
+        // cek jika refresh token ada
+        if (!refreshToken) {
+            logger.warn("Logout failed: Refresh token not provided");
             throw new ResponseError(
                 401,
-                "Unauthorized",
+                "Refresh_Token_Required",
                 "Authentication is required"
             );
         }
+
+        // hash refresh token yang diterima
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(refreshToken)
+            .digest("hex");
+
+        // cari token di database
+        const existingToken = await prisma.refreshToken.findUnique({
+            where: {  tokens: hashedToken }
+        });
+
+        if (!existingToken) {
+            logger.warn("Logout failed: Invalid refresh token");
+            throw new ResponseError(
+                401,
+                "Invalid_Refresh_Token",
+                "Refresh token is invalid"
+            );
+        }
+
+        await prisma.refreshToken.delete({
+            where: { tokens: hashedToken }
+        });
 
         return toAuthUserLogoutResponse();
     }
