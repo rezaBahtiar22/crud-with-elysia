@@ -6,6 +6,7 @@ import { ResponseError } from "../utils/responseError"
 import { generateToken } from "../utils/jwt"
 import { sendOTPEmail } from "../utils/mailer"
 import { otpRateLimit } from "../middlewares/otpRateLimiter"
+import crypto from "crypto"
 
 import type { 
     AuthOtpLoginRequest, 
@@ -178,11 +179,37 @@ export class AuthOtpService {
         }
 
         // buat token jwt
-        const token = generateToken({ id: user.id, role: user.role });
+        const accessToken = generateToken({
+            id: user.id,
+            role: user.role
+        });
+
+        const refreshToken = crypto.randomBytes(64).toString("hex");
+
+        const hashedRefreshToken = crypto
+            .createHash("sha256")
+            .update(refreshToken)
+            .digest("hex");
+
+        await prisma.refreshToken.deleteMany({
+            where: { userId: user.id }
+        });
+
+        // simpan refresh token baru
+        await prisma.refreshToken.create({
+            data: {
+                userId: user.id,
+                tokens: hashedRefreshToken,
+                expiresAt: new Date(
+                    Date.now() + 7 * 24 * 60 * 60 * 1000
+                )
+            }
+        })
 
         return {
             message: "Login Success",
-            token
+            accessToken,
+            refreshToken
         };
     }
 

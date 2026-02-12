@@ -13,5 +13,6 @@ export interface AuthOtpLoginResponse {
 
 export interface AuthOtpVerifyLoginResponse {
     message: string;
-    token: string;
+    accessToken: string;
+    refreshToken: string;
 };
