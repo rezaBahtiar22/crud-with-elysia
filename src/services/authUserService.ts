@@ -3,7 +3,6 @@ import type { AuthUserRegisterRequest, AuthUserRegisterResponse } from "../inter
 import type { AuthUserLoginRequest, AuthUserLoginResponse } from "../interfaces/authUserLogin"
 import { toAuthUserLoginResponse } from "../interfaces/authUserLogin"
 
-import type { AuthUserLogout } from "../interfaces/AuthUserLogout"
 import { toAuthUserLogoutResponse } from "../interfaces/AuthUserLogout"
 
 import type { AuthUserUpdateRequest, AuthUserUpdateResponse } from "../interfaces/authUserUpdateProfile"
@@ -62,6 +61,7 @@ export class AuthService {
             }
         });
 
+        // buat token
         const { accessToken, refreshToken } = 
             await issueAuthTokens(user);
 
@@ -116,28 +116,8 @@ export class AuthService {
         }
 
         // generate token
-        const accessToken = generateToken({
-            id: user.id,
-            role: user.role
-        });
-
-        // refresh token (buat random string sebagai contoh)
-        const refreshToken = crypto.randomBytes(64).toString("hex");
-
-        const hashedRefreshToken = crypto
-            .createHash("sha256")
-            .update(refreshToken)
-            .digest("hex");
-
-        await prisma.refreshToken.create({
-            data: {
-                userId: user.id,
-                tokens: hashedRefreshToken,
-                expiresAt: new Date(
-                    Date.now() + 7 * 24 * 60 * 60 * 1000
-                )
-            }
-        })
+        const { accessToken, refreshToken } = 
+            await issueAuthTokens(user);
 
         // kembalikan response user login
         return toAuthUserLoginResponse(user, accessToken, refreshToken);

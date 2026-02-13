@@ -180,32 +180,8 @@ export class AuthOtpService {
         }
 
         // buat token jwt
-        const accessToken = generateToken({
-            id: user.id,
-            role: user.role
-        });
-
-        const refreshToken = crypto.randomBytes(64).toString("hex");
-
-        const hashedRefreshToken = crypto
-            .createHash("sha256")
-            .update(refreshToken)
-            .digest("hex");
-
-        await prisma.refreshToken.deleteMany({
-            where: { userId: user.id }
-        });
-
-        // simpan refresh token baru
-        await prisma.refreshToken.create({
-            data: {
-                userId: user.id,
-                tokens: hashedRefreshToken,
-                expiresAt: new Date(
-                    Date.now() + 7 * 24 * 60 * 60 * 1000
-                )
-            }
-        })
+        const { accessToken, refreshToken } = 
+            await issueAuthTokens(user);
 
         return {
             message: "Login Success",
