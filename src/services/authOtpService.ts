@@ -6,6 +6,7 @@ import { ResponseError } from "../utils/responseError"
 import { generateToken } from "../utils/jwt"
 import { sendOTPEmail } from "../utils/mailer"
 import { otpRateLimit } from "../middlewares/otpRateLimiter"
+import { issueAuthTokens } from "../utils/authToken"
 import crypto from "crypto"
 
 import type { 
@@ -293,6 +294,24 @@ export class AuthOtpService {
             );
         }
 
+        // jika otp sudah kadaluar
+        if (otp.expiresAt < new Date()) {
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "OTP has expired"
+            );
+        }
+
+        // jika kode otp tidak sama
+        if (otp.code !== data.code) {
+            throw new ResponseError(
+                400,
+                "Bad_Request",
+                "Invalid OTP"
+            );
+        }
+
         // buat user tanpa password
         const newUser = await prisma.user.create({
             data: {
@@ -309,12 +328,19 @@ export class AuthOtpService {
             data: { used: true }
         });
 
-        // langsung login
-        const token = generateToken({ id: newUser.id, role: newUser.role });
+        const { accessToken, refreshToken } = 
+            await issueAuthTokens(newUser);
 
         return {
             message: "Register Success",
-            token
+            accessToken,
+            refreshToken,
+            user: {
+                id: newUser.id,
+                name: newUser.name,
+                email: newUser.email,
+                role: newUser.role
+            }
         }
     }
 

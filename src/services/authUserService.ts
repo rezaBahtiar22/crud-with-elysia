@@ -1,5 +1,4 @@
 import type { AuthUserRegisterRequest, AuthUserRegisterResponse } from "../interfaces/authUserRegister"
-import { toAuthUserRegisterResponse } from "../interfaces/authUserRegister"
 
 import type { AuthUserLoginRequest, AuthUserLoginResponse } from "../interfaces/authUserLogin"
 import { toAuthUserLoginResponse } from "../interfaces/authUserLogin"
@@ -23,6 +22,7 @@ import { UserValidation } from "../utils/userAuthValidation"
 import { Validation } from "../utils/validation"
 import { logger } from "../utils/logging"
 import crypto from "crypto"
+import { issueAuthTokens } from "../utils/authToken"
 
 
 export class AuthService {
@@ -62,8 +62,21 @@ export class AuthService {
             }
         });
 
+        const { accessToken, refreshToken } = 
+            await issueAuthTokens(user);
+
         // kembalikan response user register
-        return toAuthUserRegisterResponse(user);
+        return {
+            message: "User registered successfully",
+            accessToken,
+            refreshToken,
+            data: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        }
     }
 
     // service untuk login user

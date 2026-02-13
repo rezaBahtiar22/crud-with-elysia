@@ -21,7 +21,7 @@ export async function issueAuthTokens(user: User) {
             userId: user.id,
             tokens: hashedRefreshToken,
             expiresAt: new Date(
-                Date.now() + 30 * 24 * 60 * 60 * 1000
+                Date.now() + 7 * 24 * 60 * 60 * 1000
             )
         }
     });

@@ -18,20 +18,7 @@ export interface AuthUserResponseData {
 // interface untuk user register response DTO
 export interface AuthUserRegisterResponse {
     message: string
+    accessToken: string
+    refreshToken: string
     data: AuthUserResponseData
-}
-
-// fungsi mapper untuk response user register
-export function toAuthUserRegisterResponse(
-    user: User
-): AuthUserRegisterResponse {
-    return {
-        message: "User registered successfully",
-        data: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role
-        }
-    };
 }

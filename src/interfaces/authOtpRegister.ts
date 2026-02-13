@@ -14,5 +14,12 @@ export interface AuthOtpRegisterResponse {
 
 export interface AuthOtpVerifyRegisterResponse {
     message: string;
-    token: string;
+    accessToken: string;
+    refreshToken: string
+    user: {
+        id: number;
+        name: string;
+        email: string;
+        role: string
+    }
 };
