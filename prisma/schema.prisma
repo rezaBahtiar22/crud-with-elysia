@@ -20,6 +20,9 @@ model User {
   password     String
   role         Role         @default(USER)
   tokens       String?
+
+  deletedAt    DateTime?
+
   created_at   DateTime     @default(now())
   updated_at   DateTime     @updatedAt
 

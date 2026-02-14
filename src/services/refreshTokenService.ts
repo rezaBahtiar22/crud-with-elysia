@@ -4,6 +4,7 @@ import { ResponseError } from "../utils/responseError"
 import crypto from "crypto"
 import { toAuthRefreshTokenResponse } from "../interfaces/refreshTokens"
 import { generateToken } from "../utils/jwt"
+import { issueAuthTokens } from "../utils/authToken"
 
 export class RefreshTokenService {
 
@@ -39,16 +40,34 @@ export class RefreshTokenService {
             );
         }
 
+        const user = existingToken.user;
+
         // cek jika token sudah expired
+        if (user.deletedAt) {
+
+            // 
+            await prisma.refreshToken.deleteMany({
+                where: { userId: user.id }
+            });
+
+            throw new ResponseError(
+                401,
+                "Unauthorized",
+                "User account is deactivated"
+            );
+        }
+
+        // cek expire
         if (existingToken.expiresAt < new Date()) {
+
             await prisma.refreshToken.delete({
                 where: { id: existingToken.id }
             });
 
             throw new ResponseError(
                 403,
-                "Expired_Refresh_Token",
-                "The provided refresh token has expired"
+                "Expred_Refresh_Token",
+                "The provided refresh token is expired"
             );
         }
 
@@ -64,23 +83,11 @@ export class RefreshTokenService {
         });
 
         // buat refresh token baru
-        const newRefreshToken = crypto.randomBytes(64).toString("hex");
+        const tokens = await issueAuthTokens(user);
 
-        const hashedNewRefreshToken = crypto
-            .createHash("sha256")
-            .update(newRefreshToken)
-            .digest("hex");
-
-        await prisma.refreshToken.create({
-            data: {
-                userId: existingToken.user.id,
-                tokens: hashedNewRefreshToken,
-                expiresAt: new Date(
-                    Date.now() + 7 * 24 * 60 * 60 * 1000
-                )
-            }
-        });
-
-        return toAuthRefreshTokenResponse(newAccessToken, newRefreshToken)
+        return toAuthRefreshTokenResponse(
+            tokens.accessToken,
+            tokens.refreshToken
+        )
     }
 }

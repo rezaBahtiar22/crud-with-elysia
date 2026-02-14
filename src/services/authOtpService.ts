@@ -166,8 +166,11 @@ export class AuthOtpService {
         });
 
         // ambil user
-        const user = await prisma.user.findUnique({
-            where: { id: otp.userId ?? undefined }
+        const user = await prisma.user.findFirst({
+            where: { 
+                id: otp.userId!,
+                deletedAt: null
+            }
         });
 
         // cek jika user tidak ditemukan

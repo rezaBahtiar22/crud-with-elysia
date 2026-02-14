@@ -1,5 +1,6 @@
 import { AdminUserService } from "../services/adminService";
 import { ResponseError } from "../utils/responseError";
+import type { AuthContext } from "../@types/context";
 
 export class AdminUserController {
   static async getUsers({ query }: any) {
@@ -18,5 +19,12 @@ export class AdminUserController {
       page,
       limit,
     });
+  }
+
+  static async deleteUser(
+    { params, user }: AuthContext
+  ) {
+    const id = Number(params.id);
+    return AdminUserService.deleteUser(user, id);
   }
 }

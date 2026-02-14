@@ -22,3 +22,20 @@ export const AdminRoute = new Elysia({ prefix: "/admin" })
             limit: t.Optional(t.Number())
         })
     })
+
+    .delete("/users/:id", AdminUserController.deleteUser, {
+        beforeHandle: [
+            AuthMiddleware,
+            RoleMiddleware(["ADMIN"])
+        ],
+
+        detail: {
+            tags: ["Admin Delete User"],
+            summary: "Delete user (Admin only)",
+            security: [{ bearerAuth: [] }]
+        },
+
+        params: t.Object({
+            id: t.Number()
+        })
+    })

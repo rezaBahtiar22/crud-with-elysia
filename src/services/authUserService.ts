@@ -87,8 +87,11 @@ export class AuthService {
         const loginUser = Validation.validate<AuthUserLoginRequest>(UserValidation.login, request);
 
         // cari user bedasarkan email
-        const user = await prisma.user.findUnique({
-            where: {email: loginUser.email}
+        const user = await prisma.user.findFirst({
+            where: {
+                email: loginUser.email,
+                deletedAt: null
+            }
         });
 
         // cek jika user tidak ditemukan
