@@ -18,7 +18,6 @@ describe("POST /user/logout", () => {
 
     it("should logout user success", async () => {
         const result = await AuthService.logout(
-            { id: 1 },
             "fake token"
         );
 
@@ -28,7 +27,6 @@ describe("POST /user/logout", () => {
     it("should throw error and log warning if user is missing", async () => {
         await expect(
             AuthService.logout(
-                null as any,
                 "fake token"
             )
         ).rejects.toThrow("Authentication is required");
@@ -41,7 +39,6 @@ describe("POST /user/logout", () => {
     it("should throw error and log warning if token is missing", async () => {
         await expect(
             AuthService.logout(
-                {  id: 1 },
                 null as any
             )
         ).rejects.toThrow("Authentication is required");

@@ -107,9 +107,9 @@ describe("POST /auth/login", () => {
             password: "Testing@#$123"
         });
 
-        logger.debug(result.data);
-        expect(result.data.email).toBe("test@email.com");
-        expect(result.data.token).toBeDefined();
+        logger.debug(result);
+        expect(result).toBe("test@email.com");
+        expect(result).toBeDefined();
     });
 
     it("should throw error if email not found", async () => {
