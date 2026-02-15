@@ -12,6 +12,8 @@
   },
   "scripts": {
     "dev": "bun run --watch src/server.ts",
+    "start": "bun run src/server.ts",
+    "build": "tsc",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "seed:admin": "bun run src/database/seeds/SeedAdmin.ts"
