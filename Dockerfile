@@ -1,22 +1,24 @@
-# Gunakan Bun official image
-FROM oven/bun:1.1-alpine
+# Gunakan Node yang compatible dengan Prisma
+FROM node:20.19-alpine
+
+# Install Bun
+RUN npm install -g bun
 
 WORKDIR /app
 
-# Copy dependency files dulu
+# Copy dependency files
 COPY package.json bun.lock ./
 
-# Install dependency
+# Install dependency via Bun
 RUN bun install --frozen-lockfile
 
-# Copy semua file project
+# Copy seluruh project
 COPY . .
 
 # Generate Prisma client
 RUN bunx prisma generate
 
-# Expose port (ganti kalau server yang digunakan bukan 3000)
 EXPOSE 3000
 
-# Jalankan migration + start server
+# Run migration + start
 CMD ["sh", "-c", "bunx prisma migrate deploy && bun run start"]
