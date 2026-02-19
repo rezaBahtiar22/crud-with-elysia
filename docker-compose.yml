@@ -16,7 +16,7 @@ services:
 
   backend:
     build: .
-    container_name: elysia-backend
+    container_name: crud-with-elysia
     restart: always
     depends_on:
       - postgres
