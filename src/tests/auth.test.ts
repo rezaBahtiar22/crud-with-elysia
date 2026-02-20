@@ -42,7 +42,8 @@ describe("POST /auth/register", () => {
             role: "USER",
             created_at: new Date(),
             updated_at: new Date(),
-            tokens: null
+            tokens: null,
+            deletedAt: null
         });
 
         mockedArgon2.hash.mockResolvedValueOnce("hashed");
@@ -66,7 +67,8 @@ describe("POST /auth/register", () => {
             role: "USER",
             created_at: new Date(),
             updated_at: new Date(),
-            tokens: null
+            tokens: null,
+            deletedAt: null
         });
 
         await expect(
@@ -97,7 +99,8 @@ describe("POST /auth/login", () => {
             role: "USER",
             created_at: new Date(),
             updated_at: new Date(),
-            tokens: null
+            tokens: null,
+            deletedAt: null
         });
 
         mockedArgon2.verify.mockResolvedValueOnce(true);
@@ -136,7 +139,8 @@ describe("POST /auth/login", () => {
             role: "USER",
             created_at: new Date(),
             updated_at: new Date(),
-            tokens: null
+            tokens: null,
+            deletedAt: null
         });
 
         mockedArgon2.verify.mockResolvedValueOnce(false);
