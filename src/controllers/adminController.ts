@@ -27,4 +27,18 @@ export class AdminUserController {
     const id = Number(params.id);
     return AdminUserService.deleteUser(user, id);
   }
+
+  static async getUserById(ctx: AuthContext) {
+    const id = Number(ctx.params.id);
+
+    if (isNaN(id)) {
+      throw new ResponseError(
+        400,
+        "Bad Request",
+        "id harus angka"
+      );
+    }
+
+    return AdminUserService.getUserById(id);
+  }
 }
