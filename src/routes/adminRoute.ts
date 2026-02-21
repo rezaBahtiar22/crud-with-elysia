@@ -39,3 +39,20 @@ export const AdminRoute = new Elysia({ prefix: "/admin" })
             id: t.Number()
         })
     })
+
+    .get("/user/:id", AdminUserController.getUserById, {
+        beforeHandle: [
+            AuthMiddleware,
+            RoleMiddleware(["ADMIN"])
+        ],
+
+        detail: {
+            tags: ["Admin Get User By Id"],
+            summary: "Get user by id (Admin only)",
+            security: [{ bearerAuth: [] }]
+        },
+
+        params: t.Object({
+            id: t.Number()
+        })
+    })
