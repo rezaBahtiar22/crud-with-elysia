@@ -41,6 +41,9 @@ const app = new Elysia()
         credentials: true
     }))
     .get("/", () => "Hello Jogja!")
+    .get("/health", () => ({
+        status: "OK"
+    }))
 
     // routes
     .use(AuthRoute)
