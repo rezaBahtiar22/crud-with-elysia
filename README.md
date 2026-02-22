@@ -90,17 +90,57 @@ bun run index.ts
 ---
 
 ## Environment Variables
-NODE_ENV=production
-DATABASE_URL=postgresql://postgres:postgres@postgres:5432/db_crud_with_elysia
-JWT_SECRET=your_secret
-RESEND_API_KEY=your_key
-MAIL_FROM=your_email
-
-## Lainnya
-- Semua endpoint CRUD dan autentikasi menggunakan Elysia.
-- Prisma digunakan untuk menghubungkan aplikasi ke database PostgreSQL.
-- JWT digunakan untuk mengamankan endpoint yang membutuhkan autentikasi.
-- Proyek ini masih sangat dasar dan hanya untuk latihan.
+- NODE_ENV=production
+- DATABASE_URL=postgresql://postgres:postgres@postgres:5432/db_crud_with_elysia
+- JWT_SECRET=your_secret
+- RESEND_API_KEY=your_key
+- MAIL_FROM=your_email
 
 ---
+
+## Endpoint List
+
+## Public
+- POST /auth/register
+- POST /auth/login
+- POST /auth/refresh-access-token
+- POST /auth/forgot-password
+- POST /auth/otp/register
+- POST /auth/otp/verify
+- GET /
+- GET /health
+
+## User (Auth Required)
+- GET /user/profile
+- PUT /user/profile
+- PUT /user/password
+- POST /user/logout
+
+## Admin (ADMIN Only)
+- GET /admin/users
+- GET /admin/user/:id
+- DELETE /admin/user/:id
+
+---
+
+## Docker Service
+**docker-compose.yml** menjalankan:
+- Backend (Bun + Elysia)
+- PostgresSQL
+- Volume persistent database
+
+---
+
+## Project Status
+- Authentication (JWT + Refresh Token)
+- OTP Flow
+- Role-based Access
+- Admin Management
+- Dockerized
+- Swagger Documentation
+- Health Check
+
+---
+
+
 Proyek dibuat dengan `bun init` pada Bun v1.2.16. [Bun](https://bun.sh) adalah runtime JavaScript/TypeScript yang cepat dan modern.
