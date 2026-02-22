@@ -42,10 +42,10 @@ export class RefreshTokenService {
 
         const user = existingToken.user;
 
-        // cek jika token sudah expired
+        // cek user terhapus atau tidak aktif
         if (user.deletedAt) {
 
-            // 
+            // hapus semua refresh token
             await prisma.refreshToken.deleteMany({
                 where: { userId: user.id }
             });
@@ -59,7 +59,6 @@ export class RefreshTokenService {
 
         // cek expire
         if (existingToken.expiresAt < new Date()) {
-
             await prisma.refreshToken.delete({
                 where: { id: existingToken.id }
             });
@@ -74,12 +73,6 @@ export class RefreshTokenService {
         // rotasi token: hapus token lama dan buat token baru
         await prisma.refreshToken.delete({
             where: { id: existingToken.id }
-        });
-
-        // buat access token baru
-        const newAccessToken = generateToken({
-            id: existingToken.user.id,
-            role: existingToken.user.role
         });
 
         // buat refresh token baru
