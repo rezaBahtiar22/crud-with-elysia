@@ -1,0 +1,41 @@
+{
+  "name": "crud-with-elysia",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/jsonwebtoken": "^9.0.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "build": "tsc",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "seed:admin": "bun run src/database/seeds/SeedAdmin.ts"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^1.4.1",
+    "@elysiajs/jwt": "^1.4.0",
+    "@elysiajs/swagger": "^1.3.1",
+    "@prisma/adapter-pg": "^7.2.0",
+    "@prisma/client": "^7.2.0",
+    "@types/nodemailer": "^7.0.5",
+    "argon2": "^0.44.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.3",
+    "elysia": "^1.4.21",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^7.0.12",
+    "prisma": "^7.2.0",
+    "rate-limiter-flexible": "^9.0.1",
+    "resend": "^6.8.0",
+    "vitest": "^4.0.16",
+    "winston": "^3.19.0",
+    "zod": "^4.3.5"
+  }
+}
