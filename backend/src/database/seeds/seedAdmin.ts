@@ -1,4 +1,4 @@
-import { Role } from "../../../backend/generated/prisma/enums";
+import { Role } from "../../../generated/prisma/enums";
 import { prisma } from "../../database/prisma"
 import * as argon2 from "argon2"
 
