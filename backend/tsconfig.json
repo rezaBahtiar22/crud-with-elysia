@@ -26,6 +26,7 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
 
+    "types": ["bun"],
     "typeRoots": ["src/@types", "node_modules/@types"]
   },
   "include": ["src"]

@@ -7,13 +7,13 @@ RUN npm install -g bun
 WORKDIR /app
 
 # Copy dependency files
-COPY package.json bun.lock ./
+COPY backend/package.json backend/bun.lock ./
 
 # Install dependency via Bun
 RUN bun install --frozen-lockfile
 
 # Copy seluruh project
-COPY . .
+COPY backend .
 
 # Generate Prisma client
 RUN bunx prisma generate

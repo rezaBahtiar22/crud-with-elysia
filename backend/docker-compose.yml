@@ -23,7 +23,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env.docker
+      - backend/.env.docker
     command: sh -c "bunx prisma migrate deploy && bun run start"
 
 volumes:
