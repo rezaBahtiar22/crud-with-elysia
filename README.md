@@ -142,5 +142,9 @@ bun run index.ts
 
 ---
 
+## Lainnya
+1. **Rencana kedepannya mungkin untuk membuat bagian frontend:**
+- **Form login**
+- **Dashboard sederhana**
 
 Proyek dibuat dengan `bun init` pada Bun v1.2.16. [Bun](https://bun.sh) adalah runtime JavaScript/TypeScript yang cepat dan modern.
