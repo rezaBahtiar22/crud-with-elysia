@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: .
+    build: ./backend
     container_name: crud-with-elysia
     restart: always
     depends_on:
@@ -21,7 +21,8 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - .env.docker
+      - ./backend/.env.docker
+    working_dir: /app
     command: sh -c "bunx prisma migrate deploy && bun run start"
 
 volumes:
