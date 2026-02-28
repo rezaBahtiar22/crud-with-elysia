@@ -154,7 +154,7 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
     showError('siPassErr', 'Kata sandi tidak boleh kosong.');
     markInput('siPassword', true);
     valid = false;
-  } else if (password.length < 6) {
+  } else if (password.length < 8) {
     showError('siPassErr', 'Kata sandi minimal 6 karakter.');
     markInput('siPassword', true);
     valid = false;
@@ -166,8 +166,40 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
   await delay(1800);
   setLoading('btnSignIn', 'siSpinner', false);
 
+  try {
+    // kirim request ke backend
+    const response = await fetch("http://localhost:3000/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    })
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      // login gagal dari backend
+      showError("siPassErr", data.message ?? "Email atau password salah")
+      markInput("siEmail", true)
+      markInput("siPassword", true)
+      setLoading("btnSignIn", "siSpinner", false)
+      return 
+    }
+
+    // simpan kedua token & data user
+    localStorage.setItem("accessToken", data.accessToken)
+    localStorage.setItem("refreshToken", data.refreshToken)
+    localStorage.setItem("user", JSON.stringify(data.user))
+
+    // redirect ke dashboard
+    window.location.href = "../dashboard/index.html"
+  } catch (err) {
+    // login gagal dari frontend
+    showError("siPassErr", "Tidak dapat terhubung ke server")
+    setLoading("btnSignIn", "siSpinner", false)
+  }
+
   // TODO: ganti dengan redirect ke dashboard
-  alert(`Berhasil masuk sebagai: ${email}`);
+  // alert(`Berhasil masuk sebagai: ${email}`);
 });
 
 
