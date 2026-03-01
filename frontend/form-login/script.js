@@ -197,9 +197,6 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
     showError("siPassErr", "Tidak dapat terhubung ke server")
     setLoading("btnSignIn", "siSpinner", false)
   }
-
-  // TODO: ganti dengan redirect ke dashboard
-  // alert(`Berhasil masuk sebagai: ${email}`);
 });
 
 
@@ -207,11 +204,12 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
 document.getElementById('formSignUp').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const nama     = document.getElementById('suNama').value.trim();
-  const email    = document.getElementById('suEmail').value.trim();
-  const password = document.getElementById('suPassword').value;
-  const confirm  = document.getElementById('suConfirm').value;
-  const terms    = document.getElementById('suTerms').checked;
+  const nama      = document.getElementById('suNama').value.trim();
+  const lastName  = document.getElementById('suLastname').value.trim();
+  const email     = document.getElementById('suEmail').value.trim();
+  const password  = document.getElementById('suPassword').value;
+  const confirm   = document.getElementById('suConfirm').value;
+  const terms     = document.getElementById('suTerms').checked;
 
   clearErrors('suNamaErr', 'suEmailErr', 'suPassErr', 'suConfirmErr', 'suTermsErr');
   ['suNama', 'suEmail', 'suPassword', 'suConfirm'].forEach(id => markInput(id, false));
@@ -262,9 +260,42 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
   if (!valid) return;
 
   setLoading('btnSignUp', 'suSpinner', true);
-  await delay(2000);
-  setLoading('btnSignUp', 'suSpinner', false);
 
-  // TODO: ganti dengan redirect ke dashboard
-  alert(`Akun berhasil dibuat untuk: ${email}`);
+  try {
+    const fullName = lastName ? `${nama} ${lastName}` : nama;
+
+    const response = await fetch('http://localhost:3000/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: fullName,
+        email,
+        password
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      // registrasi gagal dari backend
+      showError('suEmailErr', data.message ?? 'Registrasi gagal, coba lagi.');
+      markInput('suEmail', true);
+      setLoading('btnSignUp', 'suSpinner', false);
+      return;
+    }
+
+    // REGISTRASI BERHASIL → SIMPAN TOKEN → AUTO LOGIN
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    localStorage.setItem('user', JSON.stringify(data.data));
+
+    setLoading('btnSignUp', 'suSpinner', false);
+
+    // langsung masuk ke dashboard
+    window.location.href = '../dashboard/index.html';
+
+  } catch (err) {
+    showError('suEmailErr', 'Tidak dapat terhubung ke server.');
+    setLoading('btnSignUp', 'suSpinner', false);
+  }
 });
