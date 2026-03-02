@@ -14,15 +14,83 @@
 //   TAMPILKAN DATA USER
 // ══════════════════════════════
 const userData = JSON.parse(localStorage.getItem('user') ?? '{}');
-if (userData.name) {
+
+function getRoleLabel(role) {
+  const map = {
+    admin: 'Administrator', ADMIN: 'Administrator',
+    user:  'User',          USER:  'User',
+  };
+  return map[role] ?? role ?? '—';
+}
+
+if (userData) {
+  const name     = userData.name  ?? '—';
+  const email    = userData.email ?? '—';
+  const role     = getRoleLabel(userData.role);
+  const initials = name !== '—'
+    ? name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
+    : '?';
+
   const nameEl   = document.querySelector('.user-name');
   const avatarEl = document.querySelector('.avatar');
-  const roleEl = document.querySelector('.user-role');
+  const roleEl   = document.querySelector('.user-role');
+  if (nameEl)   nameEl.textContent   = name;
+  if (avatarEl) avatarEl.textContent = initials;
+  if (roleEl)   roleEl.textContent   = role;
 
-  if (nameEl)   nameEl.textContent   = userData.name;
-  if (avatarEl) avatarEl.textContent = userData.name.slice(0, 2).toUpperCase();
-  if (roleEl) roleEl.textContent = userData.role ?? "User";
+  const ddAvatar = document.getElementById('dropdownAvatar');
+  const ddName   = document.getElementById('dropdownName');
+  const ddEmail  = document.getElementById('dropdownEmail');
+  const ddRole   = document.getElementById('dropdownRole');
+  if (ddAvatar) ddAvatar.textContent = initials;
+  if (ddName)   ddName.textContent   = name;
+  if (ddEmail)  ddEmail.textContent  = email;
+  if (ddRole)   ddRole.textContent   = role;
 }
+
+
+// ══════════════════════════════
+//   USER DROPDOWN TOGGLE
+// ══════════════════════════════
+const userCard     = document.getElementById('userCard');
+const userDropdown = document.getElementById('userDropdown');
+
+userCard.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const isOpen = userCard.classList.contains('open');
+  isOpen ? closeDropdown() : openDropdown();
+});
+
+document.addEventListener('click', () => closeDropdown());
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeDropdown();
+});
+
+function openDropdown() {
+  userCard.classList.add('open');
+  userDropdown.classList.add('open');
+}
+
+function closeDropdown() {
+  userCard.classList.remove('open');
+  userDropdown.classList.remove('open');
+}
+
+document.getElementById('ddViewProfile').addEventListener('click', (e) => {
+  e.stopPropagation();
+  window.location.href = '../dashboard/profile.html';
+});
+
+document.getElementById('ddEditProfile').addEventListener('click', (e) => {
+  e.stopPropagation();
+  window.location.href = '../dashboard/profile.html';
+});
+
+document.getElementById('ddSettings').addEventListener('click', (e) => {
+  e.stopPropagation();
+  alert('Pengaturan segera hadir!');
+});
 
 
 // ══════════════════════════════
@@ -83,7 +151,6 @@ async function tryRefreshToken() {
     }
 
     return false;
-
   } catch (err) {
     return false;
   }
@@ -108,6 +175,7 @@ const sidebarToggle = document.getElementById('sidebarToggle');
 
 sidebarToggle.addEventListener('click', () => {
   document.body.classList.toggle('collapsed');
+  closeDropdown();
 });
 
 
@@ -134,6 +202,7 @@ navItems.forEach(item => {
   item.addEventListener('click', () => {
     navItems.forEach(i => i.classList.remove('active'));
     item.classList.add('active');
+    closeDropdown();
   });
 });
 
@@ -147,6 +216,7 @@ const logoutCancel  = document.getElementById('logoutCancel');
 const logoutConfirm = document.getElementById('logoutConfirm');
 
 logoutBtn.addEventListener('click', () => {
+  closeDropdown();
   logoutOverlay.classList.add('active');
 });
 
@@ -168,7 +238,6 @@ logoutConfirm.addEventListener('click', () => {
   logoutConfirm.textContent = 'Keluar...';
   logoutConfirm.disabled = true;
 
-  // ── HAPUS KEDUA TOKEN ──
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
   localStorage.removeItem('user');
