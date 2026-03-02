@@ -79,7 +79,7 @@ function closeDropdown() {
 
 document.getElementById('ddViewProfile').addEventListener('click', (e) => {
   e.stopPropagation();
-  window.location.href = '../dashboard/profile.html';
+  window.location.href = '../profile/index.html';
 });
 
 document.getElementById('ddEditProfile').addEventListener('click', (e) => {
