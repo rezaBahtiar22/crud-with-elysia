@@ -13,6 +13,8 @@ export interface AuthUserResponseData {
         name: string
         email: string
         role: Role
+        created_at: string
+        updated_at: string
 };
 
 // interface untuk user register response DTO

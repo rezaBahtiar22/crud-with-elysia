@@ -12,6 +12,8 @@ export interface AuthUserLoginData {
     name: string
     email: string
     role: Role
+    created_at: string
+    updated_at: string
 };
 
 // tokens
@@ -39,7 +41,9 @@ export function toAuthUserLoginResponse(
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role
+            role: user.role,
+            created_at: user.created_at.toISOString(),
+            updated_at: user.updated_at.toISOString(),
         },
         tokens: {
             accessToken,
