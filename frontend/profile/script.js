@@ -53,7 +53,7 @@ function populateProfile() {
   const name      = userData.name      ?? '—';
   const email     = userData.email     ?? '—';
   const role      = getRoleLabel(userData.role);
-  const createdAt = formatDate(userData.createdAt);
+  const createdAt = formatDate(userData.createdAt ?? userData.created_at);
   const initials  = name !== '—'
     ? name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
     : '?';
@@ -85,7 +85,38 @@ function goToDashboard() {
 }
 
 document.getElementById('btnBack').addEventListener('click', goToDashboard);
-document.getElementById('btnBackBottom').addEventListener('click', goToDashboard);
+
+// ── LOGOUT ──
+const logoutOverlay = document.getElementById('logoutOverlay');
+const logoutCancel  = document.getElementById('logoutCancel');
+const logoutConfirm = document.getElementById('logoutConfirm');
+
+document.getElementById('btnLogout').addEventListener('click', () => {
+  logoutOverlay.classList.add('active');
+});
+
+logoutCancel.addEventListener('click', () => {
+  logoutOverlay.classList.remove('active');
+});
+
+logoutOverlay.addEventListener('click', (e) => {
+  if (e.target === logoutOverlay) logoutOverlay.classList.remove('active');
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') logoutOverlay.classList.remove('active');
+});
+
+logoutConfirm.addEventListener('click', () => {
+  logoutConfirm.textContent = 'Keluar...';
+  logoutConfirm.disabled = true;
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('user');
+  setTimeout(() => {
+    window.location.href = '../form-login/index.html';
+  }, 600);
+});
 
 
 // ══════════════════════════════
