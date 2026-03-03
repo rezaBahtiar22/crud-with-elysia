@@ -695,3 +695,109 @@ body.light .user-dropdown {
 body.collapsed .user-dropdown {
   display: none !important;
 }
+
+/* ══════════════════════════════
+   RESPONSIVE — DASHBOARD
+══════════════════════════════ */
+
+/* Laptop kecil */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 220px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 64px;
+  }
+
+  body {
+    overflow: hidden;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    height: 100vh;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), width 0.3s;
+    width: 260px !important;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Overlay gelap saat sidebar terbuka di mobile */
+  .sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 199;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+  }
+
+  .main {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .toggle-btn {
+    left: 16px;
+    top: 16px;
+    z-index: 201;
+  }
+
+  /* Sembunyikan teks sidebar di collapsed */
+  body.collapsed .logo-text,
+  body.collapsed .nav-label,
+  body.collapsed .user-info,
+  body.collapsed .user-chevron,
+  body.collapsed .nav-item span,
+  body.collapsed .nav-badge {
+    display: flex;
+  }
+
+  .theme-toggle {
+    right: 16px;
+    top: 16px;
+  }
+
+  /* User dropdown full width di mobile */
+  .user-dropdown {
+    position: fixed;
+    left: 12px; right: 12px;
+    top: auto;
+    width: auto;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .main-placeholder {
+    font-size: 15px;
+  }
+
+  .main-sub {
+    font-size: 12px;
+    text-align: center;
+    padding: 0 16px;
+  }
+
+  /* Modal lebih compact */
+  .modal-box {
+    padding: 28px 20px 22px;
+    margin: 0 16px;
+  }
+
+  .modal-title {
+    font-size: 16px;
+  }
+}

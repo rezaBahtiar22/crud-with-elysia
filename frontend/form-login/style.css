@@ -774,3 +774,99 @@ body.light .field-input.error {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* ══════════════════════════════
+   RESPONSIVE — FORM LOGIN
+══════════════════════════════ */
+
+/* Laptop kecil */
+@media (max-width: 1024px) {
+  .left-panel {
+    padding: 40px 32px;
+  }
+
+  .brand-headline {
+    font-size: 28px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  /* Sembunyikan left panel di tablet & mobile */
+  .left-panel {
+    display: none;
+  }
+
+  .right-panel {
+    padding: 24px 16px 40px;
+    min-height: 100vh;
+  }
+
+  .auth-card {
+    max-width: 100%;
+    padding: 24px 20px;
+  }
+
+  /* Field row jadi satu kolom */
+  .field-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* Checkbox + submit jadi vertikal */
+  .form-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .social-row {
+    flex-direction: column;
+  }
+
+  .btn-social {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .right-panel {
+    padding: 16px 12px 32px;
+  }
+
+  .auth-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .tab-bar {
+    margin-bottom: 16px;
+  }
+
+  .form-title {
+    font-size: 18px;
+  }
+
+  .form-sub {
+    font-size: 12px;
+  }
+
+  .theme-toggle {
+    top: 14px;
+    right: 14px;
+  }
+}

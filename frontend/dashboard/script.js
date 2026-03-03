@@ -171,11 +171,38 @@ function forceLogout() {
 // ══════════════════════════════
 //   SIDEBAR TOGGLE
 // ══════════════════════════════
-const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarToggle  = document.getElementById('sidebarToggle');
+const sidebarEl      = document.querySelector('.sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function isMobile() {
+  return window.innerWidth <= 768;
+}
 
 sidebarToggle.addEventListener('click', () => {
-  document.body.classList.toggle('collapsed');
+  if (isMobile()) {
+    // Di mobile: slide in/out
+    sidebarEl.classList.toggle('mobile-open');
+    sidebarOverlay.classList.toggle('active');
+  } else {
+    // Di desktop: collapse seperti biasa
+    document.body.classList.toggle('collapsed');
+  }
   closeDropdown();
+});
+
+// Tutup sidebar mobile saat klik overlay
+sidebarOverlay.addEventListener('click', () => {
+  sidebarEl.classList.remove('mobile-open');
+  sidebarOverlay.classList.remove('active');
+});
+
+// Tutup sidebar mobile saat resize ke desktop
+window.addEventListener('resize', () => {
+  if (!isMobile()) {
+    sidebarEl.classList.remove('mobile-open');
+    sidebarOverlay.classList.remove('active');
+  }
 });
 
 
