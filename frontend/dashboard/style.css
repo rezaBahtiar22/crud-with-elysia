@@ -614,10 +614,11 @@ body.light .user-dropdown {
 
 /* Dropdown Header */
 .dropdown-header {
-  padding: 14px 14px 12px;
+  padding: 20px 14px 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   background: linear-gradient(135deg, rgba(124,106,255,0.1), rgba(192,132,252,0.05));
 }
 
@@ -627,19 +628,19 @@ body.light .user-dropdown {
 }
 
 .dropdown-avatar {
-  width: 42px; height: 42px;
+  width: 64px; height: 64px;
   border-radius: 50%;
   background: linear-gradient(135deg, #7c6aff, #c084fc);
   display: flex; align-items: center; justify-content: center;
   font-family: 'Syne', sans-serif;
-  font-weight: 800; font-size: 15px; color: #fff;
-  box-shadow: 0 0 16px var(--accent-glow);
+  font-weight: 800; font-size: 22px; color: #fff;
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
 .dropdown-avatar-badge {
   position: absolute;
-  bottom: -1px; right: -1px;
-  width: 16px; height: 16px;
+  bottom: 0px; right: 0px;
+  width: 18px; height: 18px;
   background: var(--accent);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -648,41 +649,19 @@ body.light .user-dropdown {
   transition: background 0.2s;
 }
 
-.dropdown-avatar-badge:hover { background: var(--accent-hover); }
-.dropdown-avatar-badge svg { width: 7px; height: 7px; }
-
-.dropdown-user-info { flex: 1; min-width: 0; }
+.dropdown-avatar-badge:hover { background: var(--accent-hover, #9b8dff); }
+.dropdown-avatar-badge svg { width: 8px; height: 8px; }
 
 .dropdown-name {
   font-family: 'Syne', sans-serif;
-  font-size: 13px; font-weight: 700;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 14px; font-weight: 700;
   color: var(--text-primary);
+  text-align: center;
 }
 
 .dropdown-email {
-  font-size: 11px; color: var(--text-muted); margin-top: 1px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-.dropdown-role-badge {
-  display: inline-flex;
-  margin-top: 5px;
-  background: rgba(124,106,255,0.15);
-  color: var(--accent);
-  font-size: 9.5px; font-weight: 700;
-  padding: 2px 8px; border-radius: 99px;
-  letter-spacing: 0.06em; text-transform: uppercase;
-  font-family: 'Syne', sans-serif;
-}
-
-.dropdown-divider {
-  height: 1px;
-  background: rgba(255,255,255,0.06);
-}
-
-body.light .dropdown-divider {
-  background: rgba(0,0,0,0.06);
+  font-size: 11.5px; color: var(--text-muted);
+  text-align: center;
 }
 
 /* Dropdown Menu Items */
