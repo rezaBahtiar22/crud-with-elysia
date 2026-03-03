@@ -13,7 +13,6 @@ import type { AuthUserUpdatePasswordRequest, AuthUserUpdatePasswordResponse } fr
 import type { AuthMeResponse } from "../interfaces/authMeData"
 import { toAuthGetUserLoginResponse } from "../interfaces/authMeData"
 
-import { generateToken } from "../utils/jwt"
 import { prisma } from "../database/prisma"
 import { ResponseError } from "../utils/responseError"
 import * as argon2 from "argon2"

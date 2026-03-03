@@ -3,7 +3,6 @@ import type { AuthRefreshTokenResponse } from "../interfaces/refreshTokens"
 import { ResponseError } from "../utils/responseError"
 import crypto from "crypto"
 import { toAuthRefreshTokenResponse } from "../interfaces/refreshTokens"
-import { generateToken } from "../utils/jwt"
 import { issueAuthTokens } from "../utils/authToken"
 
 export class RefreshTokenService {

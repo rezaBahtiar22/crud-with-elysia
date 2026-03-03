@@ -3,11 +3,9 @@ import { generateOTP, generateOtpExpired } from "../utils/otp"
 import { Validation } from "../utils/validation"
 import { AuthOtpValidation } from "../utils/otpValidation"
 import { ResponseError } from "../utils/responseError"
-import { generateToken } from "../utils/jwt"
 import { sendOTPEmail } from "../utils/mailer"
 import { otpRateLimit } from "../middlewares/otpRateLimiter"
 import { issueAuthTokens } from "../utils/authToken"
-import crypto from "crypto"
 
 import type { 
     AuthOtpLoginRequest, 
