@@ -71,11 +71,11 @@ populateForm();
 //   NAVIGASI
 // ══════════════════════════════
 document.getElementById('btnBack').addEventListener('click', () => {
-  window.location.href = '../dashboard/profile.html';
+  window.location.href = '../dashboard/index.html';
 });
 
 document.getElementById('btnCancelProfile').addEventListener('click', () => {
-  window.location.href = '../dashboard/profile.html';
+  window.location.href = '../dashboard/index.html';
 });
 
 document.getElementById('btnCancelPassword').addEventListener('click', () => {

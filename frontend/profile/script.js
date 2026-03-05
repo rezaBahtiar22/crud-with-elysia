@@ -119,21 +119,14 @@ logoutConfirm.addEventListener('click', () => {
 });
 
 
-// ══════════════════════════════
-//   TOMBOL EDIT PROFIL
-//   (placeholder — belum ada endpoint)
-// ══════════════════════════════
 document.getElementById('btnEditProfile').addEventListener('click', () => {
-  // TODO: implementasi edit profil saat endpoint tersedia
-  alert('Fitur edit profil segera hadir!');
+  window.location.href = '../edit-profile/index.html';
 });
 
 
 // ══════════════════════════════
 //   TOMBOL GANTI KATA SANDI
-//   (placeholder — belum ada endpoint)
 // ══════════════════════════════
 document.getElementById('btnChangePassword').addEventListener('click', () => {
-  // TODO: implementasi ganti password saat endpoint tersedia
-  alert('Fitur ganti kata sandi segera hadir!');
+  window.location.href = '../edit-profile/index.html';
 });

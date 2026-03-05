@@ -84,7 +84,7 @@ document.getElementById('ddViewProfile').addEventListener('click', (e) => {
 
 document.getElementById('ddEditProfile').addEventListener('click', (e) => {
   e.stopPropagation();
-  window.location.href = '../dashboard/profile.html';
+  window.location.href = '../edit-profile/index.html';
 });
 
 document.getElementById('ddSettings').addEventListener('click', (e) => {
