@@ -112,8 +112,8 @@ bun run index.ts
 
 ## User (Auth Required)
 - GET /user/profile
-- PUT /user/profile
-- PUT /user/password
+- PATCH /user/profile
+- PATCH /user/password
 - POST /user/logout
 
 ## Admin (ADMIN Only)
