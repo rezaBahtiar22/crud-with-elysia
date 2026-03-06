@@ -9,18 +9,15 @@
 </head>
 <body>
 
-    <!-- Background decoration -->
-    <div class="bg-orb bg-orb--1"></div>
-    <div class="bg-orb bg-orb--2"></div>
-    <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+  <div class="bg-grid"></div>
 
-    <!-- Theme Toggle -->
-    <div class="theme-toggle" id="themeToggle" title="Ganti tema">
-        <div class="theme-toggle-knob" id="themeKnob">🌙</div>
-    </div>
+  <div class="theme-toggle" id="themeToggle" title="Ganti tema">
+    <div class="theme-toggle-knob" id="themeKnob">🌙</div>
+  </div>
 
-    <!-- Page Wrapper -->
-    <div class="edit-wrapper">
+  <div class="edit-wrapper">
 
     <!-- Top Bar -->
     <div class="top-bar">
@@ -31,20 +28,30 @@
         Kembali ke Profil
       </button>
       <div class="top-brand">
-        <div class="logo-mark">N</div>
-        <span class="logo-text">Nexara</span>
+        <div class="logo-mark">H</div>
+        <span class="logo-text">Heavenly</span>
       </div>
     </div>
 
-    <div class="edit-container"></div>
-
     <!-- Page Title -->
-      <div class="page-title">
-        <h1>Edit Profil</h1>
-        <p>Perbarui informasi akun dan keamanan Anda</p>
-      </div>
+    <div class="page-title">
+      <h1>Edit Profil</h1>
+      <p>Perbarui informasi akun dan keamanan Anda</p>
+    </div>
 
-      <!-- ══ SECTION 1: INFORMASI PROFIL ══ -->
+    <!-- Avatar Bar -->
+    <div class="avatar-card">
+      <div class="avatar-preview" id="avatarPreview">NC</div>
+      <div class="avatar-info">
+        <div class="avatar-name" id="avatarName">—</div>
+        <div class="avatar-role" id="avatarRole">—</div>
+      </div>
+    </div>
+
+    <!-- Two Column Grid -->
+    <div class="edit-grid">
+
+      <!-- KIRI: Informasi Profil -->
       <div class="edit-card">
         <div class="edit-card-header">
           <div class="edit-card-icon">
@@ -60,161 +67,149 @@
         </div>
 
         <form id="formUpdateProfile" novalidate>
-            <!-- Avatar preview -->
-            <div class="avatar-section">
-                <div class="avatar-preview" id="avatarPreview">NC</div>
-                <div class="avatar-info">
-                <div class="avatar-name" id="avatarName">—</div>
-                <div class="avatar-role" id="avatarRole">—</div>
-                </div>
-            </div>
+          <div class="form-fields">
 
-            <div class="form-fields">
-
-                <div class="field-group">
-                <label class="field-label" for="upName">Nama Lengkap</label>
-                <div class="field-wrap">
-                    <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                    <circle cx="10" cy="7" r="3"/>
-                    <path d="M3 18c0-3.3 3.1-6 7-6s7 2.7 7 6"/>
-                    </svg>
-                    <input class="field-input" type="text" id="upName" placeholder="Nama lengkap" autocomplete="name" />
-                </div>
-                <span class="field-error" id="upNameErr"></span>
-                </div>
-
-                <div class="field-group">
-                <label class="field-label" for="upEmail">Email</label>
-                <div class="field-wrap">
-                    <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                    <rect x="2" y="5" width="16" height="12" rx="2"/>
-                    <path d="M2 8l8 5 8-5"/>
-                    </svg>
-                    <input class="field-input" type="email" id="upEmail" placeholder="nama@email.com" autocomplete="email" />
-                </div>
-                <span class="field-error" id="upEmailErr"></span>
-                </div>
-
-            </div>
-
-            <div class="form-footer">
-                <span class="field-error form-error" id="upFormErr"></span>
-                <div class="form-actions">
-                <button type="button" class="btn-cancel" id="btnCancelProfile">Batal</button>
-                <button type="submit" class="btn-save" id="btnSaveProfile">
-                    <span class="btn-text">Simpan Perubahan</span>
-                    <span class="btn-spinner" id="profileSpinner"></span>
-                </button>
-                </div>
-            </div>
-
-            </form>
-        </div>
-
-        <!-- ══ SECTION 2: GANTI PASSWORD ══ -->
-        <div class="edit-card">
-            <div class="edit-card-header">
-            <div class="edit-card-icon edit-card-icon--security">
-                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                <rect x="4" y="9" width="12" height="9" rx="2"/>
-                <path d="M7 9V6a3 3 0 0 1 6 0v3"/>
+            <div class="field-group">
+              <label class="field-label" for="upName">Nama Lengkap</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <circle cx="10" cy="7" r="3"/>
+                  <path d="M3 18c0-3.3 3.1-6 7-6s7 2.7 7 6"/>
                 </svg>
-            </div>
-            <div>
-                <div class="edit-card-title">Keamanan Akun</div>
-                <div class="edit-card-sub">Perbarui kata sandi untuk menjaga keamanan akun</div>
-            </div>
+                <input class="field-input" type="text" id="upName" placeholder="Nama lengkap" autocomplete="name" />
+              </div>
+              <span class="field-error" id="upNameErr"></span>
             </div>
 
-            <form id="formUpdatePassword" novalidate>
-
-            <div class="form-fields">
-
-                <div class="field-group">
-                <label class="field-label" for="upCurrentPass">Kata Sandi Saat Ini</label>
-                <div class="field-wrap">
-                    <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                    <rect x="4" y="9" width="12" height="9" rx="2"/>
-                    <path d="M7 9V6a3 3 0 0 1 6 0v3"/>
-                    </svg>
-                    <input class="field-input" type="password" id="upCurrentPass" placeholder="Kata sandi saat ini" autocomplete="current-password" />
-                    <button type="button" class="toggle-pass" onclick="togglePass('upCurrentPass', this)" tabindex="-1">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                        <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/>
-                        <circle cx="10" cy="10" r="2.5"/>
-                    </svg>
-                    </button>
-                </div>
-                <span class="field-error" id="upCurrentPassErr"></span>
-                </div>
-
-                <div class="field-group">
-                <label class="field-label" for="upNewPass">Kata Sandi Baru</label>
-                <div class="field-wrap">
-                    <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                    <rect x="4" y="9" width="12" height="9" rx="2"/>
-                    <path d="M7 9V6a3 3 0 0 1 6 0v3"/>
-                    </svg>
-                    <input class="field-input" type="password" id="upNewPass" placeholder="Min. 8 karakter" autocomplete="new-password" />
-                    <button type="button" class="toggle-pass" onclick="togglePass('upNewPass', this)" tabindex="-1">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                        <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/>
-                        <circle cx="10" cy="10" r="2.5"/>
-                    </svg>
-                    </button>
-                </div>
-                <span class="field-error" id="upNewPassErr"></span>
-                </div>
-
-                <div class="field-group">
-                <label class="field-label" for="upConfirmPass">Konfirmasi Kata Sandi Baru</label>
-                <div class="field-wrap">
-                    <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                    <rect x="4" y="9" width="12" height="9" rx="2"/>
-                    <path d="M7 9V6a3 3 0 0 1 6 0v3"/>
-                    </svg>
-                    <input class="field-input" type="password" id="upConfirmPass" placeholder="Ulangi kata sandi baru" autocomplete="new-password" />
-                    <button type="button" class="toggle-pass" onclick="togglePass('upConfirmPass', this)" tabindex="-1">
-                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-                        <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/>
-                        <circle cx="10" cy="10" r="2.5"/>
-                    </svg>
-                    </button>
-                </div>
-                <span class="field-error" id="upConfirmPassErr"></span>
-                </div>
-
+            <div class="field-group">
+              <label class="field-label" for="upEmail">Email</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <rect x="2" y="5" width="16" height="12" rx="2"/>
+                  <path d="M2 8l8 5 8-5"/>
+                </svg>
+                <input class="field-input" type="email" id="upEmail" placeholder="nama@email.com" autocomplete="email" />
+              </div>
+              <span class="field-error" id="upEmailErr"></span>
             </div>
 
-            <div class="form-footer">
-                <span class="field-error form-error" id="upPassFormErr"></span>
-                <div class="form-actions">
-                <button type="button" class="btn-cancel" id="btnCancelPassword">Batal</button>
-                <button type="submit" class="btn-save btn-save--security" id="btnSavePassword">
-                    <span class="btn-text">Perbarui Kata Sandi</span>
-                    <span class="btn-spinner" id="passwordSpinner"></span>
+          </div>
+
+          <div class="form-footer">
+            <span class="field-error form-error" id="upFormErr"></span>
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" id="btnCancelProfile">Batal</button>
+              <button type="submit" class="btn-save" id="btnSaveProfile">
+                <span class="btn-text">Simpan Perubahan</span>
+                <span class="btn-spinner" id="profileSpinner"></span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- KANAN: Keamanan Akun -->
+      <div class="edit-card">
+        <div class="edit-card-header">
+          <div class="edit-card-icon edit-card-icon--security">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+              <rect x="4" y="9" width="12" height="9" rx="2"/>
+              <path d="M7 9V6a3 3 0 0 1 6 0v3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="edit-card-title">Keamanan Akun</div>
+            <div class="edit-card-sub">Perbarui kata sandi untuk menjaga keamanan akun</div>
+          </div>
+        </div>
+
+        <form id="formUpdatePassword" novalidate>
+          <div class="form-fields">
+
+            <div class="field-group">
+              <label class="field-label" for="upCurrentPass">Kata Sandi Saat Ini</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <rect x="4" y="9" width="12" height="9" rx="2"/>
+                  <path d="M7 9V6a3 3 0 0 1 6 0v3"/>
+                </svg>
+                <input class="field-input" type="password" id="upCurrentPass" placeholder="Kata sandi saat ini" autocomplete="current-password" />
+                <button type="button" class="toggle-pass" onclick="togglePass('upCurrentPass', this)" tabindex="-1">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/>
+                    <circle cx="10" cy="10" r="2.5"/>
+                  </svg>
                 </button>
-                </div>
+              </div>
+              <span class="field-error" id="upCurrentPassErr"></span>
             </div>
 
-            </form>
-        </div>
+            <div class="field-group">
+              <label class="field-label" for="upNewPass">Kata Sandi Baru</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <rect x="4" y="9" width="12" height="9" rx="2"/>
+                  <path d="M7 9V6a3 3 0 0 1 6 0v3"/>
+                </svg>
+                <input class="field-input" type="password" id="upNewPass" placeholder="Min. 8 karakter" autocomplete="new-password" />
+                <button type="button" class="toggle-pass" onclick="togglePass('upNewPass', this)" tabindex="-1">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/>
+                    <circle cx="10" cy="10" r="2.5"/>
+                  </svg>
+                </button>
+              </div>
+              <span class="field-error" id="upNewPassErr"></span>
+            </div>
 
-        </div>
+            <div class="field-group">
+              <label class="field-label" for="upConfirmPass">Konfirmasi Kata Sandi Baru</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <rect x="4" y="9" width="12" height="9" rx="2"/>
+                  <path d="M7 9V6a3 3 0 0 1 6 0v3"/>
+                </svg>
+                <input class="field-input" type="password" id="upConfirmPass" placeholder="Ulangi kata sandi baru" autocomplete="new-password" />
+                <button type="button" class="toggle-pass" onclick="togglePass('upConfirmPass', this)" tabindex="-1">
+                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+                    <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z"/>
+                    <circle cx="10" cy="10" r="2.5"/>
+                  </svg>
+                </button>
+              </div>
+              <span class="field-error" id="upConfirmPassErr"></span>
+            </div>
 
-        <p class="edit-footer">© 2026 Nexara · Semua hak dilindungi</p>
+          </div>
+
+          <div class="form-footer">
+            <span class="field-error form-error" id="upPassFormErr"></span>
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" id="btnCancelPassword">Batal</button>
+              <button type="submit" class="btn-save btn-save--security" id="btnSavePassword">
+                <span class="btn-text">Perbarui Kata Sandi</span>
+                <span class="btn-spinner" id="passwordSpinner"></span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
 
     </div>
 
-    <!-- SUCCESS TOAST -->
-    <div class="toast" id="toast">
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M4 10l4 4 8-8"/>
-        </svg>
-        <span id="toastMsg">Berhasil disimpan!</span>
-    </div>
+    <p class="edit-footer">© 2026 Heavenly · Semua hak dilindungi</p>
 
-    <script src="script.js"></script>
-    
+  </div>
+
+  <!-- SUCCESS TOAST -->
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M4 10l4 4 8-8"/>
+    </svg>
+    <span id="toastMsg">Berhasil disimpan!</span>
+  </div>
+
+  <script src="script.js"></script>
+
 </body>
 </html>

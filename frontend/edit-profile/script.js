@@ -247,7 +247,7 @@ document.getElementById('formUpdateProfile').addEventListener('submit', async (e
     if (name  !== userData.name)  body.name  = name;
     if (email !== userData.email) body.email = email;
 
-    const response = await fetchWithAuth(`${BASE_URL}/update/profile`, {
+    const response = await fetchWithAuth(`${BASE_URL}/user/update/profile`, {
       method: 'PATCH',
       body: JSON.stringify(body)
     });
@@ -333,7 +333,7 @@ document.getElementById('formUpdatePassword').addEventListener('submit', async (
   setLoading('btnSavePassword', 'passwordSpinner', true);
 
   try {
-    const response = await fetchWithAuth(`${BASE_URL}/update/password`, {
+    const response = await fetchWithAuth(`${BASE_URL}/user/update/password`, {
       method: 'PATCH',
       body: JSON.stringify({
         currentPassword,    // ← sesuai interface backend
