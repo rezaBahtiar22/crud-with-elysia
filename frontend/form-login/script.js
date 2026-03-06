@@ -186,8 +186,8 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
     }
 
     // simpan kedua token & data user
-    localStorage.setItem("accessToken", data.accessToken)
-    localStorage.setItem("refreshToken", data.refreshToken)
+    localStorage.setItem("accessToken", data.tokens.accessToken)
+    localStorage.setItem("refreshToken", data.tokens.refreshToken)
     localStorage.setItem("user", JSON.stringify(data.user))
 
     // redirect ke dashboard
@@ -285,8 +285,8 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
     }
 
     // REGISTRASI BERHASIL → SIMPAN TOKEN → AUTO LOGIN
-    localStorage.setItem('accessToken', data.accessToken);
-    localStorage.setItem('refreshToken', data.refreshToken);
+    localStorage.setItem('accessToken', data.tokens.accessToken);
+    localStorage.setItem('refreshToken', data.tokens.refreshToken);
     localStorage.setItem('user', JSON.stringify(data.data));
 
     setLoading('btnSignUp', 'suSpinner', false);
