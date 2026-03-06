@@ -148,17 +148,20 @@ async function tryRefreshToken() {
   if (!refreshToken) return false;
 
   try {
-    const response = await fetch(`${BASE_URL}/auth/refresh`, {
+    const response = await fetch('http://localhost:3000/auth/refresh-access-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken })
     });
 
     const data = await response.json();
-    if (response.ok && data.accessToken) {
-      localStorage.setItem('accessToken', data.accessToken);
+
+    if (response.ok && data.tokens?.accessToken) {
+      localStorage.setItem('accessToken', data.tokens.accessToken);
+      localStorage.setItem('refreshToken', data.tokens.refreshToken);
       return true;
     }
+
     return false;
   } catch {
     return false;

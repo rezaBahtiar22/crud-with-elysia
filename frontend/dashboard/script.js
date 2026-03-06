@@ -61,7 +61,12 @@ userCard.addEventListener('click', (e) => {
   isOpen ? closeDropdown() : openDropdown();
 });
 
-document.addEventListener('click', () => closeDropdown());
+document.addEventListener('click', (e) => {
+  // tutup dropdown hanya jika klik di luar dropdown DAN di luar userCard
+  if (!userDropdown.contains(e.target) && !userCard.contains(e.target)) {
+    closeDropdown();
+  }
+});
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeDropdown();
@@ -137,7 +142,7 @@ async function tryRefreshToken() {
   if (!refreshToken) return false;
 
   try {
-    const response = await fetch('http://localhost:3000/auth/refresh', {
+    const response = await fetch('http://localhost:3000/auth/refresh-access-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken })
@@ -145,13 +150,14 @@ async function tryRefreshToken() {
 
     const data = await response.json();
 
-    if (response.ok && data.accessToken) {
-      localStorage.setItem('accessToken', data.accessToken);
+    if (response.ok && data.tokens?.accessToken) {
+      localStorage.setItem('accessToken', data.tokens.accessToken);
+      localStorage.setItem('refreshToken', data.tokens.refreshToken);
       return true;
     }
 
     return false;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
