@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard</title>
+  <title>Dashboard — Heavenly Library</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Sidebar Overlay (mobile) -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <!-- Theme Toggle -->
@@ -27,33 +29,35 @@
 
     <!-- Logo -->
     <div class="sidebar-logo">
-      <div class="logo-mark">H</div>
-      <span class="logo-text">Heavenly</span>
+      <div class="logo-mark">HL</div>
+      <span class="logo-text">Heavenly Library</span>
     </div>
 
-    <!-- User Card + Dropdown -->
+    <!-- User Card -->
     <div class="user-card" id="userCard">
-      <div class="avatar" id="userAvatar">AR</div>
+      <div class="avatar" id="userAvatar">—</div>
       <div class="user-info">
-        <div class="user-name" id="userName">Ahmad Rizky</div>
-        <div class="user-role" id="userRole">Administrator</div>
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
       </div>
       <span class="user-chevron" id="userChevron">⌄</span>
     </div>
 
-    <!-- Dropdown Profile -->
+    <!-- Dropdown Profile — di dalam sidebar, tepat bawah user card -->
     <div class="user-dropdown" id="userDropdown">
       <div class="dropdown-header">
         <div class="dropdown-avatar-wrap">
-          <div class="dropdown-avatar" id="dropdownAvatar">AR</div>
+          <div class="dropdown-avatar" id="dropdownAvatar">—</div>
           <div class="dropdown-avatar-badge" title="Ganti foto (segera hadir)">
             <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.8">
               <path d="M8.5 2.5l1 1L4 9H3V8L8.5 2.5z"/>
             </svg>
           </div>
         </div>
-        <div class="dropdown-name" id="dropdownName">Ahmad Rizky</div>
-        <div class="dropdown-email" id="dropdownEmail">—</div>
+        <div class="dropdown-user-info">
+          <div class="dropdown-name" id="dropdownName">—</div>
+          <div class="dropdown-email" id="dropdownEmail">—</div>
+        </div>
       </div>
 
       <div class="dropdown-divider"></div>
@@ -85,16 +89,17 @@
     <!-- Nav -->
     <nav class="nav-section">
 
+      <!-- ── UTAMA ── -->
       <div class="nav-label">Utama</div>
 
-      <div class="nav-item active">
+      <div class="nav-item active" data-page="beranda">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
           <path d="M2 11l8-8 8 8v7H13v-4H7v4H2v-7z"/>
         </svg>
         <span>Beranda</span>
       </div>
 
-      <div class="nav-item">
+      <div class="nav-item" data-page="dasbor">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <rect x="3" y="3" width="5" height="5" rx="1"/>
           <rect x="12" y="3" width="5" height="5" rx="1"/>
@@ -104,42 +109,68 @@
         <span>Dasbor</span>
       </div>
 
-      <div class="nav-item">
+      <!-- ── PERPUSTAKAAN ── -->
+      <div class="nav-label">Perpustakaan</div>
+
+      <div class="nav-item" data-page="katalog">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-          <path d="M4 6h12M4 10h8M4 14h10"/>
+          <path d="M4 4h3v12H4zM9 4h3v12H9z"/>
+          <path d="M14 4l3 1v11l-3-1V4z"/>
         </svg>
-        <span>Laporan</span>
+        <span>Katalog Buku</span>
       </div>
 
-      <div class="nav-label">Manajemen</div>
-
-      <div class="nav-item">
-        <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
-          <circle cx="10" cy="7" r="3"/>
-          <path d="M3 18c0-3.3 3.1-6 7-6s7 2.7 7 6"/>
-        </svg>
-        <span>Pengguna</span>
-      </div>
-
-      <div class="nav-item">
+      <div class="nav-item" data-page="peminjaman">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <rect x="3" y="5" width="14" height="12" rx="2"/>
-          <path d="M7 5V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/>
+          <path d="M3 9h14M7 5V3M13 5V3"/>
         </svg>
-        <span>Produk</span>
+        <span>Peminjaman</span>
+        <span class="nav-badge" id="badgePeminjaman" style="display:none"></span>
       </div>
 
-      <div class="nav-item">
+      <div class="nav-item" data-page="riwayat">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <circle cx="10" cy="10" r="7"/>
           <path d="M10 6v4l3 2"/>
         </svg>
-        <span>Aktivitas</span>
+        <span>Riwayat</span>
       </div>
 
+      <!-- ── MANAJEMEN (ADMIN ONLY) ── -->
+      <div class="nav-label nav-admin" id="labelManajemen">Manajemen</div>
+
+      <div class="nav-item nav-admin" data-page="anggota">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="8" cy="7" r="3"/>
+          <path d="M2 18c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+          <path d="M15 5a2 2 0 0 1 0 4M18 18c0-2.2-1.3-4-3-5"/>
+        </svg>
+        <span>Anggota</span>
+      </div>
+
+      <div class="nav-item nav-admin" data-page="kelola-buku">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M4 4h3v12H4zM9 4h3v12H9z"/>
+          <path d="M14 4l3 1v11l-3-1V4z"/>
+        </svg>
+        <span>Kelola Buku</span>
+      </div>
+
+      <div class="nav-item nav-admin" data-page="kelola-peminjaman">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="3" y="5" width="14" height="12" rx="2"/>
+          <path d="M3 9h14M7 5V3M13 5V3"/>
+          <path d="M7 13l2 2 4-4"/>
+        </svg>
+        <span>Kelola Peminjaman</span>
+        <span class="nav-badge" id="badgeKelolaPeminjaman" style="display:none"></span>
+      </div>
+
+      <!-- ── LAINNYA ── -->
       <div class="nav-label">Lainnya</div>
 
-      <div class="nav-item">
+      <div class="nav-item" data-page="pengaturan">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <circle cx="10" cy="10" r="2.5"/>
           <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4"/>
@@ -147,7 +178,7 @@
         <span>Pengaturan</span>
       </div>
 
-      <div class="nav-item">
+      <div class="nav-item" data-page="bantuan">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <circle cx="10" cy="10" r="7"/>
           <path d="M10 8v2M10 12v.5"/>
@@ -185,8 +216,8 @@
           <line x1="15" y1="12" x2="3" y2="12"/>
         </svg>
       </div>
-      <h2 class="modal-title">Yakin ingin keluar?</h2>
-      <p class="modal-desc">Sesi Anda akan diakhiri. Tekan Ya untuk keluar.</p>
+      <h2 class="modal-title">Keluar dari Heavenly Library?</h2>
+      <p class="modal-desc">Sesi Anda akan diakhiri. Pastikan semua pekerjaan telah tersimpan sebelum keluar.</p>
       <div class="modal-actions">
         <button class="modal-btn modal-btn--cancel" id="logoutCancel">Batal</button>
         <button class="modal-btn modal-btn--confirm" id="logoutConfirm">Ya, Keluar</button>

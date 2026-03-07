@@ -48,6 +48,21 @@ if (userData) {
   if (ddRole)   ddRole.textContent   = role;
 }
 
+// ══════════════════════════════
+//   ROLE-BASED MENU
+// ══════════════════════════════
+(function applyRoleMenu() {
+  const role = userData.role ?? '';
+  const isAdmin = role === 'ADMIN' || role === 'admin';
+
+  // Sembunyikan semua elemen admin jika bukan admin
+  if (!isAdmin) {
+    document.querySelectorAll('.nav-admin').forEach(el => {
+      el.style.display = 'none';
+    });
+  }
+})();
+
 
 // ══════════════════════════════
 //   USER DROPDOWN TOGGLE
