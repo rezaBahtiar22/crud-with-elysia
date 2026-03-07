@@ -28,6 +28,7 @@ model User {
 
   otps            EmailOTP[]
   refreshTokens   RefreshToken[]
+  borrowings      Borrowing[]
 }
 
 model EmailOTP {
@@ -45,6 +46,47 @@ model EmailOTP {
   user  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([email])
+}
+
+model Book {
+  id            Int         @id @default(autoincrement())
+  title         String
+  author        String
+  isbn          String      @unique
+  publisher     String?
+  year          Int?
+  category      String?
+  description   String?
+  cover         String?
+  stock         Int         @default(0)
+  availableStock Int        @default(0)
+
+  deletedAt     DateTime?
+
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+
+  borrowings    Borrowing[]
+}
+
+model Borrowing {
+  id            Int              @id @default(autoincrement())
+  userId        Int
+  bookId        Int
+  borrowedAt    DateTime         @default(now())
+  dueDate       DateTime
+  returnedAt    DateTime?
+  status        BorrowingStatus  @default(PENDING)
+  fine          Float            @default(0)
+
+  created_at    DateTime         @default(now())
+  updated_at    DateTime         @updatedAt
+
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book          Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([bookId])
 }
 
 model RefreshToken {
@@ -74,4 +116,12 @@ enum OtpPurpose {
   LOGIN
   REGISTER
   RESET_PASSWORD
+}
+
+enum BorrowingStatus {
+  PENDING
+  APPROVED
+  RETURNED
+  REJECTED
+  OVERDUE
 }

@@ -10,5 +10,7 @@
  */
 export type * from './models/User.ts'
 export type * from './models/EmailOTP.ts'
+export type * from './models/Book.ts'
+export type * from './models/Borrowing.ts'
 export type * from './models/RefreshToken.ts'
 export type * from './commonInputTypes.ts'

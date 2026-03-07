@@ -50,6 +50,16 @@ export type User = Prisma.UserModel
  */
 export type EmailOTP = Prisma.EmailOTPModel
 /**
+ * Model Book
+ * 
+ */
+export type Book = Prisma.BookModel
+/**
+ * Model Borrowing
+ * 
+ */
+export type Borrowing = Prisma.BorrowingModel
+/**
  * Model RefreshToken
  * 
  */

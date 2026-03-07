@@ -250,6 +250,7 @@ export type UserWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
   otps?: Prisma.EmailOTPListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  borrowings?: Prisma.BorrowingListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -264,6 +265,7 @@ export type UserOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   otps?: Prisma.EmailOTPOrderByRelationAggregateInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
+  borrowings?: Prisma.BorrowingOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -281,6 +283,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
   otps?: Prisma.EmailOTPListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  borrowings?: Prisma.BorrowingListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -326,6 +329,7 @@ export type UserCreateInput = {
   updated_at?: Date | string
   otps?: Prisma.EmailOTPCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  borrowings?: Prisma.BorrowingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -340,6 +344,7 @@ export type UserUncheckedCreateInput = {
   updated_at?: Date | string
   otps?: Prisma.EmailOTPUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  borrowings?: Prisma.BorrowingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -353,6 +358,7 @@ export type UserUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   otps?: Prisma.EmailOTPUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  borrowings?: Prisma.BorrowingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -367,6 +373,7 @@ export type UserUncheckedUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   otps?: Prisma.EmailOTPUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  borrowings?: Prisma.BorrowingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -502,6 +509,20 @@ export type UserUpdateOneWithoutOtpsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOtpsInput, Prisma.UserUpdateWithoutOtpsInput>, Prisma.UserUncheckedUpdateWithoutOtpsInput>
 }
 
+export type UserCreateNestedOneWithoutBorrowingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBorrowingsInput, Prisma.UserUncheckedCreateWithoutBorrowingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBorrowingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBorrowingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBorrowingsInput, Prisma.UserUncheckedCreateWithoutBorrowingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBorrowingsInput
+  upsert?: Prisma.UserUpsertWithoutBorrowingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBorrowingsInput, Prisma.UserUpdateWithoutBorrowingsInput>, Prisma.UserUncheckedUpdateWithoutBorrowingsInput>
+}
+
 export type UserCreateNestedOneWithoutRefreshTokensInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutRefreshTokensInput
@@ -526,6 +547,7 @@ export type UserCreateWithoutOtpsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  borrowings?: Prisma.BorrowingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOtpsInput = {
@@ -539,6 +561,7 @@ export type UserUncheckedCreateWithoutOtpsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  borrowings?: Prisma.BorrowingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOtpsInput = {
@@ -567,6 +590,7 @@ export type UserUpdateWithoutOtpsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  borrowings?: Prisma.BorrowingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOtpsInput = {
@@ -580,6 +604,77 @@ export type UserUncheckedUpdateWithoutOtpsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  borrowings?: Prisma.BorrowingUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBorrowingsInput = {
+  name: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  tokens?: string | null
+  deletedAt?: Date | string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  otps?: Prisma.EmailOTPCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBorrowingsInput = {
+  id?: number
+  name: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  tokens?: string | null
+  deletedAt?: Date | string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  otps?: Prisma.EmailOTPUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBorrowingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBorrowingsInput, Prisma.UserUncheckedCreateWithoutBorrowingsInput>
+}
+
+export type UserUpsertWithoutBorrowingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBorrowingsInput, Prisma.UserUncheckedUpdateWithoutBorrowingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBorrowingsInput, Prisma.UserUncheckedCreateWithoutBorrowingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBorrowingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBorrowingsInput, Prisma.UserUncheckedUpdateWithoutBorrowingsInput>
+}
+
+export type UserUpdateWithoutBorrowingsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  tokens?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  otps?: Prisma.EmailOTPUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBorrowingsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  tokens?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  otps?: Prisma.EmailOTPUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -592,6 +687,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   created_at?: Date | string
   updated_at?: Date | string
   otps?: Prisma.EmailOTPCreateNestedManyWithoutUserInput
+  borrowings?: Prisma.BorrowingCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -605,6 +701,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   created_at?: Date | string
   updated_at?: Date | string
   otps?: Prisma.EmailOTPUncheckedCreateNestedManyWithoutUserInput
+  borrowings?: Prisma.BorrowingUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -633,6 +730,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   otps?: Prisma.EmailOTPUpdateManyWithoutUserNestedInput
+  borrowings?: Prisma.BorrowingUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -646,6 +744,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   otps?: Prisma.EmailOTPUncheckedUpdateManyWithoutUserNestedInput
+  borrowings?: Prisma.BorrowingUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -656,11 +755,13 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
 export type UserCountOutputType = {
   otps: number
   refreshTokens: number
+  borrowings: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   otps?: boolean | UserCountOutputTypeCountOtpsArgs
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
+  borrowings?: boolean | UserCountOutputTypeCountBorrowingsArgs
 }
 
 /**
@@ -687,6 +788,13 @@ export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Ty
   where?: Prisma.RefreshTokenWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBorrowingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BorrowingWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -700,6 +808,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updated_at?: boolean
   otps?: boolean | Prisma.User$otpsArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  borrowings?: boolean | Prisma.User$borrowingsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -743,6 +852,7 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   otps?: boolean | Prisma.User$otpsArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  borrowings?: boolean | Prisma.User$borrowingsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -753,6 +863,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     otps: Prisma.$EmailOTPPayload<ExtArgs>[]
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+    borrowings: Prisma.$BorrowingPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1160,6 +1271,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   otps<T extends Prisma.User$otpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$otpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmailOTPPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  borrowings<T extends Prisma.User$borrowingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$borrowingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BorrowingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1631,6 +1743,30 @@ export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
+}
+
+/**
+ * User.borrowings
+ */
+export type User$borrowingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Borrowing
+   */
+  select?: Prisma.BorrowingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Borrowing
+   */
+  omit?: Prisma.BorrowingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BorrowingInclude<ExtArgs> | null
+  where?: Prisma.BorrowingWhereInput
+  orderBy?: Prisma.BorrowingOrderByWithRelationInput | Prisma.BorrowingOrderByWithRelationInput[]
+  cursor?: Prisma.BorrowingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BorrowingScalarFieldEnum | Prisma.BorrowingScalarFieldEnum[]
 }
 
 /**

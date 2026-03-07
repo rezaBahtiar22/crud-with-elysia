@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   EmailOTP: 'EmailOTP',
+  Book: 'Book',
+  Borrowing: 'Borrowing',
   RefreshToken: 'RefreshToken'
 } as const
 
@@ -101,6 +103,42 @@ export const EmailOTPScalarFieldEnum = {
 } as const
 
 export type EmailOTPScalarFieldEnum = (typeof EmailOTPScalarFieldEnum)[keyof typeof EmailOTPScalarFieldEnum]
+
+
+export const BookScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  author: 'author',
+  isbn: 'isbn',
+  publisher: 'publisher',
+  year: 'year',
+  category: 'category',
+  description: 'description',
+  cover: 'cover',
+  stock: 'stock',
+  availableStock: 'availableStock',
+  deletedAt: 'deletedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type BookScalarFieldEnum = (typeof BookScalarFieldEnum)[keyof typeof BookScalarFieldEnum]
+
+
+export const BorrowingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  bookId: 'bookId',
+  borrowedAt: 'borrowedAt',
+  dueDate: 'dueDate',
+  returnedAt: 'returnedAt',
+  status: 'status',
+  fine: 'fine',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type BorrowingScalarFieldEnum = (typeof BorrowingScalarFieldEnum)[keyof typeof BorrowingScalarFieldEnum]
 
 
 export const RefreshTokenScalarFieldEnum = {

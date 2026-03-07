@@ -24,3 +24,14 @@ export const OtpPurpose = {
 } as const
 
 export type OtpPurpose = (typeof OtpPurpose)[keyof typeof OtpPurpose]
+
+
+export const BorrowingStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  RETURNED: 'RETURNED',
+  REJECTED: 'REJECTED',
+  OVERDUE: 'OVERDUE'
+} as const
+
+export type BorrowingStatus = (typeof BorrowingStatus)[keyof typeof BorrowingStatus]
