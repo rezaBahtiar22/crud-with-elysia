@@ -1,7 +1,7 @@
 export type AuthContext = {
     request: Request;
     user?: {
-        id: string;
+        id: number;
         role: string;
     };
     accessToken?: string;
