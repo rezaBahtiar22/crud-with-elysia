@@ -9,6 +9,7 @@ import { ForgotPasswordRoute } from "./routes/forgotPasswordRoute.ts";
 import { ErrorMiddleware } from "./middlewares/errorMiddleware.ts";
 import { startOtpCleanerJob } from "./helper/otpCleanerJob.ts";
 import { swagger } from "@elysiajs/swagger";
+import { AdminBookRoute } from "./routes/adminBookRoute.ts";
 
 
 startOtpCleanerJob();
@@ -51,6 +52,7 @@ const app = new Elysia()
     .use(ForgotPasswordRoute)
     .use(UserRoute)
     .use(AdminRoute)
+    .use(AdminBookRoute)
 
 
 export default app;
