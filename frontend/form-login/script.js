@@ -188,7 +188,7 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
     // simpan kedua token & data user
     localStorage.setItem("accessToken", data.tokens.accessToken)
     localStorage.setItem("refreshToken", data.tokens.refreshToken)
-    localStorage.setItem("user", JSON.stringify(data.user))
+    localStorage.setItem("userData", JSON.stringify(data.user))
 
     // redirect ke dashboard
     window.location.href = "../dashboard/index.html"
@@ -287,7 +287,7 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
     // REGISTRASI BERHASIL → SIMPAN TOKEN → AUTO LOGIN
     localStorage.setItem('accessToken', data.tokens.accessToken);
     localStorage.setItem('refreshToken', data.tokens.refreshToken);
-    localStorage.setItem('user', JSON.stringify(data.data));
+    localStorage.setItem('userData', JSON.stringify(data.data));
 
     setLoading('btnSignUp', 'suSpinner', false);
 

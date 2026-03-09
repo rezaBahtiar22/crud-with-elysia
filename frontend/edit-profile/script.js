@@ -33,7 +33,7 @@ themeToggle.addEventListener('click', () => {
 // ══════════════════════════════
 //   LOAD DATA USER DARI LOCALSTORAGE
 // ══════════════════════════════
-let userData = JSON.parse(localStorage.getItem('user') ?? '{}');
+let userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
 
 function getInitials(name) {
   if (!name || name === '—') return '?';
@@ -42,9 +42,8 @@ function getInitials(name) {
 
 function getRoleLabel(role) {
   const map = {
-    admin: 'Administrator', ADMIN: 'Administrator',
+    admin: 'Admin', ADMIN: 'Admin',
     user:  'User',          USER:  'User',
-    superadmin: 'Super Admin', SUPERADMIN: 'Super Admin',
   };
   return map[role] ?? role ?? '—';
 }
@@ -195,7 +194,7 @@ async function fetchWithAuth(url, options = {}) {
     } else {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
+      localStorage.removeItem('userData');
       window.location.href = '../form-login/index.html';
     }
   }
@@ -265,7 +264,7 @@ document.getElementById('formUpdateProfile').addEventListener('submit', async (e
 
     // Update localStorage dengan data terbaru
     userData = { ...userData, ...data.data };
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('userData', JSON.stringify(userData));
 
     // Update tampilan avatar & nama
     document.getElementById('avatarPreview').textContent = getInitials(data.data.name);

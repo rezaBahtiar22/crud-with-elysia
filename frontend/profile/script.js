@@ -27,7 +27,7 @@ themeToggle.addEventListener('click', () => {
 // ══════════════════════════════
 //   LOAD DATA USER
 // ══════════════════════════════
-const userData = JSON.parse(localStorage.getItem('user') ?? '{}');
+const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
 
 function formatDate(dateStr) {
   if (!dateStr) return '—';
@@ -41,8 +41,8 @@ function formatDate(dateStr) {
 
 function getRoleLabel(role) {
   const map = {
-    admin:      'Administrator',
-    ADMIN:      'Administrator',
+    admin:      'Admin',
+    ADMIN:      'Admin',
     user:       'User',
     USER:       'User',
   };
@@ -71,7 +71,7 @@ function populateProfile() {
   document.getElementById('infoCreatedAt').textContent = createdAt;
 
   // Update page title
-  document.title = `${name} — Profil · Nexara`;
+  document.title = `${name} — Profil · Heavenly Library`;
 }
 
 populateProfile();
@@ -112,7 +112,7 @@ logoutConfirm.addEventListener('click', () => {
   logoutConfirm.disabled = true;
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
-  localStorage.removeItem('user');
+  localStorage.removeItem('userData');
   setTimeout(() => {
     window.location.href = '../form-login/index.html';
   }, 600);

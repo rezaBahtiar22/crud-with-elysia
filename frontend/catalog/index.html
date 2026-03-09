@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Katalog Buku — Heavenly Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR (sama persis dengan dashboard) ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <span class="logo-mark-text">HL</span>
+        <div class="logo-mark-ring"></div>
+      </div>
+      <div class="logo-text-wrap">
+        <span class="logo-text">Heavenly</span>
+        <span class="logo-subtext">Library</span>
+      </div>
+    </div>
+
+    <!-- User Card -->
+    <div class="user-card" id="userCard">
+      <div class="avatar" id="avatarInitial">?</div>
+      <div class="user-info">
+        <div class="user-name" id="userName">Memuat...</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+      <span class="user-chevron">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    </div>
+
+    <!-- Dropdown -->
+    <div class="user-dropdown" id="userDropdown">
+      <div class="dropdown-header">
+        <div class="dropdown-avatar-wrap">
+          <div class="dropdown-avatar" id="dropdownAvatar">?</div>
+        </div>
+        <div class="dropdown-name" id="dropdownName">—</div>
+        <div class="dropdown-email" id="dropdownEmail">—</div>
+      </div>
+      <div class="dropdown-menu">
+        <div class="dropdown-item" onclick="location.href='../profile/index.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span>Lihat Profil</span>
+        </div>
+        <div class="dropdown-item" onclick="location.href='../edit-profile/index.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <span>Edit Profil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="nav-section">
+      <div class="nav-label">Utama</div>
+      <div class="nav-item" onclick="location.href='../dashboard/index.html'">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Beranda</span>
+      </div>
+      <div class="nav-item" onclick="location.href='../dashboard/index.html'">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        <span>Dasbor</span>
+      </div>
+
+      <div class="nav-label">Perpustakaan</div>
+      <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Katalog Buku</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Peminjaman</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Riwayat</span>
+      </div>
+
+      <div class="nav-label nav-admin">Manajemen</div>
+      <div class="nav-item nav-admin">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Anggota</span>
+      </div>
+      <div class="nav-item nav-admin">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Kelola Buku</span>
+      </div>
+      <div class="nav-item nav-admin">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Kelola Peminjaman</span>
+      </div>
+
+      <div class="nav-label">Lainnya</div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+        <span>Pengaturan</span>
+      </div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Bantuan</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="nav-item danger" id="logoutBtn">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>Keluar</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── SIDEBAR OVERLAY (mobile) ── -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ── TOGGLE BUTTON ── -->
+  <button class="toggle-btn" id="toggleBtn" aria-label="Toggle sidebar">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M2 3.5h10M2 7h10M2 10.5h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <!-- ── THEME TOGGLE ── -->
+  <div class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <div class="theme-toggle-knob" id="themeKnob">🌙</div>
+  </div>
+
+  <!-- ══════════════════════════════
+       MAIN CONTENT — KATALOG
+  ══════════════════════════════ -->
+  <main class="main catalog-main">
+
+    <!-- Header -->
+    <div class="catalog-header">
+      <div class="catalog-header-left">
+        <h1 class="catalog-title">Katalog Buku</h1>
+        <p class="catalog-subtitle">Jelajahi koleksi perpustakaan kami</p>
+      </div>
+      <div class="catalog-header-right">
+        <div class="catalog-total" id="catalogTotal">
+          <span class="catalog-total-num" id="totalNum">—</span>
+          <span class="catalog-total-label">buku tersedia</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="catalog-toolbar">
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" id="searchInput" type="text" placeholder="Cari judul atau penulis..." />
+        <button class="search-clear" id="searchClear" aria-label="Hapus pencarian">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="filter-wrap">
+        <select class="filter-select" id="categoryFilter">
+          <option value="">Semua Kategori</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Book Grid -->
+    <div class="book-grid" id="bookGrid">
+      <!-- Skeleton loader -->
+      <div class="book-skeleton"></div>
+      <div class="book-skeleton"></div>
+      <div class="book-skeleton"></div>
+      <div class="book-skeleton"></div>
+      <div class="book-skeleton"></div>
+      <div class="book-skeleton"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </div>
+      <p class="empty-title">Buku tidak ditemukan</p>
+      <p class="empty-desc">Coba ubah kata kunci atau filter kategori</p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+
+  </main>
+
+  <!-- ── LOGOUT MODAL ── -->
+  <div class="modal-overlay" id="logoutModal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <h2 class="modal-title">Keluar?</h2>
+      <p class="modal-desc">Sesi kamu akan diakhiri. Kamu perlu login kembali untuk mengakses Heavenly Library.</p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn--cancel" id="cancelLogout">Batal</button>
+        <button class="modal-btn modal-btn--confirm" id="confirmLogout">Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -13,11 +13,11 @@
 // ══════════════════════════════
 //   TAMPILKAN DATA USER
 // ══════════════════════════════
-const userData = JSON.parse(localStorage.getItem('user') ?? '{}');
+const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
 
 function getRoleLabel(role) {
   const map = {
-    admin: 'Administrator', ADMIN: 'Administrator',
+    admin: 'Admin', ADMIN: 'Admin',
     user:  'User',          USER:  'User',
   };
   return map[role] ?? role ?? '—';
@@ -184,7 +184,7 @@ async function tryRefreshToken() {
 function forceLogout() {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
-  localStorage.removeItem('user');
+  localStorage.removeItem('userData');
   window.location.href = '../form-login/index.html';
 }
 
