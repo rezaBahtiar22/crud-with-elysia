@@ -136,10 +136,16 @@ body {
   animation: ringRotate 4s linear infinite;
 }
 
+body.light .logo-mark {
+  background: linear-gradient(135deg, #6255e0 0%, #9b8dff 100%);
+}
+
 body.light .logo-mark-ring {
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(135deg, rgba(98,85,224,0.8), rgba(192,132,252,0.3), transparent) border-box;
+  background: linear-gradient(135deg, #6255e0 0%, #9b8dff 100%) !important;
+  box-shadow:
+    0 0 0 1px rgba(98,85,224,0.4),
+    0 0 20px rgba(98,85,224,0.3),
+    0 0 40px rgba(98,85,224,0.1);
 }
 
 @keyframes ringRotate {
@@ -1153,9 +1159,10 @@ body.collapsed .user-dropdown { display: none !important; }
 /* ── Header ── */
 .catalog-header {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   padding-top: 8px;
+  padding-right: 80px;
 }
 
 .catalog-title {
@@ -1177,21 +1184,38 @@ body.collapsed .user-dropdown { display: none !important; }
   flex-direction: column;
   align-items: flex-end;
   gap: 2px;
+  background: var(--hover-bg);
+  border: 1px solid rgba(124, 106, 255, 0.2);
+  border-radius: 14px;
+  padding: 8px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* efek glow di belakang angka */
+.catalog-total::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(124,106,255,0.15), transparent 70%);
+  pointer-events: none;
 }
 
 .catalog-total-num {
   font-family: 'Syne', sans-serif;
-  font-size: 26px;
+  font-size: 32px;
   font-weight: 800;
   color: var(--accent);
   line-height: 1;
+  text-shadow: 0 0 20px rgba(124, 106, 255, 0.5);
 }
 
 .catalog-total-label {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
+  font-weight: 600;
 }
 
 /* ── Toolbar ── */
@@ -1199,6 +1223,7 @@ body.collapsed .user-dropdown { display: none !important; }
   display: flex;
   gap: 12px;
   align-items: center;
+  padding-right: 80px;
 }
 
 .search-wrap {
