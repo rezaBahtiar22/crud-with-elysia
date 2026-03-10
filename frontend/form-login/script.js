@@ -3,12 +3,18 @@
 // ══════════════════════════════
 const themeToggle = document.getElementById('themeToggle');
 const themeKnob   = document.getElementById('themeKnob');
-let isLight = false;
+
+// Baca theme dari localStorage saat halaman dimuat
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+  document.body.classList.add('light');
+  themeKnob.textContent = '☀️';
+}
 
 themeToggle.addEventListener('click', () => {
-  isLight = !isLight;
-  document.body.classList.toggle('light', isLight);
+  const isLight = document.body.classList.toggle('light');
   themeKnob.textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
 });
 
 
