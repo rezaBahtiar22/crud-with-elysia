@@ -464,12 +464,19 @@ body.collapsed .nav-badge {
 }
 
 body.collapsed .sidebar-logo {
-  padding: 28px 0 20px;
-  justify-content: center;
+  padding: 20px 0 20px 0 !important;
+  justify-content: center !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+body.collapsed .logo-text-wrap {
+  display: none !important;
 }
 
 body.collapsed .logo-mark {
-  margin: 0 auto;
+  margin: 0 auto !important;
+  flex-shrink: 0 !important;
 }
 
 body.collapsed .user-card {
