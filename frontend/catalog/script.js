@@ -342,12 +342,17 @@ function initSidebar() {
 
   const isMobile = () => window.innerWidth <= 768;
 
+  if (localStorage.getItem('sidebarCollapsed') === 'true') {
+    document.body.classList.add('collapsed');
+  }
+
   toggleBtn.addEventListener('click', () => {
     if (isMobile()) {
       sidebar.classList.toggle('mobile-open');
       overlay.classList.toggle('active');
     } else {
       document.body.classList.toggle('collapsed');
+      localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed'));
     }
   });
 

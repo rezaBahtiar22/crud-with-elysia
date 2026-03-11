@@ -464,8 +464,12 @@ body.collapsed .nav-badge {
 }
 
 body.collapsed .sidebar-logo {
-  padding: 28px 14px 20px;
+  padding: 28px 0 20px;
   justify-content: center;
+}
+
+body.collapsed .logo-mark {
+  margin: 0 auto;
 }
 
 body.collapsed .user-card {

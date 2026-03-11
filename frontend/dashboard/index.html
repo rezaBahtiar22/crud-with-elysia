@@ -206,10 +206,158 @@
 
   </aside>
 
-  <!-- MAIN -->
-  <main class="main">
-    <div class="main-placeholder">Konten halaman di sini</div>
-    <div class="main-sub">Pilih menu dari sidebar untuk memulai</div>
+<!-- MAIN — BERANDA -->
+  <main class="main beranda-main" id="berandaMain">
+
+    <!-- ── HEADER BERANDA ── -->
+    <div class="beranda-header">
+      <div class="beranda-header-left">
+        <div class="beranda-greeting" id="berandaGreeting">Selamat pagi</div>
+        <h1 class="beranda-name" id="berandaName">—</h1>
+        <p class="beranda-tagline">Selamat datang kembali di Heavenly Library</p>
+      </div>
+      <div class="beranda-date" id="berandaDate"></div>
+    </div>
+
+    <!-- ── STAT CARDS ── -->
+    <div class="stat-grid" id="statGrid">
+
+      <div class="stat-card stat-card--books">
+        <div class="stat-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+        </div>
+        <div class="stat-card-body">
+          <div class="stat-card-num" id="statTotalBuku">—</div>
+          <div class="stat-card-label">Total Buku</div>
+        </div>
+        <div class="stat-card-glow"></div>
+      </div>
+
+      <div class="stat-card stat-card--available">
+        <div class="stat-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="stat-card-body">
+          <div class="stat-card-num" id="statTersedia">—</div>
+          <div class="stat-card-label">Buku Tersedia</div>
+        </div>
+        <div class="stat-card-glow"></div>
+      </div>
+
+      <div class="stat-card stat-card--borrow admin-only" id="statCardBorrow">
+        <div class="stat-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div class="stat-card-body">
+          <div class="stat-card-num" id="statPeminjaman">—</div>
+          <div class="stat-card-label">Dipinjam</div>
+        </div>
+        <div class="stat-card-glow"></div>
+      </div>
+
+      <div class="stat-card stat-card--member admin-only" id="statCardMember">
+        <div class="stat-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-card-body">
+          <div class="stat-card-num" id="statAnggota">—</div>
+          <div class="stat-card-label">Total Anggota</div>
+        </div>
+        <div class="stat-card-glow"></div>
+      </div>
+
+    </div>
+
+    <!-- ── BUKU TERBARU ── -->
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <h2 class="section-title">Buku Terbaru</h2>
+        <span class="section-badge">Koleksi terkini</span>
+      </div>
+      <button class="section-link" onclick="location.href='../catalog/index.html'">
+        Lihat Semua
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M7 4l6 6-6 6"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="book-grid-beranda" id="bookGridBeranda">
+      <!-- skeleton -->
+      <div class="book-card-beranda skeleton"></div>
+      <div class="book-card-beranda skeleton"></div>
+      <div class="book-card-beranda skeleton"></div>
+      <div class="book-card-beranda skeleton"></div>
+      <div class="book-card-beranda skeleton"></div>
+      <div class="book-card-beranda skeleton"></div>
+    </div>
+
+    <!-- ── QUICK ACTIONS ── -->
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <h2 class="section-title">Aksi Cepat</h2>
+      </div>
+    </div>
+
+    <div class="quick-actions" id="quickActions">
+      <div class="quick-btn" onclick="location.href='../catalog/index.html'">
+        <div class="quick-btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <span>Cari Buku</span>
+      </div>
+      <div class="quick-btn" onclick="location.href='../catalog/index.html'">
+        <div class="quick-btn-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <span>Pinjam Buku</span>
+      </div>
+      <div class="quick-btn admin-only" id="qbTambahBuku">
+        <div class="quick-btn-icon quick-btn-icon--accent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+        <span>Tambah Buku</span>
+      </div>
+      <div class="quick-btn admin-only" id="qbKelolaAnggota">
+        <div class="quick-btn-icon quick-btn-icon--purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <span>Kelola Anggota</span>
+      </div>
+    </div>
+
   </main>
 
   <!-- LOGOUT MODAL -->
