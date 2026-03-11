@@ -326,6 +326,17 @@ body.light .theme-toggle-knob { transform: translateX(24px); background: #fff; }
   cursor: pointer; outline: none; transition: border-color 0.2s;
   min-width: 160px;
 }
+
+.filter-select option {
+  background: #1a1a26;
+  color: #f0eff8;
+}
+
+body.light .filter-select option {
+  background: #ffffff;
+  color: #1a1a2e;
+}
+
 .filter-select:focus { border-color: rgba(124,106,255,0.4); }
 
 .total-badge {
@@ -511,24 +522,52 @@ body.light .skeleton-line {
 .modal-body { padding: 20px 24px; }
 
 /* Form */
-.form-grid { display: flex; gap: 20px; }
+.form-grid { 
+    display: flex; 
+    gap: 20px; 
+    align-items: flex-start !important;
+}
 
 .form-cover-preview {
-  width: 120px; flex-shrink: 0;
-  display: flex; flex-direction: column; gap: 8px;
+  width: 120px !important;
+  min-width: 120px !important;
+  height: 170px !important;
+  flex-shrink: 0;
+  align-self: flex-start !important;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 }
 .form-cover-preview img {
-  width: 120px; border-radius: 10px; object-fit: cover;
+  width: 120px !important;
+  height: 170px !important;
+  object-fit: cover !important;
+  border-radius: 10px !important;
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
 }
 .cover-placeholder {
-  width: 120px; height: 170px; border-radius: 10px;
+  width: 120px !important;
+  height: 170px !important;
+  border-radius: 10px;
   background: linear-gradient(135deg, #1e1e2e, #2d1f5e);
   border: 1px dashed rgba(124,106,255,0.3);
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 8px; color: rgba(124,106,255,0.4);
-  font-size: 10px; text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: rgba(124,106,255,0.4);
+  font-size: 10px;
+  text-align: center;
+  position: absolute;
+  top: 0; left: 0;
 }
-.cover-placeholder svg { width: 24px; height: 24px; }
+.cover-placeholder svg { 
+    width: 24px; 
+    height: 24px; 
+}
 
 .form-fields { flex: 1; display: flex; flex-direction: column; gap: 12px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }

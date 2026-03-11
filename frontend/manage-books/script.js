@@ -415,11 +415,17 @@ async function openEditModal(id) {
     document.getElementById('fieldDesc').value = book.description ?? '';
 
     // Preview cover
-    if (book.cover) {
-      const img = document.getElementById('coverPreviewImg');
-      img.src = book.cover;
-      img.style.display = 'block';
-      document.getElementById('coverPlaceholder').style.display = 'none';
+    // Cover preview
+    const img = document.getElementById('coverPreviewImg');
+    const placeholder = document.getElementById('coverPlaceholder');
+
+    if (book.cover && book.cover.trim() !== '') {
+        img.src = book.cover;
+        img.style.display = 'block';
+        placeholder.style.display = 'none';
+    } else {
+        img.style.display = 'none';
+        placeholder.style.display = 'flex';
     }
   } catch (err) {
     showFormError('Gagal memuat data buku');
@@ -477,7 +483,7 @@ async function saveBook() {
     ...(year && { year: parseInt(year) }),
     ...(category && { category }),
     ...(stock !== '' && { stock: parseInt(stock) }),
-    ...(cover && { cover }),
+    cover: cover || null,
     ...(description && { description })
   };
 
@@ -501,7 +507,8 @@ async function saveBook() {
 
     if (!res.ok) {
       const msg = data.errors ?? data.message ?? 'Terjadi kesalahan';
-      return showFormError(Array.isArray(msg) ? msg.join(', ') : msg);
+      const errText = typeof msg === 'string' ? msg : Array.isArray(msg) ? msg.join(', ') : JSON.stringify(msg);
+      return showFormError(errText);
     }
 
     closeBookModal();
