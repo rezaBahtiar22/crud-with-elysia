@@ -194,7 +194,13 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
     // simpan kedua token & data user
     localStorage.setItem("accessToken", data.tokens.accessToken)
     localStorage.setItem("refreshToken", data.tokens.refreshToken)
-    localStorage.setItem("userData", JSON.stringify(data.user))
+
+    const userData = data.user ?? data.data ?? {};
+    localStorage.setItem('userData', JSON.stringify({
+      ...userData,
+      accessToken: data.tokens.accessToken,
+      refreshToken: data.tokens.refreshToken
+    }));
 
     // redirect ke dashboard
     window.location.href = "../dashboard/index.html"
@@ -281,6 +287,7 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
     });
 
     const data = await response.json();
+    console.log(data);
 
     if (!response.ok) {
       // registrasi gagal dari backend
@@ -291,9 +298,15 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
     }
 
     // REGISTRASI BERHASIL → SIMPAN TOKEN → AUTO LOGIN
-    localStorage.setItem('accessToken', data.tokens.accessToken);
-    localStorage.setItem('refreshToken', data.tokens.refreshToken);
-    localStorage.setItem('userData', JSON.stringify(data.data));
+    localStorage.setItem("accessToken", data.tokens.accessToken)
+    localStorage.setItem("refreshToken", data.tokens.refreshToken)
+
+    const userData = data.user ?? data.data ?? {};
+    localStorage.setItem('userData', JSON.stringify({
+      ...userData,
+      accessToken: data.tokens.accessToken,
+      refreshToken: data.tokens.refreshToken
+    }));
 
     setLoading('btnSignUp', 'suSpinner', false);
 
