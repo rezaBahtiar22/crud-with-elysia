@@ -1,12 +1,9 @@
 import { prisma } from "../database/prisma";
 
-import type { BookData } from "../interfaces/BookInterface/adminAddBook";
-
 import type { BookDataRequest, BookDataResponse } from "../interfaces/BookInterface/adminAddBook";
 import { toAdminAddBookResponse } from "../interfaces/BookInterface/adminAddBook";
 
 import type {  AdminUpdateBookRequest, AdminUpdateBookResponse } from "../interfaces/BookInterface/adminUpdateBook";
-import { toAdminUpdateBookResponse } from "../interfaces/BookInterface/adminUpdateBook";
 
 import type { BookPaginationQuery } from "../interfaces/BookInterface/bookPagination";
 import { toBookPaginationResponse } from "../interfaces/BookInterface/bookPagination";
