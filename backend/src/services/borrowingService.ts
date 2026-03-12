@@ -77,7 +77,8 @@ export class BorrowingService {
         }
 
         // validasi dueData
-        const dueDate = new Date(body.dueDate);
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 14);  // 14 hari
         if (isNaN(dueDate.getTime()) || dueDate <= new Date()) {
             throw new ResponseError(
                 400,

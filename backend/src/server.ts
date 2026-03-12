@@ -10,6 +10,7 @@ import { ErrorMiddleware } from "./middlewares/errorMiddleware.ts";
 import { startOtpCleanerJob } from "./helper/otpCleanerJob.ts";
 import { swagger } from "@elysiajs/swagger";
 import { AdminBookRoute } from "./routes/adminBookRoute.ts";
+import { AdminBorrowingRoute, BorrowingRoute } from "./routes/borrowingRoute.ts";
 
 
 startOtpCleanerJob();
@@ -53,6 +54,8 @@ const app = new Elysia()
     .use(UserRoute)
     .use(AdminRoute)
     .use(AdminBookRoute)
+    .use(AdminBorrowingRoute)
+    .use(BorrowingRoute)
 
 
 export default app;
