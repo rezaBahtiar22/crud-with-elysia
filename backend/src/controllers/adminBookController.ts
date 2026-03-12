@@ -2,7 +2,6 @@ import { AdminBookService } from "../services/adminBookService";
 import type { AuthContext } from "../@types/context";
 import type { BookDataRequest, BookDataResponse } from "../interfaces/BookInterface/adminAddBook";
 import type { AdminUpdateBookRequest, AdminUpdateBookResponse } from "../interfaces/BookInterface/adminUpdateBook";
-import type { BookPaginationQuery, BookPaginationResponse } from "../interfaces/BookInterface/bookPagination";
 
 
 export class AdminBookController {
