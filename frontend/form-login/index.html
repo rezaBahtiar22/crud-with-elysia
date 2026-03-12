@@ -58,8 +58,8 @@
 
         <!-- Tab Switcher -->
         <div class="tab-bar">
-          <button class="tab active" id="tabSignIn" onclick="switchTab('signin')">Masuk</button>
-          <button class="tab" id="tabSignUp" onclick="switchTab('signup')">Daftar</button>
+          <button class="tab active" id="tabSignIn" onclick="switchTab('signin')" translate="no">Login</button>
+          <button class="tab" id="tabSignUp" onclick="switchTab('signup')" translate="no">Register</button>
           <div class="tab-indicator" id="tabIndicator"></div>
         </div>
 
@@ -67,7 +67,7 @@
         <div class="form-panel" id="panelSignIn">
           <div class="form-header">
             <h1 class="form-title">Selamat datang kembali</h1>
-            <p class="form-sub">Masuk ke akun Anda</p>
+            <p class="form-sub">Login ke akun Anda</p>
           </div>
 
           <form class="form" id="formSignIn" novalidate>
@@ -113,7 +113,7 @@
                 Ingat saya
               </label>
               <button type="submit" class="btn-submit" id="btnSignIn">
-                <span class="btn-text">Masuk</span>
+                <span class="btn-text" translate="no">Login</span>
                 <span class="btn-spinner" id="siSpinner"></span>
               </button>
             </div>
@@ -235,7 +235,7 @@
                 Setuju dengan <a href="#">Syarat</a> &amp; <a href="#">Privasi</a>
               </label>
               <button type="submit" class="btn-submit" id="btnSignUp">
-                <span class="btn-text">Buat Akun</span>
+                <span class="btn-text" translate="no">Register</span>
                 <span class="btn-spinner" id="suSpinner"></span>
               </button>
             </div>
