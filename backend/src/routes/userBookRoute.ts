@@ -8,7 +8,7 @@ export const UserBookRoute = new Elysia({ prefix: "/books" })
     // get all books (dengan pagination, search, filter kategori)
     .get("/", async (ctx) => {
         ctx.set.status = 200;
-        return AdminBookController.bookPagination(ctx as any);
+        return AdminBookController.bookPagination(ctx);
     }, {
         beforeHandle: [
             AuthMiddleware,

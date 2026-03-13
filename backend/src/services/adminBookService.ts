@@ -236,7 +236,12 @@ export class AdminBookService {
             );
         }
 
-        return toAdminAddBookResponse(book);
+        const result =  toAdminAddBookResponse(book);
+
+        return {
+            ...result,
+            message: "Buku ditemukan",
+        }
     }
 
 }
