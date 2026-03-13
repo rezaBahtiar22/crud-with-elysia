@@ -11,6 +11,7 @@ import { startOtpCleanerJob } from "./helper/otpCleanerJob.ts";
 import { swagger } from "@elysiajs/swagger";
 import { AdminBookRoute } from "./routes/adminBookRoute.ts";
 import { AdminBorrowingRoute, BorrowingRoute } from "./routes/borrowingRoute.ts";
+import { UserBookRoute } from "./routes/userBookRoute.ts";
 
 
 startOtpCleanerJob();
@@ -54,6 +55,7 @@ const app = new Elysia()
     .use(UserRoute)
     .use(AdminRoute)
     .use(AdminBookRoute)
+    .use(UserBookRoute)
     .use(AdminBorrowingRoute)
     .use(BorrowingRoute)
 
