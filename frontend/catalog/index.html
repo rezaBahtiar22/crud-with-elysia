@@ -75,7 +75,7 @@
           <rect x="3" y="12" width="5" height="5" rx="1"/>
           <rect x="12" y="12" width="5" height="5" rx="1"/>
         </svg>
-        <span>Dasbor</span>
+        <span>Dashboard</span>
       </div>
 
       <div class="nav-label">Perpustakaan</div>
@@ -86,7 +86,7 @@
         </svg>
         <span>Katalog Buku</span>
       </div>
-      <div class="nav-item">
+      <div class="nav-item" data-page="peminjaman" onclick="location.href='../borrowing/index.html'">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <rect x="3" y="5" width="14" height="12" rx="2"/>
           <path d="M3 9h14M7 5V3M13 5V3"/>
@@ -117,7 +117,7 @@
         </svg>
         <span>Kelola Buku</span>
       </div>
-      <div class="nav-item nav-admin">
+      <div class="nav-item nav-admin" data-page="kelola-peminjaman" onclick="location.href='../manage-borrowing/index.html'">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <rect x="3" y="5" width="14" height="12" rx="2"/>
           <path d="M3 9h14M7 5V3M13 5V3"/>
@@ -234,7 +234,7 @@
       <div class="modal-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </div>
-      <h2 class="modal-title">Keluar?</h2>
+      <h2 class="modal-title">Keluar dari Heavenly Library?</h2>
       <p class="modal-desc">Sesi kamu akan diakhiri. Kamu perlu login kembali untuk mengakses Heavenly Library.</p>
       <div class="modal-actions">
         <button class="modal-btn modal-btn--cancel" id="cancelLogout">Batal</button>
