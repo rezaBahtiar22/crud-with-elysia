@@ -396,6 +396,15 @@ body.light .book-table th { background: rgba(0,0,0,0.02); }
   background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
   display: none; align-items: center; justify-content: center;
 }
+
+.modal-title {
+  text-align: center;
+}
+
+.modal-desc {
+  text-align: center;
+}
+
 .modal-overlay.active { display: flex; }
 .modal-box {
   background: #1a1a26; border: 1px solid rgba(124,106,255,0.2);

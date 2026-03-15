@@ -216,6 +216,22 @@ body.light .modal-box { background: #fff; border-color: rgba(98,85,224,0.15); }
 .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
 .modal-footer { padding: 16px 24px; border-top: 1px solid var(--sidebar-border); display: flex; gap: 10px; }
 
+.modal-title {
+  text-align: center;
+}
+
+.modal-desc {
+  text-align: center;
+}
+
+#logoutModal .modal-btn--confirm {
+  background: #dc2626;
+}
+
+#logoutModal .modal-btn--confirm:hover {
+  background: #ef4444;
+}
+
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
 .required { color: #ff5050; }
