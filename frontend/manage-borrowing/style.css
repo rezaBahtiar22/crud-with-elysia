@@ -474,8 +474,16 @@ body.light .modal-box { background: #fff; border-color: rgba(98,85,224,0.15); }
 }
 .modal-btn--cancel  { background: var(--user-card-bg); color: var(--text-muted); border: 1px solid var(--sidebar-border); }
 .modal-btn--cancel:hover { background: var(--user-card-hover); color: var(--text-primary); }
-.modal-btn--confirm { background: var(--accent); color: #fff; }
-.modal-btn--confirm:hover { background: #9b8dff; }
+.modal-btn--confirm {
+  background: #ff5050;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255, 80, 80, 0.3);
+}
+
+.modal-btn--confirm:hover {
+  background: #ff3333;
+  box-shadow: 0 6px 20px rgba(255, 80, 80, 0.45);
+}
 .modal-btn--approve { background: #22c55e; color: #fff; }
 .modal-btn--approve:hover { background: #16a34a; }
 .modal-btn--reject  { background: #ff5050; color: #fff; }

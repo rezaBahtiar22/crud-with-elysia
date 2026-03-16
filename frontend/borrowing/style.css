@@ -200,37 +200,69 @@ body.light .theme-toggle-knob { transform: translateX(24px); background: #fff; }
 .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ══ MODAL ══ */
-.modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; }
-.modal-overlay.active { display: flex; }
-.modal-box { background: #1a1a26; border: 1px solid rgba(124,106,255,0.2); border-radius: 18px; padding: 32px; width: 90%; max-width: 420px; box-shadow: 0 24px 60px rgba(0,0,0,0.6); animation: modalIn 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal-box {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 20px;
+  padding: 36px 32px 28px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease;
+  opacity: 0;
+}
+.modal-overlay.active .modal-box {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
 body.light .modal-box { background: #fff; border-color: rgba(98,85,224,0.15); }
-.ajukan-modal-box { max-width: 480px; padding: 0; overflow: hidden; }
-.detail-modal-box { max-width: 480px; padding: 0; overflow: hidden; }
-@keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* Modal untuk ajukan & detail tetap pakai layout lama (header/body/footer) */
+.ajukan-modal-box,
+.detail-modal-box {
+  max-width: 480px;
+  padding: 0;
+  overflow: hidden;
+  align-items: stretch;
+  text-align: left;
+  gap: 0;
+  transform: translateY(16px) scale(0.97);
+}
+.modal-overlay.active .ajukan-modal-box,
+.modal-overlay.active .detail-modal-box {
+  transform: translateY(0) scale(1);
+}
 
 .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid var(--sidebar-border); }
-.modal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-primary); }
 .modal-close { width: 28px; height: 28px; border-radius: 7px; border: none; background: var(--user-card-bg); color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s, color 0.15s; }
 .modal-close:hover { background: var(--hover-bg); color: var(--text-primary); }
 .modal-close svg { width: 14px; height: 14px; }
 .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
 .modal-footer { padding: 16px 24px; border-top: 1px solid var(--sidebar-border); display: flex; gap: 10px; }
-
-.modal-title {
-  text-align: center;
-}
-
-.modal-desc {
-  text-align: center;
-}
-
-#logoutModal .modal-btn--confirm {
-  background: #dc2626;
-}
-
-#logoutModal .modal-btn--confirm:hover {
-  background: #ef4444;
-}
 
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
@@ -289,17 +321,25 @@ body.light .book-suggestions { background: #fff; }
 
 .form-error { padding: 10px 14px; background: rgba(255,80,80,0.1); border: 1px solid rgba(255,80,80,0.25); border-radius: 8px; color: #ff5050; font-size: 13px; }
 
-.modal-btn { flex: 1; padding: 10px 18px; border-radius: 10px; border: none; font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+.modal-btn { flex: 1; padding: 11px; border-radius: 10px; border: none; font-family: 'Syne', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s, transform 0.15s, opacity 0.2s; letter-spacing: 0.02em; }
+.modal-btn:hover { transform: translateY(-1px); }
+.modal-btn:active { transform: translateY(0); }
 .modal-btn--cancel { background: var(--user-card-bg); color: var(--text-muted); border: 1px solid var(--sidebar-border); }
 .modal-btn--cancel:hover { background: var(--user-card-hover); color: var(--text-primary); }
-.modal-btn--confirm { background: var(--accent); color: #fff; }
-.modal-btn--confirm:hover:not(:disabled) { background: #9b8dff; }
+.modal-btn--confirm { background: #ff5050; color: #fff; box-shadow: 0 4px 16px rgba(255,80,80,0.3); }
+.modal-btn--confirm:hover:not(:disabled) { background: #ff3333; box-shadow: 0 6px 20px rgba(255,80,80,0.45); }
 .modal-btn--confirm:disabled { opacity: 0.4; cursor: not-allowed; }
-.modal-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.modal-icon { width: 52px; height: 52px; border-radius: 14px; background: rgba(255,80,80,0.12); display: flex; align-items: center; justify-content: center; color: #ff5050; margin-bottom: 4px; }
 .modal-icon--danger { background: rgba(255,80,80,0.12); color: #ff5050; }
-.modal-icon svg { width: 24px; height: 24px; }
-.modal-desc { text-align: center; font-size: 13.5px; color: var(--text-muted); margin-top: 8px; line-height: 1.6; }
-.modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+.modal-icon svg { width: 26px; height: 26px; }
+.modal-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.modal-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; max-width: 280px; }
+.modal-actions { display: flex; gap: 10px; width: 100%; margin-top: 8px; }
+.ajukan-modal-box .modal-title,
+.detail-modal-box .modal-title {
+  font-size: 16px;
+  text-align: left;
+}
 .btn-spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
