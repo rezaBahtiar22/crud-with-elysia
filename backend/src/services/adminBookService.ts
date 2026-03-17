@@ -117,6 +117,10 @@ export class AdminBookService {
             );
         }
 
+        if (data.cover === '') {
+            data.cover = null;
+        }
+
         // buat buku baru
         const book = await prisma.book.create({
             data: {
@@ -183,6 +187,10 @@ export class AdminBookService {
 
             // available stock tidak boleh negatif
             if (availableStock < 0) availableStock = 0;
+        }
+
+        if (data.cover === '') {
+            data.cover = null;
         }
 
         // update buku

@@ -11,7 +11,7 @@ export interface AdminUpdateBookRequest {
     year?: number
     category?: string
     description?: string
-    cover?: string
+    cover?: string | null
     stock?: number
 }
 

@@ -69,7 +69,7 @@ export const AdminBookRoute = new Elysia({ prefix: "/admin" })
             year:           t.Optional(t.Number()),
             category:       t.Optional(t.String()),
             description:    t.Optional(t.String()),
-            cover:          t.Optional(t.String()),
+            cover:          t.Optional(t.Union([t.String(), t.Null()])),
             stock:          t.Optional(t.Number())
         })
     })
@@ -99,7 +99,7 @@ export const AdminBookRoute = new Elysia({ prefix: "/admin" })
             year:           t.Optional(t.Number()),
             category:       t.Optional(t.String()),
             description:    t.Optional(t.String()),
-            cover:          t.Optional(t.String()),
+            cover:          t.Optional(t.Union([t.String(), t.Null()])),
             stock:          t.Optional(t.Number())
         })
     })

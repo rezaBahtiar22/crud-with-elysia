@@ -25,9 +25,11 @@ export class BookValidation {
             .optional(),
         category: z.string().optional(),
         description: z.string().optional(),
-        cover: z.string()
-            .url("Cover must be a valid URL")
-            .optional(),
+        cover: z.union([
+            z.string().url("Cover must be a valid URL"),
+            z.literal(''),
+            z.null()
+        ]).optional(),
 
         // stock default 0 jika tidak diisi
         stock: z.number()
@@ -49,9 +51,11 @@ export class BookValidation {
             .optional(),
         category: z.string().optional(),
         description: z.string().optional(),
-        cover: z.string()
-            .url("Cover must be a valid URL")
-            .optional(),
+        cover: z.union([
+            z.string().url("Cover must be a valid URL"),
+            z.literal(''),
+            z.null()
+        ]).optional(),
         stock: z.number().int().optional()
     })
 }
