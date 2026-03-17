@@ -177,7 +177,7 @@ function renderTable(borrowings) {
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = borrowings.map(b => {
     const initials = b.user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-    const borrowedDate = formatDate(b.borrowedAt);
+    const borrowedDate = formatDate(b.borrowAt);
     const dueDate = formatDate(b.dueDate);
     const isOverdue = b.status === 'APPROVED' && new Date(b.dueDate) < new Date();
 
@@ -311,7 +311,7 @@ async function openDetail(id) {
       </div>
       <div class="detail-row">
         <span class="detail-key">Tanggal Pinjam</span>
-        <span class="detail-val">${formatDateFull(b.borrowedAt)}</span>
+        <span class="detail-val">${formatDateFull(b.borrowAt)}</span>
       </div>
       <div class="detail-row">
         <span class="detail-key">Jatuh Tempo</span>

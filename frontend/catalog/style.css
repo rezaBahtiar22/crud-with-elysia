@@ -972,10 +972,7 @@ body {
   font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: #fff;
   box-shadow: 0 0 18px var(--accent-glow); flex-shrink: 0;
 }
-.logo-text {
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px;
-  letter-spacing: -0.3px; color: var(--text-primary);
-}
+
 .user-card {
   margin: 16px 12px; padding: 12px 14px;
   background: var(--user-card-bg); border-radius: 12px;

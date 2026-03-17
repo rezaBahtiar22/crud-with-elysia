@@ -40,19 +40,37 @@ body {
   border-bottom: 1px solid var(--sidebar-border); transition: padding 0.3s;
 }
 .logo-mark {
-  width: 38px; height: 38px; border-radius: 12px;
+  width: 36px; height: 36px; border-radius: 12px;
   background: linear-gradient(135deg, #7c6aff 0%, #c084fc 100%);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; position: relative;
   box-shadow: 0 0 0 1px rgba(124,106,255,0.4), 0 0 20px rgba(124,106,255,0.4), 0 0 40px rgba(124,106,255,0.15);
 }
 .logo-mark-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; color: #fff; letter-spacing: -0.5px; position: relative; z-index: 1; }
+
 .logo-mark-ring {
-  position: absolute; inset: -3px; border-radius: 14px; border: 1px solid transparent;
-  background: linear-gradient(#13131a, #13131a) padding-box, linear-gradient(135deg, rgba(124,106,255,0.8), rgba(192,132,252,0.3), transparent) border-box;
+  position: absolute;
+  inset: -3px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#13131a, #13131a) padding-box,
+    linear-gradient(135deg, rgba(124,106,255,0.8), rgba(192,132,252,0.3), transparent) border-box;
   animation: ringRotate 4s linear infinite;
 }
-body.light .logo-mark-ring { background: linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(135deg, rgba(98,85,224,0.8), rgba(192,132,252,0.3), transparent) border-box; }
+
+body.light .logo-mark {
+  background: linear-gradient(135deg, #6255e0 0%, #9b8dff 100%);
+}
+
+body.light .logo-mark-ring {
+  background: linear-gradient(135deg, #6255e0 0%, #9b8dff 100%) !important;
+  box-shadow:
+    0 0 0 1px rgba(98,85,224,0.4),
+    0 0 20px rgba(98,85,224,0.3),
+    0 0 40px rgba(98,85,224,0.1);
+}
+
 @keyframes ringRotate { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
 .logo-text-wrap { display: flex; flex-direction: column; line-height: 1; gap: 1px; }
 .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; background: linear-gradient(135deg, #f0eff8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }

@@ -116,7 +116,7 @@ async function loadBorrowings() {
     ...(currentStatus && { status: currentStatus }),
   });
 
-  const res = await fetchWithAuth(`${BASE_URL}books/?${params}`);
+  const res = await fetchWithAuth(`${BASE_URL}borrowing/?${params}`);
   if (!res) return;
 
   const json = await res.json();
@@ -159,7 +159,7 @@ function renderCards(borrowings) {
         <div class="card-dates">
           <div class="card-date-item">
             <span class="card-date-label">Dipinjam</span>
-            <span class="card-date-val">${formatDate(b.borrowedAt)}</span>
+            <span class="card-date-val">${formatDate(b.borrowAt)}</span>
           </div>
           <div class="card-date-item">
             <span class="card-date-label">Jatuh Tempo</span>
@@ -235,7 +235,7 @@ async function openDetail(id) {
       </div>
       <div class="detail-row">
         <span class="detail-key">Tanggal Pinjam</span>
-        <span class="detail-val">${formatDateFull(b.borrowedAt)}</span>
+        <span class="detail-val">${formatDateFull(b.borrowAt)}</span>
       </div>
       <div class="detail-row">
         <span class="detail-key">Jatuh Tempo</span>
