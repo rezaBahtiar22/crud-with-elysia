@@ -183,6 +183,20 @@ function initToolbar() {
     currentPage = 1;
     loadBooks();
   });
+
+  loadAllCategories();
+}
+
+async function loadAllCategories() {
+  try {
+    const res = await fetchWithAuth(`${BASE_URL}/admin/books?page=1&limit=1000`);
+    if (!res) return;
+    const data = await res.json();
+    const books = data.data ?? [];
+    populateCategories(books);
+  } catch (err) {
+    console.error('Gagal load kategori:', err);
+  }
 }
 
 // ── Load Books ──

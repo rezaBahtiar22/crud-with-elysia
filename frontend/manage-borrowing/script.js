@@ -50,7 +50,7 @@ function loadUserInfo() {
 
   document.getElementById('userAvatar').textContent = initials;
   document.getElementById('userName').textContent = name;
-  document.getElementById('userRole').textContent = role;
+  document.getElementById('userRole').textContent = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();;
   document.getElementById('dropdownAvatar').textContent = initials;
   document.getElementById('dropdownName').textContent = name;
   document.getElementById('dropdownEmail').textContent = userData.email ?? '—';

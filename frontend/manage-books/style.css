@@ -312,6 +312,7 @@ body.light .theme-toggle-knob { transform: translateX(24px); background: #fff; }
   color: var(--text-primary); font-size: 13px; font-family: 'DM Sans', sans-serif;
   cursor: pointer; outline: none; transition: border-color 0.2s; min-width: 160px;
 }
+
 .filter-select option { background: #1a1a26; color: #f0eff8; }
 body.light .filter-select option { background: #ffffff; color: #1a1a2e; }
 .filter-select:focus { border-color: rgba(124,106,255,0.4); }
