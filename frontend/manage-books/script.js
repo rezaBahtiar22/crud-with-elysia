@@ -367,6 +367,7 @@ function initModalBook() {
       };
     } else {
       img.style.display = 'none';
+      img.src = '';
       placeholder.style.display = 'flex';
     }
   });
@@ -446,6 +447,7 @@ function clearForm() {
   ['fieldTitle','fieldAuthor','fieldIsbn','fieldPublisher','fieldYear','fieldCategory','fieldStock','fieldCover','fieldDesc']
     .forEach(id => { document.getElementById(id).value = ''; });
   document.getElementById('coverPreviewImg').style.display = 'none';
+  document.getElementById('coverPreviewImg').src = '';
   document.getElementById('coverPlaceholder').style.display = 'flex';
   hideFormError();
 }
@@ -486,6 +488,10 @@ async function saveBook() {
     cover: cover || null,
     ...(description && { description })
   };
+
+  if (editingId !== null && cover === '') {
+    body.cover = null;
+  }
 
   // Loading state
   const saveBtn = document.getElementById('modalSave');
