@@ -280,8 +280,8 @@ body.light .logo-mark-ring {
 .logo-text-wrap {
   display: flex;
   flex-direction: column;
+  gap: 0px;
   line-height: 1;
-  gap: 1px;
 }
 
 .brand-features {
@@ -304,7 +304,7 @@ body.light .feature-item { color: rgba(255,255,255,0.75); }
 .logo-text {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
-  font-size: 16px;
+  font-size: 15px;
   letter-spacing: -0.3px;
   background: linear-gradient(135deg, #f0eff8, #c084fc);
   -webkit-background-clip: text;
@@ -313,7 +313,7 @@ body.light .feature-item { color: rgba(255,255,255,0.75); }
 }
 
 body.light .logo-text {
-  background: linear-gradient(135deg, #ffffff, rgba(255,255,255,0.7));
+  background: linear-gradient(135deg, #1a1a2e, #6255e0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -325,7 +325,7 @@ body.light .logo-text {
   font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
+  color: var(--text-muted);
 }
 
 .brand-features {
