@@ -435,12 +435,11 @@ async function loadUserRecommend() {
 
 /* ── Helpers ── */
 function coverHtml(src) {
-  const placeholder = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
-  if (!src) return `<div class="dash-row-cover">${placeholder}</div>`;
-  return `<div class="dash-row-cover"><img src="${escHtml(src)}" alt="" onerror="this.outerHTML='${placeholder.replace(/'/g,"&#39;")}'" loading="lazy"></div>`;
+  if (!src) return '<div class="dash-row-cover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>';
+  return '<div class="dash-row-cover"><img src="' + escHtml(src) + '" alt="" loading="lazy" onload="this.style.opacity=1" onerror="this.parentElement.classList.add(\'cover-err\')" style="opacity:0;transition:opacity 0.2s"></div>';
 }
 function emptyHtml(msg) {
-  return `<div class="dash-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 5V3M16 5V3"/></svg><span class="dash-empty-text">${msg}</span></div>`;
+  return '<div class="dash-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 5V3M16 5V3"/></svg><span class="dash-empty-text">' + msg + '</span></div>';
 }
 function formatDate(iso) {
   if (!iso) return '—';
