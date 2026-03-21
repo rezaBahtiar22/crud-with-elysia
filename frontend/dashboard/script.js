@@ -373,6 +373,22 @@ async function loadBooks() {
     const borrowEl = document.getElementById('statPeminjaman');
     if (borrowEl) borrowEl.textContent = dipinjam;
 
+    // Total Anggota — hanya untuk admin
+    const isAdmin = ['ADMIN','admin'].includes(
+      JSON.parse(localStorage.getItem('userData') ?? '{}').role
+    );
+    if (isAdmin) {
+      try {
+        const resUsers = await fetchWithAuth(`${BASE_URL}/admin/users?page=1&limit=1`);
+        const dataUsers = await resUsers.json();
+        const anggotaEl = document.getElementById('statAnggota');
+        if (anggotaEl) anggotaEl.textContent = dataUsers.meta?.totalItems ?? '—';
+      } catch {
+        const anggotaEl = document.getElementById('statAnggota');
+        if (anggotaEl) anggotaEl.textContent = '—';
+      }
+    }
+
     // Tampilkan hanya 6 buku terbaru di grid
     renderBooks(allBooks.slice(0, 6));
 
