@@ -901,7 +901,7 @@ body.collapsed .user-dropdown {
   align-items: center;
   justify-content: space-between;
   padding-top: 8px;
-  padding-right: 80px;
+  padding-right: 0px;
 }
 
 .beranda-greeting {

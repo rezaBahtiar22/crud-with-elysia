@@ -1170,7 +1170,7 @@ body.collapsed .user-dropdown { display: none !important; }
   align-items: flex-start;
   justify-content: space-between;
   padding-top: 8px;
-  padding-right: 80px;
+  padding-right: 0px;
 }
 
 .catalog-title {
@@ -1194,8 +1194,8 @@ body.collapsed .user-dropdown { display: none !important; }
   gap: 2px;
   background: var(--hover-bg);
   border: 1px solid rgba(124, 106, 255, 0.2);
-  border-radius: 14px;
-  padding: 8px 16px;
+  border-radius: 8px;
+  padding: 6px 12px;
   position: relative;
   overflow: hidden;
 }
@@ -1211,7 +1211,7 @@ body.collapsed .user-dropdown { display: none !important; }
 
 .catalog-total-num {
   font-family: 'Syne', sans-serif;
-  font-size: 32px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--accent);
   line-height: 1;
