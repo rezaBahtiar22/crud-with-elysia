@@ -260,7 +260,7 @@ body.light .theme-toggle-knob { transform: translateX(24px); background: #fff; }
 
 .kelola-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding-top: 8px; padding-right: 80px;
+  padding-top: 8px; padding-right: 0px;
 }
 .kelola-title {
   font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
