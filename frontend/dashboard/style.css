@@ -1122,23 +1122,6 @@ body.collapsed .nav-item {
 }
 
 @media (max-width: 768px) {
-  :root { --sidebar-width: 64px; }
-
-  body { overflow: hidden; }
-
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    z-index: 200;
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), width 0.3s;
-    width: 260px !important;
-  }
-
-  .sidebar.mobile-open { transform: translateX(0); }
-
   .toggle-btn {
     left: 16px;
     top: 16px;
@@ -1148,14 +1131,6 @@ body.collapsed .nav-item {
   .theme-toggle {
     right: 16px;
     top: 16px;
-  }
-
-  .user-dropdown {
-    position: fixed;
-    left: 12px;
-    right: 12px;
-    top: auto;
-    width: auto;
   }
 
   .main.beranda-main { padding: 20px 16px 40px; }
