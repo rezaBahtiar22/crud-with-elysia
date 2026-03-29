@@ -110,14 +110,39 @@ async function loadAdminDashboard() {
 
 async function loadAdminStats() {
   try {
-    const [booksRes, aktifRes, pendingRes, overdueRes] = await Promise.all([
+    const [booksRes, borrowRes, pendingRes] = await Promise.all([
       fetchWithAuth(`${BASE_URL}/admin/books?page=1&limit=1`),
-      fetchWithAuth(`${BASE_URL}/admin/borrowing?status=APPROVED&page=1&limit=1`),
+      fetchWithAuth(`${BASE_URL}/admin/borrowing?status=APPROVED&page=1&limit=500`),
       fetchWithAuth(`${BASE_URL}/admin/borrowing?status=PENDING&page=1&limit=1`),
-      fetchWithAuth(`${BASE_URL}/admin/borrowing?status=OVERDUE&page=1&limit=1`),
     ]);
-    const set = (id, res) => res?.ok && res.json().then(d => { document.getElementById(id).textContent = d.meta?.totalItems ?? '—'; });
-    set('aTotalBuku', booksRes); set('aAktif', aktifRes); set('aPending', pendingRes); set('aTerlambat', overdueRes);
+
+    // Total buku
+    if (booksRes?.ok) {
+      booksRes.json().then(d => {
+        document.getElementById('aTotalBuku').textContent = d.meta?.totalItems ?? '—';
+      });
+    }
+
+    // Pending
+    if (pendingRes?.ok) {
+      pendingRes.json().then(d => {
+        document.getElementById('aPending').textContent = d.meta?.totalItems ?? '—';
+      });
+    }
+
+    // Aktif & Terlambat — hitung dari data APPROVED
+    if (borrowRes?.ok) {
+      const json = await borrowRes.json();
+      const all = json.data ?? [];
+      const now = new Date();
+
+      const terlambat = all.filter(b => new Date(b.dueDate) < now);
+      const aktif     = all.filter(b => new Date(b.dueDate) >= now);
+
+      document.getElementById('aAktif').textContent     = aktif.length;
+      document.getElementById('aTerlambat').textContent = terlambat.length;
+    }
+
   } catch(e) { console.error(e); }
 }
 
