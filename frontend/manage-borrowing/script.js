@@ -133,12 +133,58 @@ function initSearch() {
   });
 }
 
+function showSkeleton() {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = Array(5).fill(`
+    <tr class="skeleton-row"><td colspan="7"><div class="skeleton-line"></div></td></tr>
+  `).join('');
+}
+
 // ── LOAD BORROWINGS ──
 async function loadBorrowings() {
   showSkeleton();
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('pagination').innerHTML = '';
 
+  const now = new Date();
+
+  // Terlambat: fetch APPROVED, filter dueDate < sekarang di frontend
+  if (currentStatus === 'OVERDUE') {
+    const res = await fetchWithAuth(
+      `${BASE_URL}/admin/borrowing?page=1&limit=500&status=APPROVED`
+    );
+    if (!res) return;
+    const json = await res.json();
+    let all = (json.data ?? []).filter(b => new Date(b.dueDate) < now);
+
+    // Filter search
+    if (currentSearch) {
+      const q = currentSearch.toLowerCase();
+      all = all.filter(b =>
+        (b.user?.name ?? '').toLowerCase().includes(q) ||
+        (b.book?.title ?? '').toLowerCase().includes(q)
+      );
+    }
+
+    const totalItems = all.length;
+    const limit = 10;
+    const totalPages = Math.ceil(totalItems / limit);
+    const paged = all.slice((currentPage - 1) * limit, currentPage * limit);
+
+    document.getElementById('totalBadge').textContent = `${totalItems} peminjaman`;
+
+    if (paged.length === 0) {
+      document.getElementById('tableBody').innerHTML = '';
+      document.getElementById('emptyState').style.display = 'flex';
+      return;
+    }
+
+    renderTable(paged, true);
+    renderPagination({ page: currentPage, totalPages, totalItems });
+    return;
+  }
+
+  // Status lain: pakai API seperti biasa
   const params = new URLSearchParams({
     page: currentPage,
     limit: 10,
@@ -161,25 +207,21 @@ async function loadBorrowings() {
     return;
   }
 
-  renderTable(borrowings);
+  renderTable(borrowings, false);
   renderPagination(meta);
 }
 
-function showSkeleton() {
-  const tbody = document.getElementById('tableBody');
-  tbody.innerHTML = Array(5).fill(`
-    <tr class="skeleton-row"><td colspan="7"><div class="skeleton-line"></div></td></tr>
-  `).join('');
-}
-
 // ── RENDER TABLE ──
-function renderTable(borrowings) {
+// forceOverdue: true saat tab Terlambat — tampilkan badge Terlambat meski status APPROVED
+function renderTable(borrowings, forceOverdue = false) {
+  const now = new Date();
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = borrowings.map(b => {
     const initials = b.user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
     const borrowedDate = formatDate(b.borrowAt);
     const dueDate = formatDate(b.dueDate);
-    const isOverdue = b.status === 'APPROVED' && new Date(b.dueDate) < new Date();
+    const isOverdue = forceOverdue || (b.status === 'APPROVED' && new Date(b.dueDate) < now);
+    const displayStatus = isOverdue ? 'OVERDUE' : b.status;
 
     return `
     <tr>
@@ -214,7 +256,7 @@ function renderTable(borrowings) {
         <div class="date-main ${isOverdue ? 'date-overdue' : ''}">${dueDate}</div>
         ${isOverdue ? '<div class="date-sub date-overdue">Terlambat</div>' : ''}
       </td>
-      <td>${renderStatusBadge(b.status)}</td>
+      <td>${renderStatusBadge(displayStatus)}</td>
       <td>
         ${b.fine > 0
           ? `<span class="fine-amount">Rp ${b.fine.toLocaleString('id-ID')}</span>`
@@ -245,6 +287,7 @@ function renderTable(borrowings) {
   }).join('');
 }
 
+// ── RENDER STATUS BADGE ──
 function renderStatusBadge(status) {
   const map = {
     PENDING:  ['badge-pending',  'Menunggu'],
