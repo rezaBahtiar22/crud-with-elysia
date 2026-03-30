@@ -18,7 +18,7 @@
   </div>
 
   <!-- Sidebar Toggle -->
-  <button class="toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+  <button class="toggle-btn" id="toggleBtn" title="Toggle Sidebar">
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <path d="M4 2L8 6L4 10"/>
     </svg>
@@ -46,27 +46,20 @@
         <div class="user-name" id="userName">—</div>
         <div class="user-role" id="userRole">—</div>
       </div>
-      <span class="user-chevron" id="userChevron">⌄</span>
+      <span class="user-chevron" id="userChevron">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
     </div>
 
-    <!-- Dropdown Profile — di dalam sidebar, tepat bawah user card -->
+    <!-- Dropdown Profile -->
     <div class="user-dropdown" id="userDropdown">
       <div class="dropdown-header">
-        <div class="dropdown-avatar-wrap">
-          <div class="dropdown-avatar" id="dropdownAvatar">—</div>
-          <div class="dropdown-avatar-badge" title="Ganti foto (segera hadir)">
-            <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.8">
-              <path d="M8.5 2.5l1 1L4 9H3V8L8.5 2.5z"/>
-            </svg>
-          </div>
-        </div>
-        <div class="dropdown-user-info">
-          <div class="dropdown-name" id="dropdownName">—</div>
-          <div class="dropdown-email" id="dropdownEmail">—</div>
-        </div>
+        <div class="dropdown-avatar" id="dropdownAvatar">—</div>
+        <div class="dropdown-name" id="dropdownName">—</div>
+        <div class="dropdown-email" id="dropdownEmail">—</div>
       </div>
-
-      <div class="dropdown-divider"></div>
 
       <div class="dropdown-menu">
         <div class="dropdown-item" id="ddViewProfile">
@@ -95,7 +88,6 @@
     <!-- Nav -->
     <nav class="nav-section">
 
-      <!-- ── UTAMA ── -->
       <div class="nav-label">Utama</div>
 
       <div class="nav-item active" data-page="beranda">
@@ -115,7 +107,6 @@
         <span>Dashboard</span>
       </div>
 
-      <!-- ── PERPUSTAKAAN ── -->
       <div class="nav-label">Perpustakaan</div>
 
       <div class="nav-item" data-page="katalog" onclick="location.href='../catalog/index.html'">
@@ -143,7 +134,6 @@
         <span>Riwayat</span>
       </div>
 
-      <!-- ── MANAJEMEN (ADMIN ONLY) ── -->
       <div class="nav-label nav-admin" id="labelManajemen">Manajemen</div>
 
       <div class="nav-item nav-admin" data-page="anggota" onclick="location.href='../members/index.html'">
@@ -173,7 +163,6 @@
         <span class="nav-badge" id="badgeKelolaPeminjaman" style="display:none"></span>
       </div>
 
-      <!-- ── LAINNYA ── -->
       <div class="nav-label">Lainnya</div>
 
       <div class="nav-item" data-page="pengaturan">
@@ -206,10 +195,9 @@
 
   </aside>
 
-<!-- MAIN — BERANDA -->
+  <!-- MAIN — BERANDA -->
   <main class="main beranda-main" id="berandaMain">
 
-    <!-- ── HEADER BERANDA ── -->
     <div class="beranda-header">
       <div class="beranda-header-left">
         <div class="beranda-greeting" id="berandaGreeting">Selamat pagi</div>
@@ -219,7 +207,6 @@
       <div class="beranda-date" id="berandaDate"></div>
     </div>
 
-    <!-- ── STAT CARDS ── -->
     <div class="stat-grid" id="statGrid">
 
       <div class="stat-card stat-card--books">
@@ -284,7 +271,6 @@
 
     </div>
 
-    <!-- ── BUKU TERBARU ── -->
     <div class="section-header">
       <div class="section-title-wrap">
         <h2 class="section-title">Buku Terbaru</h2>
@@ -299,7 +285,6 @@
     </div>
 
     <div class="book-grid-beranda" id="bookGridBeranda">
-      <!-- skeleton -->
       <div class="book-card-beranda skeleton"></div>
       <div class="book-card-beranda skeleton"></div>
       <div class="book-card-beranda skeleton"></div>
@@ -308,7 +293,6 @@
       <div class="book-card-beranda skeleton"></div>
     </div>
 
-    <!-- ── QUICK ACTIONS ── -->
     <div class="section-header">
       <div class="section-title-wrap">
         <h2 class="section-title">Aksi Cepat</h2>
@@ -336,7 +320,7 @@
         </div>
         <span>Pinjam Buku</span>
       </div>
-      <div class="quick-btn admin-only" id="qbTambahBuku"  onclick="location.href='../manage-books/index.html'">
+      <div class="quick-btn admin-only" id="qbTambahBuku" onclick="location.href='../manage-books/index.html'">
         <div class="quick-btn-icon quick-btn-icon--accent">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <line x1="12" y1="5" x2="12" y2="19"/>

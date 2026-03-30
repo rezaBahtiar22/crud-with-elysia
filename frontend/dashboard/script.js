@@ -192,42 +192,18 @@ function forceLogout() {
 // ══════════════════════════════
 //   SIDEBAR TOGGLE
 // ══════════════════════════════
-const sidebarToggle  = document.getElementById('sidebarToggle');
+const sidebarToggle  = document.getElementById('toggleBtn');
 const sidebarEl      = document.querySelector('.sidebar');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-function isMobile() {
-  return window.innerWidth <= 768;
-}
 
 if (localStorage.getItem('sidebarCollapsed') === 'true') {
   document.body.classList.add('collapsed');
 }
 
 sidebarToggle.addEventListener('click', () => {
-  if (isMobile()) {
-    sidebarEl.classList.toggle('mobile-open');
-    sidebarOverlay.classList.toggle('active');
-  } else {
-    document.body.classList.toggle('collapsed');
-    // ← simpan state
-    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed'));
-  }
+  document.body.classList.toggle('collapsed');
+  localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed'));
   closeDropdown();
-});
-
-// Tutup sidebar mobile saat klik overlay
-sidebarOverlay.addEventListener('click', () => {
-  sidebarEl.classList.remove('mobile-open');
-  sidebarOverlay.classList.remove('active');
-});
-
-// Tutup sidebar mobile saat resize ke desktop
-window.addEventListener('resize', () => {
-  if (!isMobile()) {
-    sidebarEl.classList.remove('mobile-open');
-    sidebarOverlay.classList.remove('active');
-  }
 });
 
 
