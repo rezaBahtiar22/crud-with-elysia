@@ -91,7 +91,7 @@ bun run index.ts
 
 ## Environment Variables
 - NODE_ENV=production
-- DATABASE_URL=postgresql://postgres:postgres@postgres:5432/db_crud_with_elysia
+- DATABASE_URL=your-postgresql-connection-string
 - JWT_SECRET=your_secret
 - RESEND_API_KEY=your_key
 - MAIL_FROM=your_email
