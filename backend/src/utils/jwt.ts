@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET ? process.env.JWT_SECRET : "NanaErzaaJFNC128736SHAU@#$%!hd&%d";
+const JWT_SECRET = process.env.JWT_SECRET!;
 const EXPIRED_IN = "1d";
 
 // interface untuk payload JWT
