@@ -3,10 +3,10 @@ import { prisma } from "../../database/prisma"
 import * as argon2 from "argon2"
 
 async function SeedAdmin() {
-    const hashed = await argon2.hash("Admin2277!@#$");
+    const hashed = await argon2.hash(process.env.ADMIN_PASSWORD!);
 
     const admin = await prisma.user.upsert({
-        where: { email: "admin@gmail.com" },
+        where: { email: process.env.ADMIN_EMAIL! },
         update: {},
         create: {
             name: "Primordial One",
