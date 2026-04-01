@@ -10,7 +10,7 @@ async function SeedAdmin() {
         update: {},
         create: {
             name: "Primordial One",
-            email: "admin@gmail.com",
+            email: process.env.ADMIN_EMAIL!,
             password: hashed,
             role: Role.ADMIN
         }
