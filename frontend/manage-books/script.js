@@ -122,6 +122,18 @@ function initSidebar() {
       ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2L4 6L8 10"/></svg>`
       : `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 2L8 6L4 10"/></svg>`;
   }
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const span = item.querySelector('span');
+    if (!span) return;
+    const label = span.textContent.trim();
+    if (label === 'Pengaturan' || label === 'Bantuan') {
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        alert('Segera Hadir');
+      });
+    }
+  });
 }
 
 // ── User Card ──

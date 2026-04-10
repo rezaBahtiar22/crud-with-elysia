@@ -112,6 +112,26 @@ document.getElementById('ddSettings').addEventListener('click', (e) => {
   alert('Pengaturan segera hadir!');
 });
 
+// Nav: Pengaturan & Bantuan — Segera Hadir
+document.querySelectorAll('.nav-item').forEach(item => {
+  const span = item.querySelector('span');
+  if (!span) return;
+
+  if (span.textContent.trim() === 'Pengaturan') {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      alert('Segera Hadir');
+    });
+  }
+
+  if (span.textContent.trim() === 'Bantuan') {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      alert('Segera Hadir');
+    });
+  }
+});
+
 
 // ══════════════════════════════
 //   FETCH DENGAN AUTO REFRESH TOKEN

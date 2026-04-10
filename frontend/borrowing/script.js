@@ -77,6 +77,18 @@ function initSidebar() {
     localStorage.removeItem('userData');
     location.href = '../form-login/index.html';
   });
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const span = item.querySelector('span');
+    if (!span) return;
+    const label = span.textContent.trim();
+    if (label === 'Pengaturan' || label === 'Bantuan') {
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        alert('Segera Hadir');
+      });
+    }
+  });
 }
 
 // ── THEME ──

@@ -65,6 +65,18 @@ function initSidebar() {
   document.getElementById('logoutBtn').addEventListener('click', () => document.getElementById('logoutModal').classList.add('active'));
   document.getElementById('logoutCancel').addEventListener('click', () => document.getElementById('logoutModal').classList.remove('active'));
   document.getElementById('logoutConfirm').addEventListener('click', () => { localStorage.removeItem('userData'); location.href = '../form-login/index.html'; });
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const span = item.querySelector('span');
+    if (!span) return;
+    const label = span.textContent.trim();
+    if (label === 'Pengaturan' || label === 'Bantuan') {
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        alert('Segera Hadir');
+      });
+    }
+  });
 }
 
 function loadUserInfo() {

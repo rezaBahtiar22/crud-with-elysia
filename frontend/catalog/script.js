@@ -346,6 +346,18 @@ function initSidebar() {
     document.body.classList.toggle('collapsed');
     localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed'));
   });
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    const span = item.querySelector('span');
+    if (!span) return;
+    const label = span.textContent.trim();
+    if (label === 'Pengaturan' || label === 'Bantuan') {
+      item.addEventListener('click', e => {
+        e.stopPropagation();
+        alert('Segera Hadir');
+      });
+    }
+  });
 }
 
 function initTheme() {
