@@ -313,7 +313,7 @@ body.light .feature-item { color: rgba(255,255,255,0.75); }
 }
 
 body.light .logo-text {
-  background: linear-gradient(135deg, #1a1a2e, #6255e0);
+  background: linear-gradient(135deg, #ffffff, #e0d9ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -363,7 +363,7 @@ body.light .feature-dot { background: rgba(255,255,255,0.6); }
 body.light .left-footer { color: rgba(255,255,255,0.4); }
 
 body.light .logo-subtext {
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.7);
 }
 
 
@@ -830,9 +830,10 @@ body.light .field-input.error {
 
 .brand-headline {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(22px, 2.4vw, 30px);
+  font-size: clamp(16px, 1.6vw, 22px);
   font-weight: 800;
   line-height: 1.25;
+  letter-spacing: -0.4px;
   background: linear-gradient(135deg, #f0eff8, #c084fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -861,7 +862,7 @@ body.light .field-input.error {
   }
 
   .brand-headline {
-    font-size: 28px;
+    font-size: 18px;
   }
 }
 

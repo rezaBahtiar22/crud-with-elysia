@@ -276,6 +276,7 @@ body.light .theme-toggle-knob { transform: translateX(24px); background: #fff; }
   font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
   color: #fff; transition: all 0.2s;
   box-shadow: 0 4px 16px rgba(124,106,255,0.3);
+  margin-top: 15px;
 }
 .btn-tambah:hover { background: #9b8dff; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,106,255,0.4); }
 .btn-tambah svg { width: 16px; height: 16px; }
