@@ -137,7 +137,15 @@ body.light .user-dropdown { background: #fff; border-color: rgba(98,85,224,0.2);
   display: flex; align-items: center; justify-content: center;
   font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: #fff;
 }
-.dropdown-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.dropdown-name { 
+  font-family: 'Syne', sans-serif; 
+  font-size: 13px; 
+  font-weight: 700; 
+  color: var(--text-primary); 
+  text-align: center;
+  word-wrap: break-word;
+  padding: 0 10px;
+}
 .dropdown-email { font-size: 11px; color: var(--text-muted); }
 .dropdown-menu { padding: 6px; }
 .dropdown-item {

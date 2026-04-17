@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = CONFIG.API_BASE_URL;
 
 // ── AUTH ──
 function getToken() {

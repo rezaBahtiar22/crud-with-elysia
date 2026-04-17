@@ -293,6 +293,8 @@ body.light .user-dropdown {
   font-weight: 700;
   color: var(--text-primary);
   text-align: center;
+  word-wrap: break-word;
+  padding: 0 10px;
 }
 
 .dropdown-email {

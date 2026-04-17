@@ -8,7 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <title>Login dulu dek</title>
+    <title>Masuk — Heavenly Library</title>
+    <meta name="description" content="Masuk ke Heavenly Library untuk mengelola koleksi buku perpustakaan terbaik.">
 </head>
 <body>
 
@@ -61,8 +62,8 @@
 
         <!-- Tab Switcher -->
         <div class="tab-bar">
-          <button class="tab active" id="tabSignIn" onclick="switchTab('signin')" translate="no">Login</button>
-          <button class="tab" id="tabSignUp" onclick="switchTab('signup')" translate="no">Register</button>
+          <button class="tab active" id="tabSignIn" onclick="switchTab('signin')" translate="no">Masuk</button>
+          <button class="tab" id="tabSignUp" onclick="switchTab('signup')" translate="no">Daftar</button>
           <div class="tab-indicator" id="tabIndicator"></div>
         </div>
 
@@ -70,7 +71,7 @@
         <div class="form-panel" id="panelSignIn">
           <div class="form-header">
             <h1 class="form-title">Selamat datang kembali</h1>
-            <p class="form-sub">Login ke akun Anda</p>
+            <p class="form-sub">Masuk ke akun Anda</p>
           </div>
 
           <form class="form" id="formSignIn" novalidate>
@@ -116,7 +117,7 @@
                 Ingat saya
               </label>
               <button type="submit" class="btn-submit" id="btnSignIn">
-                <span class="btn-text" translate="no">Login</span>
+                <span class="btn-text" translate="no">Masuk</span>
                 <span class="btn-spinner" id="siSpinner"></span>
               </button>
             </div>
@@ -238,7 +239,7 @@
                 Setuju dengan <a href="#">Syarat</a> &amp; <a href="#">Privasi</a>
               </label>
               <button type="submit" class="btn-submit" id="btnSignUp">
-                <span class="btn-text" translate="no">Register</span>
+                <span class="btn-text" translate="no">Daftar</span>
                 <span class="btn-spinner" id="suSpinner"></span>
               </button>
             </div>
@@ -252,6 +253,7 @@
 
   </div>
 
+  <script src="../assets/js/config.js"></script>
   <script src="script.js"></script>
 
 </body>

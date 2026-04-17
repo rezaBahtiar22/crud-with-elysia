@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000/';
+const BASE_URL = CONFIG.API_BASE_URL;
 
 function getToken() {
   const u = JSON.parse(localStorage.getItem('userData') ?? '{}');
@@ -122,18 +122,49 @@ async function loadBorrowings() {
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('pagination').innerHTML = '';
 
+  const now = new Date();
+
+  // Terlambat: fetch APPROVED, filter dueDate < now di frontend
+  if (currentStatus === 'OVERDUE') {
+    const res = await fetchWithAuth(`${BASE_URL}/borrowing/?page=1&limit=500&status=APPROVED`);
+    if (!res) return;
+    const json = await res.json();
+    const all = (json.data ?? []).filter(b => new Date(b.dueDate) < now);
+
+    const totalItems = all.length;
+    const limit = 10;
+    const totalPages = Math.ceil(totalItems / limit);
+    const paged = all.slice((currentPage - 1) * limit, currentPage * limit);
+
+    if (paged.length === 0) {
+      document.getElementById('borrowList').innerHTML = '';
+      document.getElementById('emptyState').style.display = 'flex';
+      return;
+    }
+
+    renderCards(paged);
+    renderPagination({ page: currentPage, totalPages, totalItems });
+    return;
+  }
+
+  // Status lain: gunakan API standar
   const params = new URLSearchParams({
     page: currentPage,
     limit: 10,
     ...(currentStatus && { status: currentStatus }),
   });
 
-  const res = await fetchWithAuth(`${BASE_URL}borrowing/?${params}`);
+  const res = await fetchWithAuth(`${BASE_URL}/borrowing/?${params}`);
   if (!res) return;
 
   const json = await res.json();
-  const borrowings = json.data ?? [];
+  let borrowings = json.data ?? [];
   const meta = json.meta ?? {};
+
+  // Jika tab AKTIF, filter keluar yang sudah TERLAMBAT agar tidak membingungkan
+  if (currentStatus === 'APPROVED') {
+    borrowings = borrowings.filter(b => new Date(b.dueDate) >= now);
+  }
 
   if (borrowings.length === 0) {
     document.getElementById('borrowList').innerHTML = '';
@@ -185,7 +216,7 @@ function renderCards(borrowings) {
         </div>
       </div>
       <div class="card-right">
-        ${renderStatusBadge(b.status)}
+        ${renderStatusBadge(isOverdue ? 'OVERDUE' : b.status)}
         ${b.fine > 0 ? `
           <div style="text-align:right">
             <div class="card-fine-label">Denda</div>
@@ -214,7 +245,7 @@ async function openDetail(id) {
   document.getElementById('detailModalOverlay').classList.add('active');
   document.getElementById('detailModalBody').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">Memuat...</div>';
 
-  const res = await fetchWithAuth(`${BASE_URL}borrowing/${id}`);
+  const res = await fetchWithAuth(`${BASE_URL}/borrowing/${id}`);
   if (!res) return;
   const json = await res.json();
   const b = json.data;
@@ -293,7 +324,7 @@ async function searchBooks(query) {
 
   console.log('Searching:', query);
 
-  const res = await fetchWithAuth(`${BASE_URL}books?page=1&limit=20&search=${encodeURIComponent(query)}`);
+  const res = await fetchWithAuth(`${BASE_URL}/admin/books?page=1&limit=20&search=${encodeURIComponent(query)}`);
   console.log('Response status:', res?.status);
 
   if (!res) return;
@@ -371,7 +402,7 @@ async function submitAjukan() {
   submitText.style.display = 'none';
   submitBtn.disabled = true;
 
-  const res = await fetchWithAuth(`${BASE_URL}borrowing`, {
+  const res = await fetchWithAuth(`${BASE_URL}/borrowing`, {
     method: 'POST',
     body: JSON.stringify({ bookId: selectedBook.id }),
   });

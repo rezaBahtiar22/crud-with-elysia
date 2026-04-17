@@ -174,7 +174,7 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
 
   try {
     // kirim request ke backend
-    const response = await fetch("http://localhost:3000/auth/login", {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -276,7 +276,7 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
   try {
     const fullName = lastName ? `${nama} ${lastName}` : nama;
 
-    const response = await fetch('http://localhost:3000/auth/register', {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

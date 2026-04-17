@@ -177,7 +177,7 @@ async function tryRefreshToken() {
   if (!refreshToken) return false;
 
   try {
-    const response = await fetch('http://localhost:3000/auth/refresh-access-token', {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/auth/refresh-access-token`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken })
@@ -309,7 +309,7 @@ function closeLogoutModal() {
 // ══════════════════════════════
 //   BERANDA — INIT
 // ══════════════════════════════
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = CONFIG.API_BASE_URL;
 
 function initBeranda() {
   loadGreeting();
