@@ -170,7 +170,25 @@ function initUserCard() {
 function initToolbar() {
   const searchInput = document.getElementById('searchInput');
   const searchClear = document.getElementById('searchClear');
-  const categoryFilter = document.getElementById('categoryFilter');
+  const dropdown    = document.getElementById('categoryDropdown');
+  const trigger     = document.getElementById('categoryTrigger');
+
+  // Toggle dropdown
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('active');
+  });
+
+  // Close common dropdowns on click outside
+  document.addEventListener('click', () => {
+    dropdown.classList.remove('active');
+  });
+
+  // Default "Semua Kategori" option
+  const allOpt = document.querySelector('.select-option[data-value=""]');
+  if (allOpt) {
+    allOpt.addEventListener('click', () => selectCategory(''));
+  }
 
   searchInput.addEventListener('input', () => {
     searchClear.style.display = searchInput.value ? 'flex' : 'none';
@@ -190,13 +208,22 @@ function initToolbar() {
     loadBooks();
   });
 
-  categoryFilter.addEventListener('change', () => {
-    currentCategory = categoryFilter.value;
-    currentPage = 1;
-    loadBooks();
+  loadAllCategories();
+}
+
+function selectCategory(val) {
+  currentCategory = val;
+  const label = document.getElementById('selectedCategoryLabel');
+  label.textContent = val || 'Semua Kategori';
+
+  // Toggle active state in UI
+  document.querySelectorAll('.select-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.value === val);
   });
 
-  loadAllCategories();
+  document.getElementById('categoryDropdown').classList.remove('active');
+  currentPage = 1;
+  loadBooks();
 }
 
 async function loadAllCategories() {
@@ -266,15 +293,27 @@ function showSkeleton() {
 }
 
 function populateCategories(books) {
-  const filter = document.getElementById('categoryFilter');
-  const existing = new Set(Array.from(filter.options).map(o => o.value).filter(Boolean));
+  const container = document.getElementById('categoryOptions');
+  if (!container) return;
+
+  const existing = new Set(
+    Array.from(container.querySelectorAll('.select-option'))
+      .map(o => o.dataset.value)
+      .filter(Boolean)
+  );
 
   books.forEach(b => {
     if (b.category && !existing.has(b.category)) {
-      const opt = document.createElement('option');
-      opt.value = b.category;
-      opt.textContent = b.category;
-      filter.appendChild(opt);
+      const opt = document.createElement('div');
+      opt.className = 'select-option';
+      opt.dataset.value = b.category;
+      opt.textContent   = b.category;
+      
+      opt.addEventListener('click', () => {
+        selectCategory(b.category);
+      });
+
+      container.appendChild(opt);
       existing.add(b.category);
     }
   });

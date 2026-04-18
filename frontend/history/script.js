@@ -2,71 +2,19 @@ const BASE_URL = CONFIG.API_BASE_URL;
 let trendChart = null;
 let statusChart = null;
 
-function getToken() {
-  const u = JSON.parse(localStorage.getItem('userData') ?? '{}');
-  return u.accessToken ?? u.token ?? u.access_token ?? '';
-}
-function checkAuth() { if (!getToken()) location.href = '../form-login/index.html'; }
-async function fetchWithAuth(url, options = {}) {
-  const token = getToken();
-  if (!token) { location.href = '../form-login/index.html'; return null; }
-  try {
-    return await fetch(url, {
-      ...options,
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...(options.headers ?? {}) }
-    });
-  } catch { return null; }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  checkAuth();
-  initTheme();
-  initSidebar();
+  initCommon();
+  
+  // Khusus history: update chart saat ganti tema
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      if (trendChart) setTimeout(updateChartTheme, 100);
+    });
+  }
   loadPage();
 });
 
-function initTheme() {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light') { document.body.classList.add('light'); document.getElementById('themeKnob').textContent = '☀️'; }
-  document.getElementById('themeToggle').addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    const isLight = document.body.classList.contains('light');
-    document.getElementById('themeKnob').textContent = isLight ? '☀️' : '🌙';
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    if (trendChart) updateChartTheme();
-  });
-}
-
-function initSidebar() {
-  if (localStorage.getItem('sidebarCollapsed') === 'true') document.body.classList.add('collapsed');
-  document.getElementById('toggleBtn').addEventListener('click', () => {
-    document.body.classList.toggle('collapsed');
-    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed'));
-  });
-  const userCard = document.getElementById('userCard');
-  const dropdown = document.getElementById('userDropdown');
-  userCard.addEventListener('click', () => { userCard.classList.toggle('open'); dropdown.classList.toggle('open'); });
-  document.addEventListener('click', e => {
-    if (!userCard.contains(e.target) && !dropdown.contains(e.target)) {
-      userCard.classList.remove('open'); dropdown.classList.remove('open');
-    }
-  });
-  document.getElementById('logoutBtn').addEventListener('click', () => document.getElementById('logoutModal').classList.add('active'));
-  document.getElementById('logoutCancel').addEventListener('click', () => document.getElementById('logoutModal').classList.remove('active'));
-  document.getElementById('logoutConfirm').addEventListener('click', () => { localStorage.removeItem('userData'); location.href = '../form-login/index.html'; });
-
-  document.querySelectorAll('.nav-item').forEach(item => {
-    const span = item.querySelector('span');
-    if (!span) return;
-    const label = span.textContent.trim();
-    if (label === 'Pengaturan' || label === 'Bantuan') {
-      item.addEventListener('click', e => {
-        e.stopPropagation();
-        alert('Segera Hadir');
-      });
-    }
-  });
-}
 
 function loadPage() {
   const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
@@ -102,7 +50,7 @@ function loadPage() {
    ADMIN — Analytics
 ══════════════════════════════ */
 async function loadAdminHistory() {
-  const res = await fetchWithAuth(`${BASE_URL}/admin/borrowing?page=1&limit=500`);
+  const res = await apiFetch(`${BASE_URL}/admin/borrowing?page=1&limit=500`);
   if (!res?.ok) return;
   const json = await res.json();
   const all = json.data ?? [];
@@ -252,8 +200,8 @@ function renderTopUsers(all) {
       <div class="list-rank ${rankClass}">${i + 1}</div>
       <div class="list-avatar">${initials}</div>
       <div class="list-info">
-        <div class="list-title">${escHtml(item.user.name ?? '—')}</div>
-        <div class="list-sub">${escHtml(item.user.email ?? '—')}</div>
+        <div class="list-title">${escapeHtml(item.user.name ?? '—')}</div>
+        <div class="list-sub">${escapeHtml(item.user.email ?? '—')}</div>
       </div>
       <div class="list-count">${item.count}× pinjam</div>
     </div>`;
@@ -277,13 +225,13 @@ function renderTopBooks(all) {
       <div class="list-rank ${rankClass}">${i + 1}</div>
       <div class="list-cover">
         ${item.book.cover
-          ? `<img src="${escHtml(item.book.cover)}" alt="" onerror="this.style.display='none'">`
+          ? `<img src="${escapeHtml(item.book.cover)}" alt="" onerror="this.style.display='none'">`
           : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`
         }
       </div>
       <div class="list-info">
-        <div class="list-title">${escHtml(item.book.title ?? '—')}</div>
-        <div class="list-sub">${escHtml(item.book.author ?? '—')}</div>
+        <div class="list-title">${escapeHtml(item.book.title ?? '—')}</div>
+        <div class="list-sub">${escapeHtml(item.book.author ?? '—')}</div>
       </div>
       <div class="list-count">${item.count}× dipinjam</div>
     </div>`;
@@ -312,7 +260,7 @@ function updateChartTheme() {
    USER — Jurnal Bacaan
 ══════════════════════════════ */
 async function loadUserHistory(name) {
-  const res = await fetchWithAuth(`${BASE_URL}/borrowing?page=1&limit=100`);
+  const res = await apiFetch(`${BASE_URL}/borrowing?page=1&limit=100`);
   if (!res?.ok) { document.getElementById('userEmpty').style.display = 'flex'; return; }
   const json = await res.json();
   const all = json.data ?? [];
@@ -379,13 +327,13 @@ function timelineCard(b) {
   return `<div class="timeline-card">
     <div class="timeline-cover">
       ${b.book?.cover
-        ? `<img src="${escHtml(b.book.cover)}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><path d=\\'M4 19.5A2.5 2.5 0 0 1 6.5 17H20\\'/><path d=\\'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\\'/></svg>'">`
+        ? `<img src="${escapeHtml(b.book.cover)}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><path d=\\'M4 19.5A2.5 2.5 0 0 1 6.5 17H20\\'/><path d=\\'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\\'/></svg>'">`
         : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`
       }
     </div>
     <div class="timeline-info">
-      <div class="timeline-title">${escHtml(b.book?.title ?? '—')}</div>
-      <div class="timeline-author">${escHtml(b.book?.author ?? '—')}</div>
+      <div class="timeline-title">${escapeHtml(b.book?.title ?? '—')}</div>
+      <div class="timeline-author">${escapeHtml(b.book?.author ?? '—')}</div>
       <div class="timeline-dates">
         <div class="timeline-date-item">
           <span class="timeline-date-label">Dipinjam</span>
@@ -415,8 +363,4 @@ function emptyRow(msg) {
 function formatDate(iso) {
   if (!iso) return '—';
   return new Date(iso).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-function escHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }

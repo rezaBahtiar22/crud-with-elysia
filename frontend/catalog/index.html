@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/global.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -197,9 +198,16 @@
         </button>
       </div>
       <div class="filter-wrap">
-        <select class="filter-select" id="categoryFilter">
-          <option value="">Semua Kategori</option>
-        </select>
+        <div class="custom-select" id="categoryDropdown">
+          <div class="select-trigger" id="categoryTrigger">
+            <span id="selectedCategoryLabel">Semua Kategori</span>
+            <svg class="select-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg>
+          </div>
+          <div class="select-options-wrap" id="categoryOptions">
+            <div class="select-option active" data-value="">Semua Kategori</div>
+            <!-- Options dynamically filled by script.js -->
+          </div>
+        </div>
       </div>
     </div>
 
@@ -229,7 +237,7 @@
   </main>
 
   <!-- ── LOGOUT MODAL ── -->
-  <div class="modal-overlay" id="logoutModal">
+  <div class="modal-overlay" id="logoutOverlay">
     <div class="modal-box">
       <div class="modal-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -237,13 +245,14 @@
       <h2 class="modal-title">Keluar dari Heavenly Library?</h2>
       <p class="modal-desc">Sesi kamu akan diakhiri. Kamu perlu login kembali untuk mengakses Heavenly Library.</p>
       <div class="modal-actions">
-        <button class="modal-btn modal-btn--cancel" id="cancelLogout">Batal</button>
-        <button class="modal-btn modal-btn--confirm" id="confirmLogout">Keluar</button>
+        <button class="modal-btn modal-btn--cancel" id="logoutCancel">Batal</button>
+        <button class="modal-btn modal-btn--confirm" id="logoutConfirm">Keluar</button>
       </div>
     </div>
   </div>
 
   <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/common.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

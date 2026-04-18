@@ -106,6 +106,9 @@ export class BorrowingService {
         userId: number,
         query: BorrowingPaginationQuery
     ): Promise<BorrowingPaginationResponse> {
+        // Otomatis sinkronkan status terlambat sebelum ambil data
+        await BorrowingService.updateOverdueStatus();
+
         const page = query.page ?? 1;
         const limit = query.limit ?? 5;
         const skip = (page - 1) * limit;
@@ -163,6 +166,9 @@ export class BorrowingService {
     static async getAllBorrowings(
         query: BorrowingPaginationQuery
     ): Promise<BorrowingPaginationResponse> {
+        // Otomatis sinkronkan status terlambat sebelum ambil data
+        await BorrowingService.updateOverdueStatus();
+
         const page = query.page ?? 1;
         const limit = query.limit ?? 10;
         const skip = (page - 1) * limit;

@@ -1,107 +1,27 @@
+/**
+ * ══════════════════════════════
+ *   BORROWING MODULE SCRIPT
+ *   Heavenly Library — Borrowing
+ * ══════════════════════════════
+ */
+
 const BASE_URL = CONFIG.API_BASE_URL;
-
-function getToken() {
-  const u = JSON.parse(localStorage.getItem('userData') ?? '{}');
-  return u.accessToken ?? u.token ?? u.access_token ?? '';
-}
-
-function checkAuth() {
-  const token = getToken();
-  if (!token) { location.href = '../form-login/index.html'; }
-}
-
-async function fetchWithAuth(url, options = {}) {
-  const token = getToken();
-  if (!token) { location.href = '../form-login/index.html'; return null; }
-  return fetch(url, {
-    ...options,
-    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...(options.headers ?? {}) }
-  });
-}
 
 // ── STATE ──
 let currentPage = 1;
 let currentStatus = '';
 let selectedBook = null;
 let bookSearchTimer = null;
-let allBooks = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-  checkAuth();
-  loadUserInfo();
-  initSidebar();
-  initTheme();
+  // Shared UI (Auth, Sidebar, Theme, Dropdown, Logout) dari common.js
+  initCommon();
+
+  // Borrowing-specific
   initStatusTabs();
   initModals();
   loadBorrowings();
 });
-
-// ── USER INFO ──
-function loadUserInfo() {
-  const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
-  const name = userData.name ?? '?';
-  const role = (userData.role ?? '').toUpperCase();
-  const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-
-  document.getElementById('userAvatar').textContent = initials;
-  document.getElementById('userName').textContent = name;
-  document.getElementById('userRole').textContent = role === 'ADMIN' ? 'Admin' : 'User';
-  document.getElementById('dropdownAvatar').textContent = initials;
-  document.getElementById('dropdownName').textContent = name;
-  document.getElementById('dropdownEmail').textContent = userData.email ?? '—';
-
-  // Sembunyikan menu manajemen jika bukan admin
-  if (role !== 'ADMIN') {
-    document.querySelectorAll('.nav-admin').forEach(el => {
-      el.style.display = 'none';
-    });
-  }
-}
-
-// ── SIDEBAR ──
-function initSidebar() {
-  if (localStorage.getItem('sidebarCollapsed') === 'true') document.body.classList.add('collapsed');
-  document.getElementById('toggleBtn').addEventListener('click', () => {
-    document.body.classList.toggle('collapsed');
-    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed'));
-  });
-  const userCard = document.getElementById('userCard');
-  const dropdown = document.getElementById('userDropdown');
-  userCard.addEventListener('click', () => {
-    userCard.classList.toggle('open');
-    dropdown.classList.toggle('open');
-  });
-  document.getElementById('logoutBtn').addEventListener('click', () => document.getElementById('logoutModal').classList.add('active'));
-  document.getElementById('logoutCancel').addEventListener('click', () => document.getElementById('logoutModal').classList.remove('active'));
-  document.getElementById('logoutConfirm').addEventListener('click', () => {
-    localStorage.removeItem('userData');
-    location.href = '../form-login/index.html';
-  });
-
-  document.querySelectorAll('.nav-item').forEach(item => {
-    const span = item.querySelector('span');
-    if (!span) return;
-    const label = span.textContent.trim();
-    if (label === 'Pengaturan' || label === 'Bantuan') {
-      item.addEventListener('click', e => {
-        e.stopPropagation();
-        alert('Segera Hadir');
-      });
-    }
-  });
-}
-
-// ── THEME ──
-function initTheme() {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light') { document.body.classList.add('light'); document.getElementById('themeKnob').textContent = '☀️'; }
-  document.getElementById('themeToggle').addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    const isLight = document.body.classList.contains('light');
-    document.getElementById('themeKnob').textContent = isLight ? '☀️' : '🌙';
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-  });
-}
 
 // ── STATUS TABS ──
 function initStatusTabs() {
@@ -126,7 +46,7 @@ async function loadBorrowings() {
 
   // Terlambat: fetch APPROVED, filter dueDate < now di frontend
   if (currentStatus === 'OVERDUE') {
-    const res = await fetchWithAuth(`${BASE_URL}/borrowing/?page=1&limit=500&status=APPROVED`);
+    const res = await apiFetch(`${BASE_URL}/borrowing/?page=1&limit=500&status=APPROVED`);
     if (!res) return;
     const json = await res.json();
     const all = (json.data ?? []).filter(b => new Date(b.dueDate) < now);
@@ -154,7 +74,7 @@ async function loadBorrowings() {
     ...(currentStatus && { status: currentStatus }),
   });
 
-  const res = await fetchWithAuth(`${BASE_URL}/borrowing/?${params}`);
+  const res = await apiFetch(`${BASE_URL}/borrowing/?${params}`);
   if (!res) return;
 
   const json = await res.json();
@@ -245,7 +165,7 @@ async function openDetail(id) {
   document.getElementById('detailModalOverlay').classList.add('active');
   document.getElementById('detailModalBody').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">Memuat...</div>';
 
-  const res = await fetchWithAuth(`${BASE_URL}/borrowing/${id}`);
+  const res = await apiFetch(`${BASE_URL}/borrowing/${id}`);
   if (!res) return;
   const json = await res.json();
   const b = json.data;
@@ -313,33 +233,63 @@ function openAjukanModal() {
   document.getElementById('ajukanSubmit').disabled = true;
   document.getElementById('ajukanModalOverlay').classList.add('active');
   setTimeout(() => document.getElementById('bookSearchInput').focus(), 100);
+
+  // Langsung tampilkan daftar buku yang tersedia
+  loadInitialBooks();
+}
+
+// ── LOAD INITIAL BOOKS (saat modal dibuka) ──
+async function loadInitialBooks() {
+  const container = document.getElementById('bookSuggestions');
+  container.innerHTML = '<div class="no-results" style="color:var(--text-muted)">Memuat daftar buku...</div>';
+  container.style.display = 'block';
+
+  try {
+    const res = await apiFetch(`${BASE_URL}/admin/books?page=1&limit=50`);
+    if (!res) return;
+    const json = await res.json();
+    const books = json.data ?? [];
+
+    if (books.length === 0) {
+      container.innerHTML = '<div class="no-results">Tidak ada buku tersedia</div>';
+      return;
+    }
+
+    renderBookSuggestions(books, container);
+  } catch (err) {
+    container.innerHTML = '<div class="no-results">Gagal memuat daftar buku</div>';
+  }
 }
 
 // ── BOOK SEARCH ──
 async function searchBooks(query) {
+  const container = document.getElementById('bookSuggestions');
+
+  // Jika kosong, tampilkan kembali daftar awal
   if (!query || query.length < 2) {
-    document.getElementById('bookSuggestions').style.display = 'none';
+    loadInitialBooks();
     return;
   }
 
-  console.log('Searching:', query);
+  container.innerHTML = '<div class="no-results" style="color:var(--text-muted)">Mencari...</div>';
+  container.style.display = 'block';
 
-  const res = await fetchWithAuth(`${BASE_URL}/admin/books?page=1&limit=20&search=${encodeURIComponent(query)}`);
-  console.log('Response status:', res?.status);
-
+  const res = await apiFetch(`${BASE_URL}/admin/books?page=1&limit=20&search=${encodeURIComponent(query)}`);
   if (!res) return;
   const json = await res.json();
-  console.log('Response data:', json);
-
   const books = json.data ?? [];
 
-  const container = document.getElementById('bookSuggestions');
   if (books.length === 0) {
     container.innerHTML = '<div class="no-results">Buku tidak ditemukan</div>';
     container.style.display = 'block';
     return;
   }
 
+  renderBookSuggestions(books, container);
+}
+
+// ── RENDER BOOK SUGGESTIONS (shared) ──
+function renderBookSuggestions(books, container) {
   container.innerHTML = books.map(book => `
     <div class="book-suggestion-item" onclick="selectBook(${JSON.stringify(book).replace(/"/g, '&quot;')})">
       ${book.cover
@@ -366,8 +316,6 @@ function selectBook(book) {
   document.getElementById('bookSuggestions').style.display = 'none';
   document.getElementById('bookSearchInput').value = '';
 
-  // Show selected book
-  const wrap = document.getElementById('selectedBook');
   document.getElementById('selectedBookTitle').textContent = book.title;
   document.getElementById('selectedBookAuthor').textContent = book.author;
   document.getElementById('selectedBookMeta').textContent = `${book.category ?? '—'} · ${book.year ?? '—'}`;
@@ -376,7 +324,6 @@ function selectBook(book) {
   stockEl.textContent = book.availableStock > 0 ? `✓ ${book.availableStock} eksemplar tersedia` : '✗ Stok tidak tersedia';
   stockEl.className = `selected-book-stock ${book.availableStock > 1 ? 'ok' : book.availableStock === 1 ? 'low' : ''}`;
 
-  // Cover
   const coverDiv = document.getElementById('selectedBookCover');
   if (book.cover) {
     coverDiv.innerHTML = `<img src="${escHtml(book.cover)}" style="width:44px;height:62px;border-radius:6px;object-fit:cover" alt="">`;
@@ -385,7 +332,7 @@ function selectBook(book) {
     coverDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
   }
 
-  wrap.style.display = 'block';
+  document.getElementById('selectedBook').style.display = 'block';
   document.getElementById('ajukanSubmit').disabled = book.availableStock <= 0;
   document.getElementById('ajukanError').style.display = 'none';
 }
@@ -402,25 +349,36 @@ async function submitAjukan() {
   submitText.style.display = 'none';
   submitBtn.disabled = true;
 
-  const res = await fetchWithAuth(`${BASE_URL}/borrowing`, {
-    method: 'POST',
-    body: JSON.stringify({ bookId: selectedBook.id }),
-  });
+  try {
+    const res = await apiFetch(`${BASE_URL}/borrowing/`, {
+      method: 'POST',
+      body: JSON.stringify({ bookId: Number(selectedBook.id) }),
+    });
 
-  spinner.style.display = 'none';
-  submitText.style.display = 'block';
-  submitBtn.disabled = false;
+    spinner.style.display = 'none';
+    submitText.style.display = 'block';
 
-  if (res && res.ok) {
-    document.getElementById('ajukanModalOverlay').classList.remove('active');
-    showToast('Peminjaman berhasil diajukan! Menunggu persetujuan admin.', 'success');
-    loadBorrowings();
-  } else {
-    const err = res ? await res.json() : {};
-    const msg = typeof err.message === 'string' ? err.message : 'Terjadi kesalahan';
-    document.getElementById('ajukanError').textContent = msg;
-    document.getElementById('ajukanError').style.display = 'block';
+    if (res && res.ok) {
+      document.getElementById('ajukanModalOverlay').classList.remove('active');
+      showToast('Peminjaman berhasil diajukan! Menunggu persetujuan admin.', 'success');
+      loadBorrowings();
+    } else {
+      let msg = 'Terjadi kesalahan';
+      try {
+        const err = res ? await res.json() : {};
+        if (typeof err.message === 'string') msg = err.message;
+      } catch (_) { /* ignore parse error */ }
+      document.getElementById('ajukanError').textContent = msg;
+      document.getElementById('ajukanError').style.display = 'block';
+      submitBtn.disabled = false;
+    }
+  } catch (err) {
+    console.error('Submit borrowing error:', err);
+    spinner.style.display = 'none';
+    submitText.style.display = 'block';
     submitBtn.disabled = false;
+    document.getElementById('ajukanError').textContent = 'Tidak dapat terhubung ke server. Coba lagi.';
+    document.getElementById('ajukanError').style.display = 'block';
   }
 }
 

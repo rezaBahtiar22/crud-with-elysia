@@ -1,21 +1,16 @@
-/* RESET */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ══════════════════════════════
+   FORM-LOGIN SPECIFIC STYLES
+   Heavenly Library — Login/Register
+   ══════════════════════════════ */
 
-/* CSS VARIABLES — DARK (default) */
+/* Reset & base variables inherited from global.css */
+
+/* Form-login specific variables (extend/override global) */
 :root {
-  --bg:              #0e0e12;
   --card-bg:         #13131a;
   --card-border:     rgba(255, 255, 255, 0.07);
   --left-bg:         #0b0b10;
-  --accent:          #7c6aff;
-  --accent-glow:     rgba(124, 106, 255, 0.28);
   --accent-hover:    #9b8dff;
-  --text-primary:    #f0eff8;
-  --text-muted:      #7a7890;
   --text-faint:      #4a4860;
   --input-bg:        rgba(255, 255, 255, 0.05);
   --input-border:    rgba(255, 255, 255, 0.1);
@@ -26,21 +21,14 @@
   --social-bg:       rgba(255, 255, 255, 0.04);
   --social-border:   rgba(255, 255, 255, 0.08);
   --social-hover:    rgba(255, 255, 255, 0.08);
-  --shadow:          rgba(0, 0, 0, 0.6);
   --error:           #ff6b6b;
 }
 
-/* LIGHT MODE */
 body.light {
-  --bg:              #f0f0f6;
   --card-bg:         #ffffff;
   --card-border:     rgba(0, 0, 0, 0.07);
   --left-bg:         #6255e0;
-  --accent:          #6255e0;
-  --accent-glow:     rgba(98, 85, 224, 0.2);
   --accent-hover:    #7b6df5;
-  --text-primary:    #1a1a2e;
-  --text-muted:      #7777a0;
   --text-faint:      #bbbbd0;
   --input-bg:        #f7f7fc;
   --input-border:    rgba(0, 0, 0, 0.1);
@@ -51,7 +39,6 @@ body.light {
   --social-bg:       #f7f7fc;
   --social-border:   rgba(0, 0, 0, 0.08);
   --social-hover:    #ededf7;
-  --shadow:          rgba(0, 0, 0, 0.1);
   --error:           #e03535;
 }
 
@@ -66,16 +53,13 @@ body,
   transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* BODY */
+/* BODY OVERRIDES for login page */
 html, body {
   height: 100%;
   overflow: hidden;
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text-primary);
   position: relative;
 }
 
@@ -133,41 +117,15 @@ body.light .bg-grid {
   to   { transform: translate(-20px, -30px) scale(1.08); }
 }
 
-/* THEME TOGGLE */
+/* THEME TOGGLE OVERRIDES for login */
 .theme-toggle {
-  position: fixed;
-  top: 18px;
-  right: 22px;
-  z-index: 200;
-  width: 52px;
-  height: 28px;
   background: var(--card-border);
   border: 1px solid var(--card-border);
-  border-radius: 99px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 3px;
-  transition: background 0.3s, border-color 0.3s;
-  box-shadow: 0 2px 10px var(--shadow);
 }
 
 .theme-toggle-knob {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
   background: var(--card-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s;
-  box-shadow: 0 1px 4px var(--shadow);
-  transform: translateX(0);
 }
-
-body.light .theme-toggle { background: #e0def8; border-color: #c9c6f0; }
-body.light .theme-toggle-knob { transform: translateX(24px); background: #fff; }
 
 /* PAGE LAYOUT — Two Column */
 .page-layout {
@@ -221,44 +179,14 @@ body.light .theme-toggle-knob { transform: translateX(24px); background: #fff; }
   gap: 12px;
 }
 
-.logo-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #7c6aff 0%, #c084fc 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  box-shadow:
-    0 0 0 1px rgba(124,106,255,0.4),
-    0 0 20px rgba(124,106,255,0.4),
-    0 0 40px rgba(124,106,255,0.15);
-}
-
-.logo-mark-text {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 15px;
-  color: #fff;
-  letter-spacing: -0.5px;
-  position: relative;
-  z-index: 1;
-}
-
-.logo-mark-ring {
-  position: absolute;
-  inset: -3px;
-  border-radius: 14px;
-  border: 1px solid transparent;
+/* Logo overrides for login left panel */
+.left-panel .logo-mark-ring {
   background:
     linear-gradient(#0b0b10, #0b0b10) padding-box,
     linear-gradient(135deg, rgba(124,106,255,0.8), rgba(192,132,252,0.3), transparent) border-box;
-  animation: ringRotate 4s linear infinite;
 }
 
-body.light .logo-mark {
+body.light .left-panel .logo-mark {
   background: linear-gradient(135deg, #7c6aff 0%, #c084fc 100%);
   box-shadow:
     0 0 0 1px rgba(124,106,255,0.4),
@@ -266,66 +194,49 @@ body.light .logo-mark {
     0 0 40px rgba(124,106,255,0.15);
 }
 
-body.light .logo-mark-ring {
+body.light .left-panel .logo-mark-ring {
   background:
     linear-gradient(#6255e0, #6255e0) padding-box,
     linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.1), transparent) border-box;
 }
 
-@keyframes ringRotate {
-  0%   { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
-}
-
-.logo-text-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  line-height: 1;
-}
-
-.brand-features {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13.5px;
-  color: var(--text-muted);
-}
-
-body.light .feature-item { color: rgba(255,255,255,0.75); }
-
-.logo-text {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: -0.3px;
-  background: linear-gradient(135deg, #f0eff8, #c084fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-body.light .logo-text {
+body.light .left-panel .logo-text {
   background: linear-gradient(135deg, #ffffff, #e0d9ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.logo-subtext {
+body.light .left-panel .logo-subtext {
+  color: rgba(255,255,255,0.7);
+}
+
+.brand-headline {
   font-family: 'Syne', sans-serif;
-  font-weight: 400;
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  font-size: clamp(16px, 1.6vw, 22px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.4px;
+  background: linear-gradient(135deg, #f0eff8, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 300px;
+  background: linear-gradient(135deg, #f0eff8, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .brand-features {
@@ -362,11 +273,6 @@ body.light .feature-dot { background: rgba(255,255,255,0.6); }
 
 body.light .left-footer { color: rgba(255,255,255,0.4); }
 
-body.light .logo-subtext {
-  color: rgba(255,255,255,0.7);
-}
-
-
 /* RIGHT PANEL — Form */
 .right-panel {
   display: flex;
@@ -381,16 +287,9 @@ body.light .logo-subtext {
   animation: slideInRight 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.right-panel::-webkit-scrollbar {
-  width: 4px;
-}
-.right-panel::-webkit-scrollbar-track {
-  background: transparent;
-}
-.right-panel::-webkit-scrollbar-thumb {
-  background: var(--card-border);
-  border-radius: 4px;
-}
+.right-panel::-webkit-scrollbar { width: 4px; }
+.right-panel::-webkit-scrollbar-track { background: transparent; }
+.right-panel::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
 
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(20px); }
@@ -474,9 +373,7 @@ body.light .logo-subtext {
   to   { opacity: 1; transform: translateX(0); }
 }
 
-.form-header {
-  margin-bottom: 18px;
-}
+.form-header { margin-bottom: 18px; }
 
 .form-title {
   font-family: 'Syne', sans-serif;
@@ -498,7 +395,6 @@ body.light .logo-subtext {
   gap: 12px;
 }
 
-/* Two-column row for fields */
 .field-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -616,10 +512,7 @@ body.light .field-input.error {
   color: var(--text-muted);
 }
 
-/* 
-   FORM ACTIONS ROW
-   (checkbox left + button right)
- */
+/* FORM ACTIONS ROW */
 .form-actions-row {
   display: flex;
   align-items: center;
@@ -781,9 +674,19 @@ body.light .field-input.error {
   transform: translateY(-1px);
 }
 
-/* 
-   RESPONSIVE — narrow screen
- */
+/* ══════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════ */
+@media (max-width: 1024px) {
+  .left-panel {
+    padding: 40px 32px;
+  }
+
+  .brand-headline {
+    font-size: 18px;
+  }
+}
+
 @media (max-width: 768px) {
   html, body { overflow: auto; }
 
@@ -795,92 +698,14 @@ body.light .field-input.error {
   }
 
   .left-panel {
-    display: none; /* hide branding on small screens */
+    display: none;
   }
 
   .right-panel {
     height: auto;
     overflow: visible;
-    padding: 32px 20px 40px;
-    justify-content: flex-start;
-  }
-
-  .auth-card {
-    padding: 24px 20px;
-  }
-
-  .field-row {
-    grid-template-columns: 1fr;
-  }
-
-  .form-actions-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .btn-submit {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .social-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-.brand-headline {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(16px, 1.6vw, 22px);
-  font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: -0.4px;
-  background: linear-gradient(135deg, #f0eff8, #c084fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.brand-desc {
-  font-size: 14px;
-  line-height: 1.6;
-  max-width: 300px;
-  background: linear-gradient(135deg, #f0eff8, #c084fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-
-/* ══════════════════════════════
-   RESPONSIVE — FORM LOGIN
-══════════════════════════════ */
-
-/* Laptop kecil */
-@media (max-width: 1024px) {
-  .left-panel {
-    padding: 40px 32px;
-  }
-
-  .brand-headline {
-    font-size: 18px;
-  }
-}
-
-/* Tablet */
-@media (max-width: 768px) {
-  .page-layout {
-    grid-template-columns: 1fr;
-    height: auto;
-    min-height: 100vh;
-  }
-
-  /* Sembunyikan left panel di tablet & mobile */
-  .left-panel {
-    display: none;
-  }
-
-  .right-panel {
     padding: 24px 16px 40px;
+    justify-content: flex-start;
     min-height: 100vh;
   }
 
@@ -889,13 +714,11 @@ body.light .field-input.error {
     padding: 24px 20px;
   }
 
-  /* Field row jadi satu kolom */
   .field-row {
     grid-template-columns: 1fr;
     gap: 0;
   }
 
-  /* Checkbox + submit jadi vertikal */
   .form-actions-row {
     flex-direction: column;
     align-items: stretch;
@@ -917,7 +740,6 @@ body.light .field-input.error {
   }
 }
 
-/* Mobile */
 @media (max-width: 480px) {
   .right-panel {
     padding: 16px 12px 32px;

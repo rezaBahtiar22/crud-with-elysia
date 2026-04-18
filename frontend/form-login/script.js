@@ -1,24 +1,17 @@
+/**
+ * ══════════════════════════════
+ *   FORM LOGIN MODULE SCRIPT
+ *   Heavenly Library — Login/Register
+ * ══════════════════════════════
+ */
+
+// Theme Toggle — pakai setupThemeToggle() dari common.js
+setupThemeToggle();
+
+
 // ══════════════════════════════
-//   THEME TOGGLE (Dark / Light)
+//   TAB SWITCHER (Sign In / Sign Up)
 // ══════════════════════════════
-const themeToggle = document.getElementById('themeToggle');
-const themeKnob   = document.getElementById('themeKnob');
-
-// Baca theme dari localStorage saat halaman dimuat
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'light') {
-  document.body.classList.add('light');
-  themeKnob.textContent = '☀️';
-}
-
-themeToggle.addEventListener('click', () => {
-  const isLight = document.body.classList.toggle('light');
-  themeKnob.textContent = isLight ? '☀️' : '🌙';
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
-});
-
-
-// TAB SWITCHER (Sign In / Sign Up)
 const tabIndicator = document.getElementById('tabIndicator');
 const panelSignIn  = document.getElementById('panelSignIn');
 const panelSignUp  = document.getElementById('panelSignUp');
@@ -48,7 +41,9 @@ function switchTab(tab) {
 }
 
 
-// TOGGLE PASSWORD VISIBILITY
+// ══════════════════════════════
+//   TOGGLE PASSWORD VISIBILITY
+// ══════════════════════════════
 function togglePass(inputId, btn) {
   const input   = document.getElementById(inputId);
   const isHidden = input.type === 'password';
@@ -66,7 +61,9 @@ function togglePass(inputId, btn) {
 }
 
 
-// PASSWORD STRENGTH METER
+// ══════════════════════════════
+//   PASSWORD STRENGTH METER
+// ══════════════════════════════
 const suPassword    = document.getElementById('suPassword');
 const strengthFill  = document.getElementById('strengthFill');
 const strengthLabel = document.getElementById('strengthLabel');
@@ -99,7 +96,9 @@ suPassword.addEventListener('input', () => {
 });
 
 
-// VALIDATION HELPERS
+// ══════════════════════════════
+//   VALIDATION HELPERS
+// ══════════════════════════════
 function showError(id, msg) {
   const el = document.getElementById(id);
   if (el) el.textContent = msg;
@@ -133,7 +132,9 @@ function delay(ms) {
 }
 
 
-// SIGN IN FORM
+// ══════════════════════════════
+//   SIGN IN FORM
+// ══════════════════════════════
 document.getElementById('formSignIn').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -161,7 +162,7 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
     markInput('siPassword', true);
     valid = false;
   } else if (password.length < 8) {
-    showError('siPassErr', 'Kata sandi minimal 6 karakter.');
+    showError('siPassErr', 'Kata sandi minimal 8 karakter.');
     markInput('siPassword', true);
     valid = false;
   }
@@ -173,27 +174,25 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
   setLoading('btnSignIn', 'siSpinner', false);
 
   try {
-    // kirim request ke backend
     const response = await fetch(`${CONFIG.API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
-    })
+    });
 
     const data = await response.json();
 
     if (!response.ok) {
-      // login gagal dari backend
-      showError("siPassErr", data.message ?? "Email atau password salah")
-      markInput("siEmail", true)
-      markInput("siPassword", true)
-      setLoading("btnSignIn", "siSpinner", false)
-      return 
+      showError("siPassErr", data.message ?? "Email atau password salah");
+      markInput("siEmail", true);
+      markInput("siPassword", true);
+      setLoading("btnSignIn", "siSpinner", false);
+      return;
     }
 
-    // simpan kedua token & data user
-    localStorage.setItem("accessToken", data.tokens.accessToken)
-    localStorage.setItem("refreshToken", data.tokens.refreshToken)
+    // Simpan token & data user
+    localStorage.setItem("accessToken", data.tokens.accessToken);
+    localStorage.setItem("refreshToken", data.tokens.refreshToken);
 
     const userData = data.user ?? data.data ?? {};
     localStorage.setItem('userData', JSON.stringify({
@@ -202,17 +201,18 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
       refreshToken: data.tokens.refreshToken
     }));
 
-    // redirect ke dashboard
-    window.location.href = "../dashboard/index.html"
+    // Redirect ke dashboard
+    window.location.href = "../dashboard/index.html";
   } catch (err) {
-    // login gagal dari frontend
-    showError("siPassErr", "Tidak dapat terhubung ke server")
-    setLoading("btnSignIn", "siSpinner", false)
+    showError("siPassErr", "Tidak dapat terhubung ke server");
+    setLoading("btnSignIn", "siSpinner", false);
   }
 });
 
 
-// SIGN UP FORM
+// ══════════════════════════════
+//   SIGN UP FORM
+// ══════════════════════════════
 document.getElementById('formSignUp').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -287,10 +287,8 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (!response.ok) {
-      // registrasi gagal dari backend
       showError('suEmailErr', data.message ?? 'Registrasi gagal, coba lagi.');
       markInput('suEmail', true);
       setLoading('btnSignUp', 'suSpinner', false);
@@ -298,8 +296,8 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
     }
 
     // REGISTRASI BERHASIL → SIMPAN TOKEN → AUTO LOGIN
-    localStorage.setItem("accessToken", data.tokens.accessToken)
-    localStorage.setItem("refreshToken", data.tokens.refreshToken)
+    localStorage.setItem("accessToken", data.tokens.accessToken);
+    localStorage.setItem("refreshToken", data.tokens.refreshToken);
 
     const userData = data.user ?? data.data ?? {};
     localStorage.setItem('userData', JSON.stringify({
@@ -310,7 +308,7 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
 
     setLoading('btnSignUp', 'suSpinner', false);
 
-    // langsung masuk ke dashboard
+    // Langsung masuk ke dashboard
     window.location.href = '../dashboard/index.html';
 
   } catch (err) {

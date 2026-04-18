@@ -1,91 +1,37 @@
+/**
+ * ══════════════════════════════
+ *   ADMIN DASHBOARD MODULE SCRIPT
+ *   Heavenly Library — Analytics
+ * ══════════════════════════════
+ */
+
 const BASE_URL = CONFIG.API_BASE_URL;
 let borrowChart = null;
 
-function getToken() {
-  const u = JSON.parse(localStorage.getItem('userData') ?? '{}');
-  return u.accessToken ?? u.token ?? u.access_token ?? '';
-}
-function checkAuth() { if (!getToken()) location.href = '../form-login/index.html'; }
-async function fetchWithAuth(url, options = {}) {
-  const token = getToken();
-  if (!token) { location.href = '../form-login/index.html'; return null; }
-  try {
-    return await fetch(url, {
-      ...options,
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', ...(options.headers ?? {}) }
-    });
-  } catch { return null; }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-  checkAuth();
-  initTheme();
-  initSidebar();
-  loadUserInfo();
-  setGreeting();
-  setDate();
+  initCommon();
+  loadPageData();
+
+  // Khusus dashboard: update chart saat ganti tema
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      // Tunggu transisi CSS selesai sebentar
+      if (borrowChart) setTimeout(updateChartTheme, 100);
+    });
+  }
 });
 
-function initTheme() {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'light') { document.body.classList.add('light'); document.getElementById('themeKnob').textContent = '☀️'; }
-  document.getElementById('themeToggle').addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    const isLight = document.body.classList.contains('light');
-    document.getElementById('themeKnob').textContent = isLight ? '☀️' : '🌙';
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    if (borrowChart) updateChartTheme();
-  });
-}
-
-function initSidebar() {
-  if (localStorage.getItem('sidebarCollapsed') === 'true') document.body.classList.add('collapsed');
-  document.getElementById('toggleBtn').addEventListener('click', () => {
-    document.body.classList.toggle('collapsed');
-    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed'));
-  });
-  const userCard = document.getElementById('userCard');
-  const dropdown = document.getElementById('userDropdown');
-  userCard.addEventListener('click', () => { userCard.classList.toggle('open'); dropdown.classList.toggle('open'); });
-  document.addEventListener('click', e => {
-    if (!userCard.contains(e.target) && !dropdown.contains(e.target)) {
-      userCard.classList.remove('open'); dropdown.classList.remove('open');
-    }
-  });
-  document.getElementById('logoutBtn').addEventListener('click', () => document.getElementById('logoutModal').classList.add('active'));
-  document.getElementById('logoutCancel').addEventListener('click', () => document.getElementById('logoutModal').classList.remove('active'));
-  document.getElementById('logoutConfirm').addEventListener('click', () => { localStorage.removeItem('userData'); location.href = '../form-login/index.html'; });
-
-  // Nav: Pengaturan & Bantuan — Segera Hadir
-  document.querySelectorAll('.nav-item').forEach(item => {
-    const span = item.querySelector('span');
-    if (!span) return;
-    const label = span.textContent.trim();
-    if (label === 'Pengaturan' || label === 'Bantuan') {
-      item.addEventListener('click', e => {
-        e.stopPropagation();
-        alert('Segera Hadir');
-      });
-    }
-  });
-}
-
-function loadUserInfo() {
+function loadPageData() {
   const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
-  const name = userData.name ?? '?';
   const role = (userData.role ?? '').toUpperCase();
-  const initials = name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const isAdmin = role === 'ADMIN';
 
-  document.getElementById('userAvatar').textContent = initials;
-  document.getElementById('userName').textContent = name;
-  document.getElementById('userRole').textContent = role === 'ADMIN' ? 'Admin' : 'User';
-  document.getElementById('dropdownAvatar').textContent = initials;
-  document.getElementById('dropdownName').textContent = name;
-  document.getElementById('dropdownEmail').textContent = userData.email ?? '—';
-  document.getElementById('dashName').textContent = name;
+  document.getElementById('dashName').textContent = userData.name ?? '—';
+  setGreeting();
+  setDate();
 
-  if (role !== 'ADMIN') {
-    document.querySelectorAll('.nav-admin').forEach(el => el.style.display = 'none');
+  if (!isAdmin) {
     document.getElementById('dashSubtitle').textContent = 'Pantau aktivitas peminjaman Anda';
     document.getElementById('userContent').style.display = 'block';
     loadUserDashboard();
@@ -124,17 +70,19 @@ async function loadAdminDashboard() {
 async function loadAdminStats() {
   try {
     const [booksRes, aktifRes, pendingRes, overdueRes] = await Promise.all([
-      fetchWithAuth(`${BASE_URL}/admin/books?page=1&limit=1`),
-      fetchWithAuth(`${BASE_URL}/admin/borrowing?status=APPROVED&page=1&limit=1`),
-      fetchWithAuth(`${BASE_URL}/admin/borrowing?status=PENDING&page=1&limit=1`),
-      fetchWithAuth(`${BASE_URL}/admin/borrowing?status=OVERDUE&page=1&limit=1`),
+      apiFetch(`${BASE_URL}/admin/books?page=1&limit=1`),
+      apiFetch(`${BASE_URL}/admin/borrowing?status=APPROVED&page=1&limit=1`),
+      apiFetch(`${BASE_URL}/admin/borrowing?status=PENDING&page=1&limit=1`),
+      apiFetch(`${BASE_URL}/admin/borrowing?status=OVERDUE&page=1&limit=1`),
     ]);
-    const set = (id, res) => res?.ok && res.json().then(d => { document.getElementById(id).textContent = d.meta?.totalItems ?? '—'; });
-    set('aTotalBuku', booksRes); set('aAktif', aktifRes); set('aPending', pendingRes); set('aTerlambat', overdueRes);
+    
+    if (booksRes?.ok) { const d = await booksRes.json(); document.getElementById('aTotalBuku').textContent = d.meta?.totalItems ?? '—'; }
+    if (aktifRes?.ok) { const d = await aktifRes.json(); document.getElementById('aAktif').textContent = d.meta?.totalItems ?? '—'; }
+    if (pendingRes?.ok) { const d = await pendingRes.json(); document.getElementById('aPending').textContent = d.meta?.totalItems ?? '—'; }
+    if (overdueRes?.ok) { const d = await overdueRes.json(); document.getElementById('aTerlambat').textContent = d.meta?.totalItems ?? '—'; }
   } catch(e) { console.error(e); }
 }
 
-/* ── Line Chart 3 Bulan ── */
 async function loadAdminChart() {
   const now = new Date();
   const months = [], labels = [];
@@ -145,7 +93,7 @@ async function loadAdminChart() {
     labels.push(`${mn[d.getMonth()]} ${d.getFullYear()}`);
   }
   try {
-    const res = await fetchWithAuth(`${BASE_URL}/admin/borrowing?page=1&limit=500`);
+    const res = await apiFetch(`${BASE_URL}/admin/borrowing?page=1&limit=500`);
     if (!res?.ok) { renderChart(labels, [0,0,0]); return; }
     const json = await res.json();
     const all = json.data ?? [];
@@ -177,7 +125,9 @@ function getChartColors() {
 
 function renderChart(labels, data) {
   const c = getChartColors();
-  const ctx = document.getElementById('borrowChart').getContext('2d');
+  const chartEl = document.getElementById('borrowChart');
+  if (!chartEl) return;
+  const ctx = chartEl.getContext('2d');
   if (borrowChart) borrowChart.destroy();
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 220);
@@ -240,7 +190,9 @@ function renderChart(labels, data) {
 function updateChartTheme() {
   if (!borrowChart) return;
   const c = getChartColors();
-  const ctx = document.getElementById('borrowChart').getContext('2d');
+  const chartEl = document.getElementById('borrowChart');
+  if (!chartEl) return;
+  const ctx = chartEl.getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, 0, 220);
   gradient.addColorStop(0, c.fillStart);
   gradient.addColorStop(1, c.fillEnd);
@@ -255,17 +207,17 @@ function updateChartTheme() {
   borrowChart.update();
 }
 
-/* ── Jatuh Tempo 3 Hari ── */
 async function loadAdminDueSoon() {
   const el = document.getElementById('adminDueSoonList');
+  if (!el) return;
   try {
-    const res = await fetchWithAuth(`${BASE_URL}/admin/borrowing?status=APPROVED&page=1&limit=50`);
+    const res = await apiFetch(`${BASE_URL}/admin/borrowing?page=1&limit=100`);
     if (!res?.ok) { el.innerHTML = emptyHtml('Gagal memuat data'); return; }
     const json = await res.json();
     const now = new Date();
     const threeDays = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
     const list = (json.data ?? [])
-      .filter(b => new Date(b.dueDate) <= threeDays)
+      .filter(b => (b.status === 'APPROVED' || b.status === 'OVERDUE') && new Date(b.dueDate) <= threeDays)
       .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
       .slice(0, 5);
 
@@ -282,10 +234,10 @@ async function loadAdminDueSoon() {
       const isOverdue = diff < 0;
       const label = isOverdue ? `${Math.abs(diff)} hari terlambat` : diff === 0 ? 'Hari ini' : `${diff} hari lagi`;
       return `<div class="dash-row">
-        ${coverHtml(b.book?.cover)}
+        ${coverHtml(b.book?.cover, b.book?.title)}
         <div class="dash-row-info">
-          <div class="dash-row-title">${escHtml(b.book?.title ?? '—')}</div>
-          <div class="dash-row-sub">${escHtml(b.user?.name ?? '—')}</div>
+          <div class="dash-row-title">${escapeHtml(b.book?.title ?? '—')}</div>
+          <div class="dash-row-sub">${escapeHtml(b.user?.name ?? '—')}</div>
         </div>
         <div class="dash-row-right">
           <span class="dash-badge ${isOverdue ? 'badge-overdue' : 'badge-due'}">${isOverdue ? 'Terlambat' : 'Segera'}</span>
@@ -296,11 +248,11 @@ async function loadAdminDueSoon() {
   } catch { el.innerHTML = emptyHtml('Gagal memuat data'); }
 }
 
-/* ── Top 5 Buku ── */
 async function loadTopBooks() {
   const el = document.getElementById('topBooksList');
+  if (!el) return;
   try {
-    const res = await fetchWithAuth(`${BASE_URL}/admin/borrowing?page=1&limit=500`);
+    const res = await apiFetch(`${BASE_URL}/admin/borrowing?page=1&limit=500`);
     if (!res?.ok) { el.innerHTML = emptyHtml('Gagal memuat data'); return; }
     const json = await res.json();
     const freq = {};
@@ -318,9 +270,9 @@ async function loadTopBooks() {
       const rankColors = ['#f59e0b','#9ca3af','#b4783c','#7a7890','#7a7890'];
       return `<div class="top-book-row">
         <div class="top-rank" style="color:${rankColors[i]};border-color:${rankColors[i]}20">${i + 1}</div>
-        ${coverHtml(item.book?.cover)}
+        ${coverHtml(item.book?.cover, item.book?.title)}
         <div class="dash-row-info">
-          <div class="dash-row-title">${escHtml(item.book?.title ?? '—')}</div>
+          <div class="dash-row-title">${escapeHtml(item.book?.title ?? '—')}</div>
           <div class="top-bar-wrap">
             <div class="top-bar"><div class="top-bar-fill" style="width:${pct}%"></div></div>
             <span class="top-count">${item.count}×</span>
@@ -331,20 +283,20 @@ async function loadTopBooks() {
   } catch { el.innerHTML = emptyHtml('Gagal memuat data'); }
 }
 
-/* ── Pending ── */
 async function loadAdminPending() {
   const el = document.getElementById('adminPendingList');
+  if (!el) return;
   try {
-    const res = await fetchWithAuth(`${BASE_URL}/admin/borrowing?status=PENDING&page=1&limit=5`);
+    const res = await apiFetch(`${BASE_URL}/admin/borrowing?status=PENDING&page=1&limit=5`);
     if (!res?.ok) { el.innerHTML = emptyHtml('Gagal memuat data'); return; }
     const json = await res.json();
     const list = json.data ?? [];
     if (list.length === 0) { el.innerHTML = emptyHtml('Tidak ada peminjaman pending'); return; }
     el.innerHTML = list.map(b => `<div class="dash-row">
-      ${coverHtml(b.book?.cover)}
+      ${coverHtml(b.book?.cover, b.book?.title)}
       <div class="dash-row-info">
-        <div class="dash-row-title">${escHtml(b.book?.title ?? '—')}</div>
-        <div class="dash-row-sub">${escHtml(b.user?.name ?? '—')}</div>
+        <div class="dash-row-title">${escapeHtml(b.book?.title ?? '—')}</div>
+        <div class="dash-row-sub">${escapeHtml(b.user?.name ?? '—')}</div>
       </div>
       <div class="dash-row-right">
         <span class="dash-badge badge-pending">Menunggu</span>
@@ -364,19 +316,21 @@ async function loadUserDashboard() {
 async function loadUserStats() {
   try {
     const [aRes, pRes, rRes] = await Promise.all([
-      fetchWithAuth(`${BASE_URL}/borrowing?status=APPROVED&page=1&limit=1`),
-      fetchWithAuth(`${BASE_URL}/borrowing?status=PENDING&page=1&limit=1`),
-      fetchWithAuth(`${BASE_URL}/borrowing?status=RETURNED&page=1&limit=1`),
+      apiFetch(`${BASE_URL}/borrowing?status=APPROVED&page=1&limit=1`),
+      apiFetch(`${BASE_URL}/borrowing?status=PENDING&page=1&limit=1`),
+      apiFetch(`${BASE_URL}/borrowing?status=RETURNED&page=1&limit=1`),
     ]);
-    const set = (id, res) => res?.ok && res.json().then(d => { document.getElementById(id).textContent = d.meta?.totalItems ?? '—'; });
-    set('uAktif', aRes); set('uPending', pRes); set('uSelesai', rRes);
+    if (aRes?.ok) { const d = await aRes.json(); document.getElementById('uAktif').textContent = d.meta?.totalItems ?? '—'; }
+    if (pRes?.ok) { const d = await pRes.json(); document.getElementById('uPending').textContent = d.meta?.totalItems ?? '—'; }
+    if (rRes?.ok) { const d = await rRes.json(); document.getElementById('uSelesai').textContent = d.meta?.totalItems ?? '—'; }
   } catch(e) { console.error(e); }
 }
 
 async function loadUserActive() {
   const el = document.getElementById('userActiveList');
+  if (!el) return;
   try {
-    const res = await fetchWithAuth(`${BASE_URL}/borrowing?status=APPROVED&page=1&limit=3`);
+    const res = await apiFetch(`${BASE_URL}/borrowing?status=APPROVED&page=1&limit=3`);
     if (!res?.ok) { el.innerHTML = emptyHtml('Gagal memuat data'); return; }
     const list = (await res.json()).data ?? [];
     if (list.length === 0) { el.innerHTML = emptyHtml('Tidak ada peminjaman aktif'); return; }
@@ -385,10 +339,10 @@ async function loadUserActive() {
       const diff = Math.ceil((new Date(b.dueDate) - now) / 86400000);
       const isOverdue = diff < 0;
       return `<div class="dash-row">
-        ${coverHtml(b.book?.cover)}
+        ${coverHtml(b.book?.cover, b.book?.title)}
         <div class="dash-row-info">
-          <div class="dash-row-title">${escHtml(b.book?.title ?? '—')}</div>
-          <div class="dash-row-sub">${escHtml(b.book?.author ?? '—')}</div>
+          <div class="dash-row-title">${escapeHtml(b.book?.title ?? '—')}</div>
+          <div class="dash-row-sub">${escapeHtml(b.book?.author ?? '—')}</div>
         </div>
         <div class="dash-row-right">
           <span class="dash-badge ${isOverdue ? 'badge-overdue' : 'badge-approved'}">${isOverdue ? 'Terlambat' : 'Aktif'}</span>
@@ -403,8 +357,9 @@ async function loadUserActive() {
 
 async function loadUserRecommend() {
   const el = document.getElementById('userRecommendList');
+  if (!el) return;
   try {
-    const histRes = await fetchWithAuth(`${BASE_URL}/borrowing?page=1&limit=30`);
+    const histRes = await apiFetch(`${BASE_URL}/borrowing?page=1&limit=30`);
     if (!histRes?.ok) { el.innerHTML = emptyHtml('Gagal memuat rekomendasi'); return; }
     const history = (await histRes.json()).data ?? [];
     const borrowedIds = new Set(history.map(b => b.book?.id).filter(Boolean));
@@ -414,15 +369,15 @@ async function loadUserRecommend() {
 
     let books = [];
     if (topCats.length > 0) {
-      const r = await fetchWithAuth(`${BASE_URL}/books?page=1&limit=20&category=${encodeURIComponent(topCats[0])}`);
+      const r = await apiFetch(`${BASE_URL}/books?page=1&limit=20&category=${encodeURIComponent(topCats[0])}`);
       if (r?.ok) books = (await r.json()).data ?? [];
     }
     if (books.length < 3 && topCats[1]) {
-      const r2 = await fetchWithAuth(`${BASE_URL}/books?page=1&limit=10&category=${encodeURIComponent(topCats[1])}`);
+      const r2 = await apiFetch(`${BASE_URL}/books?page=1&limit=10&category=${encodeURIComponent(topCats[1])}`);
       if (r2?.ok) books = [...books, ...(await r2.json()).data ?? []];
     }
     if (books.length === 0) {
-      const r = await fetchWithAuth(`${BASE_URL}/books?page=1&limit=10`);
+      const r = await apiFetch(`${BASE_URL}/books?page=1&limit=10`);
       if (r?.ok) books = (await r.json()).data ?? [];
     }
 
@@ -431,13 +386,13 @@ async function loadUserRecommend() {
 
     el.innerHTML = books.map(b => `
       <div class="dash-row" onclick="location.href='../catalog/index.html'" style="cursor:pointer">
-        ${coverHtml(b.cover)}
+        ${coverHtml(b.cover, b.title)}
         <div class="dash-row-info">
-          <div class="dash-row-title">${escHtml(b.title ?? '—')}</div>
-          <div class="dash-row-sub">${escHtml(b.author ?? '—')}</div>
+          <div class="dash-row-title">${escapeHtml(b.title ?? '—')}</div>
+          <div class="dash-row-sub">${escapeHtml(b.author ?? '—')}</div>
         </div>
         <div class="dash-row-right">
-          <span class="cat-badge">${escHtml(b.category ?? '—')}</span>
+          <span class="cat-badge">${escapeHtml(b.category ?? '—')}</span>
           <span class="dash-row-date ${b.availableStock > 0 ? 'txt-green' : 'txt-red'}">
             ${b.availableStock > 0 ? `✓ ${b.availableStock} tersedia` : '✗ Habis'}
           </span>
@@ -447,9 +402,9 @@ async function loadUserRecommend() {
 }
 
 /* ── Helpers ── */
-function coverHtml(src) {
+function coverHtml(src, title) {
   if (!src) return '<div class="dash-row-cover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>';
-  return '<div class="dash-row-cover"><img src="' + escHtml(src) + '" alt="" loading="lazy" onload="this.style.opacity=1" onerror="this.parentElement.classList.add(\'cover-err\')" style="opacity:0;transition:opacity 0.2s"></div>';
+  return `<div class="dash-row-cover"><img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" onload="this.style.opacity=1" onerror="this.parentElement.classList.add('cover-err')" style="opacity:0;transition:opacity 0.2s"></div>`;
 }
 function emptyHtml(msg) {
   return '<div class="dash-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 5V3M16 5V3"/></svg><span class="dash-empty-text">' + msg + '</span></div>';
@@ -457,8 +412,4 @@ function emptyHtml(msg) {
 function formatDate(iso) {
   if (!iso) return '—';
   return new Date(iso).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-function escHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }

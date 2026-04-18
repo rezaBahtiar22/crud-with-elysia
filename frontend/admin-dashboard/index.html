@@ -7,12 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/global.css" />
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
-
-  <aside class="sidebar" id="sidebar">
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-mark">
         <span class="logo-mark-text">HL</span>
@@ -145,7 +146,8 @@
       <path d="M4 2L8 6L4 10"/>
     </svg>
   </button>
-  <div class="theme-toggle" id="themeToggle">
+  <!-- Theme Toggle inside sidebar or as global (already handled by common.js setup) -->
+  <div class="theme-toggle" id="themeToggle" title="Ganti tema">
     <div class="theme-toggle-knob" id="themeKnob">🌙</div>
   </div>
 
@@ -351,7 +353,7 @@
   </main>
 
   <!-- LOGOUT MODAL -->
-  <div class="modal-overlay" id="logoutModal">
+  <div class="modal-overlay" id="logoutOverlay">
     <div class="modal-box">
       <div class="modal-icon modal-icon--danger">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -371,6 +373,7 @@
 
   <div class="toast-container" id="toastContainer"></div>
   <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/common.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
