@@ -22,10 +22,21 @@ export class AdminBookService {
         const limit = query.limit ?? 10;
         const skip = (page - 1) * limit;
 
-        // total buku
+        // total buku sesuai filter
         const totalItems = await prisma.book.count({
             where: {
-                deletedAt: null
+                deletedAt: null,
+                // filter berdasarkan judul atau penulis
+                ...(query.search && {
+                    OR: [
+                        { title: { contains: query.search, mode: "insensitive" } },
+                        { author: { contains: query.search, mode: "insensitive" } }
+                    ]
+                }),
+                // filter berdasarkan kategori
+                ...(query.category && {
+                    category: { equals: query.category, mode: "insensitive" }
+                })
             }
         });
 
