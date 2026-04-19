@@ -183,7 +183,7 @@ document.getElementById('formSignIn').addEventListener('submit', async (e) => {
     const data = await response.json();
 
     if (!response.ok) {
-      showError("siPassErr", data.message ?? "Email atau password salah");
+      showError("siPassErr", formatApiError(data, "Email atau password salah"));
       markInput("siEmail", true);
       markInput("siPassword", true);
       setLoading("btnSignIn", "siSpinner", false);
@@ -289,7 +289,7 @@ document.getElementById('formSignUp').addEventListener('submit', async (e) => {
     const data = await response.json();
 
     if (!response.ok) {
-      showError('suEmailErr', data.message ?? 'Registrasi gagal, coba lagi.');
+      showError('suEmailErr', formatApiError(data, 'Registrasi gagal, coba lagi.'));
       markInput('suEmail', true);
       setLoading('btnSignUp', 'suSpinner', false);
       return;

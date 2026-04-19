@@ -6,7 +6,7 @@
   <title>Kelola Buku — Heavenly Library</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />  <link rel="stylesheet" href="../assets/css/global.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -24,12 +24,12 @@
     </div>
 
     <div class="user-card" id="userCard">
-      <div class="avatar" id="userAvatar">—</div>
+      <div class="avatar">—</div>
       <div class="user-info">
-        <div class="user-name" id="userName">Memuat...</div>
-        <div class="user-role" id="userRole">—</div>
+        <div class="user-name">Memuat...</div>
+        <div class="user-role">—</div>
       </div>
-      <span class="user-chevron" id="userChevron">
+      <span class="user-chevron">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
           <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -45,11 +45,11 @@
         <div class="dropdown-email" id="dropdownEmail">—</div>
       </div>
       <div class="dropdown-menu">
-        <div class="dropdown-item" onclick="location.href='../profile/index.html'">
+        <div class="dropdown-item" id="ddViewProfile">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
           <span>Lihat Profil</span>
         </div>
-        <div class="dropdown-item" onclick="location.href='../edit-profile/index.html'">
+        <div class="dropdown-item" id="ddEditProfile">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           <span>Edit Profil</span>
         </div>
@@ -90,21 +90,21 @@
         <span>Riwayat</span>
       </div>
 
-      <div class="nav-label">Manajemen</div>
-      <div class="nav-item" onclick="location.href='../members/index.html'">
+      <div class="nav-label nav-admin">Manajemen</div>
+      <div class="nav-item nav-admin" onclick="location.href='../members/index.html'">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
           <path d="M15 5a2 2 0 0 1 0 4M18 18c0-2.2-1.3-4-3-5"/>
         </svg>
         <span>Anggota</span>
       </div>
-      <div class="nav-item active">
+      <div class="nav-item nav-admin active">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <path d="M4 4h3v12H4zM9 4h3v12H9z"/><path d="M14 4l3 1v11l-3-1V4z"/>
         </svg>
         <span>Kelola Buku</span>
       </div>
-      <div class="nav-item" data-page="kelola-peminjaman" onclick="location.href='../manage-borrowing/index.html'">
+      <div class="nav-item nav-admin" onclick="location.href='../manage-borrowing/index.html'">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <rect x="3" y="5" width="14" height="12" rx="2"/><path d="M3 9h14M7 5V3M13 5V3"/>
           <path d="M7 13l2 2 4-4"/>
@@ -129,7 +129,7 @@
     </nav>
 
     <div class="sidebar-bottom">
-      <div class="nav-item danger" id="logoutBtn">
+      <div class="nav-item danger">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
           <path d="M13 3h3a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-3M8 14l-4-4 4-4M3 10h9"/>
         </svg>
@@ -330,21 +330,22 @@
   </div>
 
   <!-- LOGOUT MODAL -->
-  <div class="modal-overlay" id="logoutModal">
+  <div class="modal-overlay" id="logoutOverlay">
     <div class="modal-box">
-      <div class="modal-icon modal-icon--danger">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </div>
       <h2 class="modal-title">Keluar dari Heavenly Library?</h2>
-      <p class="modal-desc">Sesi Anda akan diakhiri. Pastikan semua pekerjaan telah tersimpan sebelum keluar.</p>
+      <p class="modal-desc">Sesi kamu akan diakhiri. Kamu perlu login kembali untuk mengakses Heavenly Library.</p>
       <div class="modal-actions">
         <button class="modal-btn modal-btn--cancel" id="logoutCancel">Batal</button>
-        <button class="modal-btn modal-btn--confirm" id="logoutConfirm">Ya, Keluar</button>
+        <button class="modal-btn modal-btn--confirm" id="logoutConfirm">Keluar</button>
       </div>
     </div>
   </div>
 
   <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/common.js"></script>
   <script src="script.js"></script>
 </body>
-</html>
+</html>

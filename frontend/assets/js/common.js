@@ -279,3 +279,30 @@ function escapeHtml(str) {
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
+
+/**
+ * Formats API error response into a readable string.
+ * Handles Zod validation errors, custom messages, and fallback text.
+ */
+function formatApiError(data, fallback = 'Terjadi kesalahan') {
+  if (!data) return fallback;
+
+  // 1. Array of Zod issues: [{ message: "...", path: [...] }]
+  if (Array.isArray(data.errors)) {
+    return data.errors.map(err => err.message || JSON.stringify(err)).join(', ');
+  }
+
+  // 2. data.errors as string or object
+  if (data.errors) {
+    if (typeof data.errors === 'string') return data.errors;
+    return JSON.stringify(data.errors);
+  }
+
+  // 3. Standard message field
+  if (data.message) {
+    if (typeof data.message === 'string') return data.message;
+    return JSON.stringify(data.message);
+  }
+
+  return fallback;
+}

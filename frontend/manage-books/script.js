@@ -4,31 +4,6 @@
 
 const BASE_URL = CONFIG.API_BASE_URL;
 
-// ── Auth helpers ──
-function getToken() {
-  const u = JSON.parse(localStorage.getItem('userData') ?? '{}');
-  return u.accessToken ?? u.token ?? u.access_token ?? '';
-}
-
-async function fetchWithAuth(url, options = {}) {
-  const token = getToken();
-  const res = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...(options.headers ?? {})
-    }
-  });
-
-  if (res.status === 401) {
-    localStorage.removeItem('userData');
-    location.href = '../form-login/index.html';
-    return;
-  }
-  return res;
-}
-
 // ── State ──
 let currentPage = 1;
 let currentLimit = 10;
@@ -41,130 +16,22 @@ let searchDebounce = null;
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
-  checkAuth();
-  initTheme();
-  initSidebar();
-  initUserCard();
-  loadBooks();
-  initToolbar();
-  initModalBook();
-  initModalDelete();
-  initLogout();
-});
-
-function checkAuth() {
-  const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
-
-  // Debug — hapus setelah fix
-  console.log('userData:', userData);
+  // Global Init dari common.js
+  initCommon();
   
-  // Cek token — support berbagai key
-  const token = userData.accessToken ?? userData.token ?? userData.access_token ?? '';  
-
-  if (!userData.accessToken && !userData.token) {
-    location.href = '../form-login/index.html';
-    return;
-  }
-
-    // Cek role — case insensitive
+  // Modul spesifik admin check
+  const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
   const role = (userData.role ?? '').toUpperCase();
   if (role !== 'ADMIN') {
     location.href = '../dashboard/index.html';
     return;
   }
-  // hanya admin
-  if (userData.role !== 'ADMIN') {
-    location.href = '../dashboard/index.html';
-  }
-}
 
-// ── Theme ──
-function initTheme() {
-  const toggle = document.getElementById('themeToggle');
-  const knob = document.getElementById('themeKnob');
-  const apply = (light) => {
-    document.body.classList.toggle('light', light);
-    knob.textContent = light ? '☀️' : '🌙';
-  };
-  apply(localStorage.getItem('theme') === 'light');
-  toggle.addEventListener('click', () => {
-    const isLight = document.body.classList.toggle('light');
-    knob.textContent = isLight ? '☀️' : '🌙';
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-  });
-}
-
-// ── Sidebar ──
-function initSidebar() {
-  const toggleBtn = document.getElementById('toggleBtn');
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-
-  if (localStorage.getItem('sidebarCollapsed') === 'true') {
-    document.body.classList.add('collapsed');
-    updateToggleIcon();
-  }
-
-  toggleBtn.addEventListener('click', () => {
-    document.body.classList.toggle('collapsed');
-    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('collapsed'));
-    updateToggleIcon();
-  });
-
-  overlay?.addEventListener('click', () => {
-    sidebar.classList.remove('mobile-open');
-    overlay.classList.remove('active');
-  });
-
-  function updateToggleIcon() {
-    const collapsed = document.body.classList.contains('collapsed');
-    toggleBtn.innerHTML = collapsed
-      ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2L4 6L8 10"/></svg>`
-      : `<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 2L8 6L4 10"/></svg>`;
-  }
-
-  document.querySelectorAll('.nav-item').forEach(item => {
-    const span = item.querySelector('span');
-    if (!span) return;
-    const label = span.textContent.trim();
-    if (label === 'Pengaturan' || label === 'Bantuan') {
-      item.addEventListener('click', e => {
-        e.stopPropagation();
-        alert('Segera Hadir');
-      });
-    }
-  });
-}
-
-// ── User Card ──
-function initUserCard() {
-  const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
-  const name = userData.name ?? userData.username ?? '—';
-  const role = userData.role ?? '—';
-  const email = userData.email ?? '—';
-
-  const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() || '?';
-
-  document.getElementById('userAvatar').textContent = initials;
-  document.getElementById('userName').textContent = name;
-  document.getElementById('userRole').textContent = role.charAt(0) + role.slice(1).toLowerCase();
-  document.getElementById('dropdownAvatar').textContent = initials;
-  document.getElementById('dropdownName').textContent = name;
-  document.getElementById('dropdownEmail').textContent = email;
-
-  const userCard = document.getElementById('userCard');
-  const dropdown = document.getElementById('userDropdown');
-  userCard.addEventListener('click', () => {
-    userCard.classList.toggle('open');
-    dropdown.classList.toggle('open');
-  });
-  document.addEventListener('click', (e) => {
-    if (!userCard.contains(e.target) && !dropdown.contains(e.target)) {
-      userCard.classList.remove('open');
-      dropdown.classList.remove('open');
-    }
-  });
-}
+  loadBooks();
+  initToolbar();
+  initModalBook();
+  initModalDelete();
+});
 
 // ── Toolbar ──
 function initToolbar() {
@@ -228,7 +95,7 @@ function selectCategory(val) {
 
 async function loadAllCategories() {
   try {
-    const res = await fetchWithAuth(`${BASE_URL}/admin/books?page=1&limit=1000`);
+    const res = await apiFetch(`${BASE_URL}/admin/books?page=1&limit=1000`);
     if (!res) return;
     const data = await res.json();
     const books = data.data ?? [];
@@ -250,7 +117,7 @@ async function loadBooks() {
       ...(currentCategory && { category: currentCategory })
     });
 
-    const res = await fetchWithAuth(`${BASE_URL}/admin/books?${params}`);
+    const res = await apiFetch(`${BASE_URL}/admin/books?${params}`);
     if (!res) return;
 
     const data = await res.json();
@@ -331,18 +198,18 @@ function renderTable(books) {
     const stockDotClass = book.availableStock === 0 ? 'empty' : book.availableStock <= 2 ? 'low' : 'ok';
 
     const coverHtml = book.cover
-      ? `<div class="book-thumb"><img src="${escHtml(book.cover)}" alt="" onerror="this.parentElement.innerHTML='<div class=\'book-thumb-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><path d=\'M4 19.5A2.5 2.5 0 0 1 6.5 17H20\'/><path d=\'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\'/></svg></div>'"/></div>`
+      ? `<div class="book-thumb"><img src="${escapeHtml(book.cover)}" alt="" onerror="this.parentElement.innerHTML='<div class=\'book-thumb-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><path d=\'M4 19.5A2.5 2.5 0 0 1 6.5 17H20\'/><path d=\'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\'/></svg></div>'"/></div>`
       : `<div class="book-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>`;
 
     return `
       <tr>
         <td>${coverHtml}</td>
         <td>
-          <div class="book-table-title" title="${escHtml(book.title)}">${escHtml(book.title)}</div>
-          <div class="book-table-author">${escHtml(book.author)}</div>
+          <div class="book-table-title" title="${escapeHtml(book.title)}">${escapeHtml(book.title)}</div>
+          <div class="book-table-author">${escapeHtml(book.author)}</div>
         </td>
-        <td style="font-size:12px;color:var(--text-muted);font-family:monospace">${escHtml(book.isbn ?? '—')}</td>
-        <td>${book.category ? `<span class="category-badge">${escHtml(book.category)}</span>` : '<span style="color:var(--text-muted);font-size:12px">—</span>'}</td>
+        <td style="font-size:12px;color:var(--text-muted);font-family:monospace">${escapeHtml(book.isbn ?? '—')}</td>
+        <td>${book.category ? `<span class="category-badge">${escapeHtml(book.category)}</span>` : '<span style="color:var(--text-muted);font-size:12px">—</span>'}</td>
         <td style="color:var(--text-muted);font-size:12px">${book.year ?? '—'}</td>
         <td>${book.stock ?? 0}</td>
         <td>
@@ -359,7 +226,7 @@ function renderTable(books) {
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
             </button>
-            <button class="action-btn action-btn--delete" title="Hapus" onclick="openDeleteModal(${book.id}, '${escHtml(book.title).replace(/'/g, "\\'")}')">
+            <button class="action-btn action-btn--delete" title="Hapus" onclick="openDeleteModal(${book.id}, '${escapeHtml(book.title).replace(/'/g, "\\'")}')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <polyline points="3 6 5 6 21 6"/>
                 <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
@@ -459,15 +326,15 @@ async function openEditModal(id) {
   openBookModal();
 
   try {
-    const res = await fetchWithAuth(`${BASE_URL}/admin/books/${id}`);
-    if (!res) {
-        console.log('res is null/undefined');
-        return;
+    const res = await apiFetch(`${BASE_URL}/admin/books/${id}`);
+    if (!res || !res.ok) {
+      const respData = res ? await res.json() : {};
+      showToast(formatApiError(respData, 'Gagal memuat data buku'), 'error');
+      closeBookModal();
+      return;
     }
     
-    const text = await res.text();
-    
-    const data = JSON.parse(text);
+    const data = await res.json();
     const book = data.data ?? data.book ?? data;
 
     document.getElementById('fieldTitle').value = book.title ?? '';
@@ -481,7 +348,6 @@ async function openEditModal(id) {
     document.getElementById('fieldDesc').value = book.description ?? '';
 
     // Preview cover
-    // Cover preview
     const img = document.getElementById('coverPreviewImg');
     const placeholder = document.getElementById('coverPlaceholder');
 
@@ -571,15 +437,13 @@ async function saveBook() {
     const url = isEdit ? `${BASE_URL}/admin/books/${editingId}` : `${BASE_URL}/admin/books`;
     const method = isEdit ? 'PATCH' : 'POST';
 
-    const res = await fetchWithAuth(url, { method, body: JSON.stringify(body) });
+    const res = await apiFetch(url, { method, body: JSON.stringify(body) });
     if (!res) return;
 
     const data = await res.json();
 
     if (!res.ok) {
-      const msg = data.errors ?? data.message ?? 'Terjadi kesalahan';
-      const errText = typeof msg === 'string' ? msg : Array.isArray(msg) ? msg.join(', ') : JSON.stringify(msg);
-      return showFormError(errText);
+      return showFormError(formatApiError(data));
     }
 
     closeBookModal();
@@ -626,7 +490,7 @@ async function confirmDelete() {
   text.style.display = 'none';
 
   try {
-    const res = await fetchWithAuth(`${BASE_URL}/admin/books/${deleteId}`, { method: 'DELETE' });
+    const res = await apiFetch(`${BASE_URL}/admin/books/${deleteId}`, { method: 'DELETE' });
     if (!res) return;
 
     if (res.ok) {
@@ -648,24 +512,7 @@ async function confirmDelete() {
   }
 }
 
-// ── Logout ──
-function initLogout() {
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    document.getElementById('logoutModal').classList.add('active');
-  });
-  document.getElementById('logoutCancel').addEventListener('click', () => {
-    document.getElementById('logoutModal').classList.remove('active');
-  });
-  document.getElementById('logoutConfirm').addEventListener('click', async () => {
-    try {
-      await fetchWithAuth(`${BASE_URL}/user/logout`, { method: 'POST' });
-    } catch {}
-    localStorage.removeItem('userData');
-    location.href = '../form-login/index.html';
-  });
-}
-
-// ── Toast Notification ──
+// ── Toast Notification (Keep local for now) ──
 function showToast(msg, type = 'success') {
   const existing = document.getElementById('toast');
   if (existing) existing.remove();
@@ -690,10 +537,4 @@ function showToast(msg, type = 'success') {
   toast.innerHTML = icon + msg;
   document.body.appendChild(toast);
   setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
-}
-
-// ── Helpers ──
-function escHtml(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+}
