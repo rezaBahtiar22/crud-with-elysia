@@ -40,7 +40,8 @@ function initStatusTabs() {
 async function loadBorrowings() {
   showSkeleton();
   document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('pagination').innerHTML = '';
+  const paginationEl = document.getElementById('pagination');
+  if (paginationEl) paginationEl.innerHTML = '';
 
   const now = new Date();
 
@@ -110,15 +111,15 @@ function renderCards(borrowings) {
     return `
     <div class="borrow-card" onclick="openDetail(${b.id})">
       ${b.book.cover
-        ? `<img class="card-cover" src="${escHtml(b.book.cover)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        ? `<img class="card-cover" src="${escapeHtml(b.book.cover)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
         : ''
       }
       <div class="card-cover-placeholder" style="display:${b.book.cover ? 'none' : 'flex'}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       </div>
       <div class="card-info">
-        <div class="card-book-title">${escHtml(b.book.title)}</div>
-        <div class="card-book-author">${escHtml(b.book.author)}</div>
+        <div class="card-book-title">${escapeHtml(b.book.title)}</div>
+        <div class="card-book-author">${escapeHtml(b.book.author)}</div>
         <div class="card-dates">
           <div class="card-date-item">
             <span class="card-date-label">Dipinjam</span>
@@ -165,87 +166,108 @@ async function openDetail(id) {
   document.getElementById('detailModalOverlay').classList.add('active');
   document.getElementById('detailModalBody').innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">Memuat...</div>';
 
-  const res = await apiFetch(`${BASE_URL}/borrowing/${id}`);
-  if (!res) return;
-  const json = await res.json();
-  const b = json.data;
-  if (!b) return;
+  try {
+    const res = await apiFetch(`${BASE_URL}/borrowing/${id}`);
+    if (!res || !res.ok) {
+      document.getElementById('detailModalBody').innerHTML = '<div style="padding:20px;text-align:center;color:#ff5050">Gagal memuat data peminjaman.</div>';
+      return;
+    }
+    const json = await res.json();
+    const b = json.data;
+    if (!b) {
+      document.getElementById('detailModalBody').innerHTML = '<div style="padding:20px;text-align:center;color:#ff5050">Data tidak ditemukan.</div>';
+      return;
+    }
 
-  const dueDate = new Date(b.dueDate);
-  const now = new Date();
-  const isOverdue = (b.status === 'APPROVED' || b.status === 'OVERDUE') && dueDate < now;
-  const daysLate = isOverdue ? Math.ceil((now - dueDate) / (1000 * 60 * 60 * 24)) : 0;
+    const dueDate = new Date(b.dueDate);
+    const now = new Date();
+    const isOverdue = (b.status === 'APPROVED' || b.status === 'OVERDUE') && dueDate < now;
+    const daysLate = isOverdue ? Math.ceil((now - dueDate) / (1000 * 60 * 60 * 24)) : 0;
 
-  document.getElementById('detailModalBody').innerHTML = `
-    <div class="detail-section">
-      <div class="detail-label">Buku</div>
-      <div class="detail-book-card">
-        ${b.book.cover
-          ? `<img class="detail-book-cover" src="${escHtml(b.book.cover)}" alt="">`
-          : `<div class="detail-book-cover" style="display:flex;align-items:center;justify-content:center;color:rgba(124,106,255,0.3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>`
-        }
-        <div>
-          <div class="detail-book-title">${escHtml(b.book.title)}</div>
-          <div class="detail-book-author">${escHtml(b.book.author)}</div>
+    document.getElementById('detailModalBody').innerHTML = `
+      <div class="detail-section">
+        <div class="detail-label">Buku</div>
+        <div class="detail-book-card">
+          ${b.book.cover
+            ? `<img class="detail-book-cover" src="${escapeHtml(b.book.cover)}" alt="">`
+            : `<div class="detail-book-cover" style="display:flex;align-items:center;justify-content:center;color:rgba(124,106,255,0.3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>`
+          }
+          <div>
+            <div class="detail-book-title">${escapeHtml(b.book.title)}</div>
+            <div class="detail-book-author">${escapeHtml(b.book.author)}</div>
+            <div style="margin-top: 4px; font-size: 11.5px; color: var(--text-muted);">ISBN: ${escapeHtml(b.book.isbn)}</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="detail-section">
-      <div class="detail-label">Status Peminjaman</div>
-      <div class="detail-row">
-        <span class="detail-key">Status</span>
-        <span class="detail-val">${renderStatusBadge(b.status)}</span>
+      <div class="detail-section">
+        <div class="detail-label">Status Peminjaman</div>
+        <div class="detail-row">
+          <span class="detail-key">Status</span>
+          <span class="detail-val">${renderStatusBadge(b.status)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-key">Tanggal Pinjam</span>
+          <span class="detail-val">${formatDateFull(b.borrowAt)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-key">Jatuh Tempo</span>
+          <span class="detail-val ${isOverdue ? 'date-overdue' : ''}">${formatDateFull(b.dueDate)}${isOverdue ? ` (${daysLate} hari terlambat)` : ''}</span>
+        </div>
+        ${b.returnedAt ? `
+        <div class="detail-row">
+          <span class="detail-key">Dikembalikan</span>
+          <span class="detail-val">${formatDateFull(b.returnedAt)}</span>
+        </div>` : ''}
+        <div class="detail-row">
+          <span class="detail-key">Denda</span>
+          <span class="detail-val ${b.fine > 0 ? 'fine-amount' : 'fine-none'}">
+            ${b.fine > 0 ? `Rp ${b.fine.toLocaleString('id-ID')}` : '—'}
+          </span>
+        </div>
       </div>
-      <div class="detail-row">
-        <span class="detail-key">Tanggal Pinjam</span>
-        <span class="detail-val">${formatDateFull(b.borrowAt)}</span>
-      </div>
-      <div class="detail-row">
-        <span class="detail-key">Jatuh Tempo</span>
-        <span class="detail-val ${isOverdue ? 'date-overdue' : ''}">${formatDateFull(b.dueDate)}${isOverdue ? ` (${daysLate} hari terlambat)` : ''}</span>
-      </div>
-      ${b.returnedAt ? `
-      <div class="detail-row">
-        <span class="detail-key">Dikembalikan</span>
-        <span class="detail-val">${formatDateFull(b.returnedAt)}</span>
+      ${isOverdue ? `
+      <div style="padding:10px 14px;background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.2);border-radius:8px;font-size:12.5px;color:#ff5050">
+        ⚠️ Buku ini sudah melewati jatuh tempo. Segera hubungi petugas perpustakaan.
       </div>` : ''}
-      <div class="detail-row">
-        <span class="detail-key">Denda</span>
-        <span class="detail-val ${b.fine > 0 ? 'fine-amount' : 'fine-none'}">
-          ${b.fine > 0 ? `Rp ${b.fine.toLocaleString('id-ID')}` : '—'}
-        </span>
-      </div>
-    </div>
-    ${isOverdue ? `
-    <div style="padding:10px 14px;background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.2);border-radius:8px;font-size:12.5px;color:#ff5050">
-      ⚠️ Buku ini sudah melewati jatuh tempo. Segera hubungi petugas perpustakaan.
-    </div>` : ''}
-  `;
+    `;
+  } catch (e) {
+    console.error(e);
+    document.getElementById('detailModalBody').innerHTML = '<div style="padding:20px;text-align:center;color:#ff5050">Terjadi kesalahan sistem.</div>';
+  }
 }
 
 // ── AJUKAN MODAL ──
 function openAjukanModal() {
   selectedBook = null;
   document.getElementById('bookSearchInput').value = '';
+  document.getElementById('bookSuggestions').innerHTML = '';
   document.getElementById('bookSuggestions').style.display = 'none';
   document.getElementById('selectedBook').style.display = 'none';
-  document.getElementById('ajukanError').style.display = 'none';
-  document.getElementById('ajukanSubmit').disabled = true;
+  const errEl = document.getElementById('ajukanError');
+  if (errEl) errEl.style.display = 'none';
+  const submitBtn = document.getElementById('ajukanSubmit');
+  if (submitBtn) submitBtn.disabled = true;
+  
   document.getElementById('ajukanModalOverlay').classList.add('active');
-  setTimeout(() => document.getElementById('bookSearchInput').focus(), 100);
+  setTimeout(() => {
+    const input = document.getElementById('bookSearchInput');
+    if (input) input.focus();
+  }, 100);
 
-  // Langsung tampilkan daftar buku yang tersedia
+  // Langsung tampilkan daftar buku yang tersedia dari endpoint publik
   loadInitialBooks();
 }
 
 // ── LOAD INITIAL BOOKS (saat modal dibuka) ──
 async function loadInitialBooks() {
   const container = document.getElementById('bookSuggestions');
+  if (!container) return;
   container.innerHTML = '<div class="no-results" style="color:var(--text-muted)">Memuat daftar buku...</div>';
   container.style.display = 'block';
 
   try {
-    const res = await apiFetch(`${BASE_URL}/admin/books?page=1&limit=50`);
+    // Gunakan endpoint publik /books, bukan /admin/books
+    const res = await apiFetch(`${BASE_URL}/books?page=1&limit=50`);
     if (!res) return;
     const json = await res.json();
     const books = json.data ?? [];
@@ -264,6 +286,7 @@ async function loadInitialBooks() {
 // ── BOOK SEARCH ──
 async function searchBooks(query) {
   const container = document.getElementById('bookSuggestions');
+  if (!container) return;
 
   // Jika kosong, tampilkan kembali daftar awal
   if (!query || query.length < 2) {
@@ -274,7 +297,8 @@ async function searchBooks(query) {
   container.innerHTML = '<div class="no-results" style="color:var(--text-muted)">Mencari...</div>';
   container.style.display = 'block';
 
-  const res = await apiFetch(`${BASE_URL}/admin/books?page=1&limit=20&search=${encodeURIComponent(query)}`);
+  // Gunakan endpoint publik /books
+  const res = await apiFetch(`${BASE_URL}/books?page=1&limit=20&search=${encodeURIComponent(query)}`);
   if (!res) return;
   const json = await res.json();
   const books = json.data ?? [];
@@ -293,15 +317,15 @@ function renderBookSuggestions(books, container) {
   container.innerHTML = books.map(book => `
     <div class="book-suggestion-item" onclick="selectBook(${JSON.stringify(book).replace(/"/g, '&quot;')})">
       ${book.cover
-        ? `<img class="suggestion-cover" src="${escHtml(book.cover)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        ? `<img class="suggestion-cover" src="${escapeHtml(book.cover)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
         : ''
       }
       <div class="suggestion-cover-placeholder" style="display:${book.cover ? 'none' : 'flex'}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       </div>
       <div>
-        <div class="suggestion-title">${escHtml(book.title)}</div>
-        <div class="suggestion-author">${escHtml(book.author)}</div>
+        <div class="suggestion-title">${escapeHtml(book.title)}</div>
+        <div class="suggestion-author">${escapeHtml(book.author)}</div>
         <div class="suggestion-stock ${book.availableStock > 0 ? 'available' : 'unavailable'}">
           ${book.availableStock > 0 ? `✓ ${book.availableStock} tersedia` : '✗ Stok habis'}
         </div>
@@ -322,11 +346,11 @@ function selectBook(book) {
 
   const stockEl = document.getElementById('selectedBookStock');
   stockEl.textContent = book.availableStock > 0 ? `✓ ${book.availableStock} eksemplar tersedia` : '✗ Stok tidak tersedia';
-  stockEl.className = `selected-book-stock ${book.availableStock > 1 ? 'ok' : book.availableStock === 1 ? 'low' : ''}`;
+  stockEl.className = `selected-book-stock ${book.availableStock > 3 ? 'ok' : book.availableStock > 0 ? 'low' : ''}`;
 
   const coverDiv = document.getElementById('selectedBookCover');
   if (book.cover) {
-    coverDiv.innerHTML = `<img src="${escHtml(book.cover)}" style="width:44px;height:62px;border-radius:6px;object-fit:cover" alt="">`;
+    coverDiv.innerHTML = `<img src="${escapeHtml(book.cover)}" style="width:44px;height:62px;border-radius:6px;object-fit:cover" alt="">`;
   } else {
     coverDiv.className = 'selected-cover-placeholder';
     coverDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
@@ -345,9 +369,9 @@ async function submitAjukan() {
   const submitText = document.getElementById('ajukanSubmitText');
   const submitBtn = document.getElementById('ajukanSubmit');
 
-  spinner.style.display = 'block';
-  submitText.style.display = 'none';
-  submitBtn.disabled = true;
+  if (spinner) spinner.style.display = 'block';
+  if (submitText) submitText.style.display = 'none';
+  if (submitBtn) submitBtn.disabled = true;
 
   try {
     const res = await apiFetch(`${BASE_URL}/borrowing/`, {
@@ -355,8 +379,8 @@ async function submitAjukan() {
       body: JSON.stringify({ bookId: Number(selectedBook.id) }),
     });
 
-    spinner.style.display = 'none';
-    submitText.style.display = 'block';
+    if (spinner) spinner.style.display = 'none';
+    if (submitText) submitText.style.display = 'block';
 
     if (res && res.ok) {
       document.getElementById('ajukanModalOverlay').classList.remove('active');
@@ -368,28 +392,43 @@ async function submitAjukan() {
         const err = res ? await res.json() : {};
         if (typeof err.message === 'string') msg = err.message;
       } catch (_) { /* ignore parse error */ }
-      document.getElementById('ajukanError').textContent = msg;
-      document.getElementById('ajukanError').style.display = 'block';
-      submitBtn.disabled = false;
+      const errEl = document.getElementById('ajukanError');
+      if (errEl) {
+        errEl.textContent = msg;
+        errEl.style.display = 'block';
+      }
+      if (submitBtn) submitBtn.disabled = false;
     }
   } catch (err) {
     console.error('Submit borrowing error:', err);
-    spinner.style.display = 'none';
-    submitText.style.display = 'block';
-    submitBtn.disabled = false;
-    document.getElementById('ajukanError').textContent = 'Tidak dapat terhubung ke server. Coba lagi.';
-    document.getElementById('ajukanError').style.display = 'block';
+    if (spinner) spinner.style.display = 'none';
+    if (submitText) submitText.style.display = 'block';
+    if (submitBtn) submitBtn.disabled = false;
+    const errEl = document.getElementById('ajukanError');
+    if (errEl) {
+      errEl.textContent = 'Tidak dapat terhubung ke server. Coba lagi.';
+      errEl.style.display = 'block';
+    }
   }
 }
 
 // ── INIT MODALS ──
 function initModals() {
   // Ajukan modal
-  document.getElementById('btnAjukan').addEventListener('click', openAjukanModal);
-  document.getElementById('ajukanModalClose').addEventListener('click', () => document.getElementById('ajukanModalOverlay').classList.remove('active'));
-  document.getElementById('ajukanCancel').addEventListener('click', () => document.getElementById('ajukanModalOverlay').classList.remove('active'));
-  document.getElementById('ajukanSubmit').addEventListener('click', submitAjukan);
-  document.getElementById('selectedBookRemove').addEventListener('click', () => {
+  const btnAjukan = document.getElementById('btnAjukan');
+  if (btnAjukan) btnAjukan.addEventListener('click', openAjukanModal);
+  
+  const ajukanClose = document.getElementById('ajukanModalClose');
+  if (ajukanClose) ajukanClose.addEventListener('click', () => document.getElementById('ajukanModalOverlay').classList.remove('active'));
+  
+  const ajukanCancel = document.getElementById('ajukanCancel');
+  if (ajukanCancel) ajukanCancel.addEventListener('click', () => document.getElementById('ajukanModalOverlay').classList.remove('active'));
+  
+  const ajukanSubmit = document.getElementById('ajukanSubmit');
+  if (ajukanSubmit) ajukanSubmit.addEventListener('click', submitAjukan);
+  
+  const removeBook = document.getElementById('selectedBookRemove');
+  if (removeBook) removeBook.addEventListener('click', () => {
     selectedBook = null;
     document.getElementById('selectedBook').style.display = 'none';
     document.getElementById('ajukanSubmit').disabled = true;
@@ -397,32 +436,43 @@ function initModals() {
 
   // Book search
   const input = document.getElementById('bookSearchInput');
-  input.addEventListener('input', () => {
-    clearTimeout(bookSearchTimer);
-    bookSearchTimer = setTimeout(() => searchBooks(input.value.trim()), 350);
-  });
+  if (input) {
+    input.addEventListener('input', () => {
+      clearTimeout(bookSearchTimer);
+      bookSearchTimer = setTimeout(() => searchBooks(input.value.trim()), 350);
+    });
+  }
 
   // Hide suggestions on outside click
   document.addEventListener('click', e => {
-    if (!e.target.closest('#ajukanModal')) {
-      document.getElementById('bookSuggestions').style.display = 'none';
+    const suggestions = document.getElementById('bookSuggestions');
+    if (suggestions && !e.target.closest('#ajukanModal')) {
+      suggestions.style.display = 'none';
     }
   });
 
   // Detail modal
-  document.getElementById('detailModalClose').addEventListener('click', () => document.getElementById('detailModalOverlay').classList.remove('active'));
-  document.getElementById('detailModalClose2').addEventListener('click', () => document.getElementById('detailModalOverlay').classList.remove('active'));
-  document.getElementById('detailModalOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('detailModalOverlay'))
-      document.getElementById('detailModalOverlay').classList.remove('active');
-  });
+  const detailClose = document.getElementById('detailModalClose');
+  if (detailClose) detailClose.addEventListener('click', () => document.getElementById('detailModalOverlay').classList.remove('active'));
+  
+  const detailClose2 = document.getElementById('detailModalClose2');
+  if (detailClose2) detailClose2.addEventListener('click', () => document.getElementById('detailModalOverlay').classList.remove('active'));
+  
+  const detailOverlay = document.getElementById('detailModalOverlay');
+  if (detailOverlay) {
+    detailOverlay.addEventListener('click', e => {
+      if (e.target === detailOverlay) detailOverlay.classList.remove('active');
+    });
+  }
 }
 
 // ── PAGINATION ──
 function renderPagination(meta) {
   const { page, totalPages } = meta;
-  if (totalPages <= 1) return;
+  if (!totalPages || totalPages <= 1) return;
   const container = document.getElementById('pagination');
+  if (!container) return;
+  
   const pages = [];
   pages.push(`<button class="page-btn" ${page === 1 ? 'disabled' : ''} onclick="goPage(${page - 1})">←</button>`);
   for (let i = 1; i <= totalPages; i++) {
@@ -436,7 +486,10 @@ function renderPagination(meta) {
   container.innerHTML = pages.join('');
 }
 
-function goPage(p) { currentPage = p; loadBorrowings(); }
+function goPage(p) { 
+  currentPage = p; 
+  loadBorrowings(); 
+}
 
 // ── HELPERS ──
 function formatDate(iso) {
@@ -447,18 +500,19 @@ function formatDateFull(iso) {
   if (!iso) return '—';
   return new Date(iso).toLocaleDateString('id-ID', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' });
 }
-function escHtml(str) {
+function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 function showToast(msg, type = 'success') {
   const container = document.getElementById('toastContainer');
+  if (!container) return;
   const toast = document.createElement('div');
   const icon = type === 'success'
     ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10l4 4 8-8"/></svg>'
     : '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/></svg>';
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `${icon}<span>${msg}</span>`;
+  toast.innerHTML = `${icon}<span>${escapeHtml(msg)}</span>`;
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 4000);
 }

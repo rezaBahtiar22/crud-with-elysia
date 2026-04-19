@@ -338,6 +338,17 @@ body.light .skeleton-line {
   box-shadow: 0 6px 20px rgba(124, 106, 255, 0.45);
 }
 
+.modal-btn--danger {
+  background: #ff5050;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255, 80, 80, 0.3);
+}
+
+.modal-btn--danger:hover {
+  background: #ff3333;
+  box-shadow: 0 6px 20px rgba(255, 80, 80, 0.45);
+}
+
 .btn-spinner {
   width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
   border-top-color: #fff; border-radius: 50%;

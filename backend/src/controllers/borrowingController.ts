@@ -36,7 +36,7 @@ export class BorrowingController {
         params, user
     }: AuthContext) {
         const result = await BorrowingService.getBorrowingById(Number(params.id), user.id);
-        return { success: true, ...result };
+        return { success: true, data: result };
     }
 
     // admin melihat semua pinjaman

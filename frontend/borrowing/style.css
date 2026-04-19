@@ -219,7 +219,7 @@ body.light .book-suggestions { background: #fff; }
 .detail-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 .detail-key { font-size: 12.5px; color: var(--text-muted); }
 .detail-val { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-.detail-book-card { display: flex; align-items: center; gap: 12px; padding: 10px; background: var(--user-card-bg); border: 1px solid var(--sidebar-border); border-radius: 10px; }
+.detail-book-card { display: flex; align-items: center; gap: 12px; padding: 10px; background: var(--user-card-bg); border: 1px solid var(--sidebar-border); border-radius: 10px; text-align: left; }
 .detail-book-cover { width: 36px; height: 52px; border-radius: 5px; object-fit: cover; background: linear-gradient(135deg, #1e1e2e, #2d1f5e); flex-shrink: 0; }
 .detail-book-title { font-weight: 600; font-size: 13.5px; }
 .detail-book-author { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
