@@ -1,39 +1,11 @@
 // ══════════════════════════════
-//   CONFIG
+//   EDIT PROFIL — Heavenly Library
 // ══════════════════════════════
+
 const BASE_URL = CONFIG.API_BASE_URL;
 
-
-// ══════════════════════════════
-//   CEK AUTH
-// ══════════════════════════════
-(function checkAuth() {
-  const accessToken  = localStorage.getItem('accessToken');
-  const refreshToken = localStorage.getItem('refreshToken');
-  if (!accessToken || !refreshToken) {
-    window.location.href = '../form-login/index.html';
-  }
-})();
-
-
-// ══════════════════════════════
-//   THEME TOGGLE
-// ══════════════════════════════
-const themeToggle = document.getElementById('themeToggle');
-const themeKnob   = document.getElementById('themeKnob');
-
-// Baca theme dari localStorage saat halaman dimuat
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'light') {
-  document.body.classList.add('light');
-  themeKnob.textContent = '☀️';
-}
-
-themeToggle.addEventListener('click', () => {
-  const isLight = document.body.classList.toggle('light');
-  themeKnob.textContent = isLight ? '☀️' : '🌙';
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
-});
+// Shared: Auth (IIFE di common.js), Theme, dll.
+initCommon();
 
 
 // ══════════════════════════════
@@ -44,14 +16,6 @@ let userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
 function getInitials(name) {
   if (!name || name === '—') return '?';
   return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-}
-
-function getRoleLabel(role) {
-  const map = {
-    admin: 'Admin', ADMIN: 'Admin',
-    user:  'User',          USER:  'User',
-  };
-  return map[role] ?? role ?? '—';
 }
 
 function populateForm() {
@@ -146,70 +110,6 @@ function showToast(msg, isError = false) {
 
 
 // ══════════════════════════════
-//   AUTO REFRESH TOKEN
-// ══════════════════════════════
-async function tryRefreshToken() {
-  const refreshToken = localStorage.getItem('refreshToken');
-  if (!refreshToken) return false;
-
-  try {
-    const response = await fetch(`${CONFIG.API_BASE_URL}/auth/refresh-access-token`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken })
-    });
-
-    const data = await response.json();
-
-    if (response.ok && data.tokens?.accessToken) {
-      localStorage.setItem('accessToken', data.tokens.accessToken);
-      localStorage.setItem('refreshToken', data.tokens.refreshToken);
-      return true;
-    }
-
-    return false;
-  } catch {
-    return false;
-  }
-}
-
-async function fetchWithAuth(url, options = {}) {
-  const accessToken = localStorage.getItem('accessToken');
-
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      ...options.headers,
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    }
-  });
-
-  if (response.status === 401) {
-    const refreshed = await tryRefreshToken();
-    if (refreshed) {
-      const newToken = localStorage.getItem('accessToken');
-      return fetch(url, {
-        ...options,
-        headers: {
-          ...options.headers,
-          'Authorization': `Bearer ${newToken}`,
-          'Content-Type': 'application/json'
-        }
-      });
-    } else {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('userData');
-      window.location.href = '../form-login/index.html';
-    }
-  }
-
-  return response;
-}
-
-
-// ══════════════════════════════
 //   FORM UPDATE PROFILE
 //   PATCH /update/profile
 // ══════════════════════════════
@@ -255,7 +155,7 @@ document.getElementById('formUpdateProfile').addEventListener('submit', async (e
     if (name  !== userData.name)  body.name  = name;
     if (email !== userData.email) body.email = email;
 
-    const response = await fetchWithAuth(`${BASE_URL}/user/update/profile`, {
+    const response = await apiFetch(`${BASE_URL}/user/update/profile`, {
       method: 'PATCH',
       body: JSON.stringify(body)
     });
@@ -341,7 +241,7 @@ document.getElementById('formUpdatePassword').addEventListener('submit', async (
   setLoading('btnSavePassword', 'passwordSpinner', true);
 
   try {
-    const response = await fetchWithAuth(`${BASE_URL}/user/update/password`, {
+    const response = await apiFetch(`${BASE_URL}/user/update/password`, {
       method: 'PATCH',
       body: JSON.stringify({
         currentPassword,    // ← sesuai interface backend

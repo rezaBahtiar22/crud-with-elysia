@@ -1,33 +1,9 @@
 // ══════════════════════════════
-//   CEK AUTH
+//   PROFIL — Heavenly Library
 // ══════════════════════════════
-(function checkAuth() {
-  const accessToken  = localStorage.getItem('accessToken');
-  const refreshToken = localStorage.getItem('refreshToken');
-  if (!accessToken || !refreshToken) {
-    window.location.href = '../form-login/index.html';
-  }
-})();
 
-
-// ══════════════════════════════
-//   THEME TOGGLE
-// ══════════════════════════════
-const themeToggle = document.getElementById('themeToggle');
-const themeKnob   = document.getElementById('themeKnob');
-
-// Baca theme dari localStorage saat halaman dimuat
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme === 'light') {
-  document.body.classList.add('light');
-  themeKnob.textContent = '☀️';
-}
-
-themeToggle.addEventListener('click', () => {
-  const isLight = document.body.classList.toggle('light');
-  themeKnob.textContent = isLight ? '☀️' : '🌙';
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
-});
+// Shared: Auth (IIFE di common.js), Theme, dll.
+initCommon();
 
 
 // ══════════════════════════════
@@ -43,16 +19,6 @@ function formatDate(dateStr) {
     month: 'long',
     year: 'numeric'
   });
-}
-
-function getRoleLabel(role) {
-  const map = {
-    admin:      'Admin',
-    ADMIN:      'Admin',
-    user:       'User',
-    USER:       'User',
-  };
-  return map[role] ?? role ?? '—';
 }
 
 function populateProfile() {
@@ -92,7 +58,7 @@ function goToDashboard() {
 
 document.getElementById('btnBack').addEventListener('click', goToDashboard);
 
-// ── LOGOUT ──
+// ── LOGOUT (Custom handler — halaman profil tidak punya sidebar) ──
 const logoutOverlay = document.getElementById('logoutOverlay');
 const logoutCancel  = document.getElementById('logoutCancel');
 const logoutConfirm = document.getElementById('logoutConfirm');
@@ -116,11 +82,8 @@ document.addEventListener('keydown', (e) => {
 logoutConfirm.addEventListener('click', () => {
   logoutConfirm.textContent = 'Keluar...';
   logoutConfirm.disabled = true;
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-  localStorage.removeItem('userData');
   setTimeout(() => {
-    window.location.href = '../form-login/index.html';
+    forceLogout(); // Gunakan fungsi dari common.js
   }, 600);
 });
 
