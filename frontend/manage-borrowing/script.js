@@ -79,41 +79,7 @@ async function loadBorrowings() {
 
   const now = new Date();
 
-  // Terlambat: fetch APPROVED, filter dueDate < sekarang di frontend
-  if (currentStatus === 'OVERDUE') {
-    const res = await apiFetch(`${BASE_URL}/admin/borrowing?page=1&limit=500&status=APPROVED`);
-    if (!res) return;
-    const json = await res.json();
-    let all = (json.data ?? []).filter(b => new Date(b.dueDate) < now);
-
-    // Filter search
-    if (currentSearch) {
-      const q = currentSearch.toLowerCase();
-      all = all.filter(b =>
-        (b.user?.name ?? '').toLowerCase().includes(q) ||
-        (b.book?.title ?? '').toLowerCase().includes(q)
-      );
-    }
-
-    const totalItems = all.length;
-    const limit = 10;
-    const totalPages = Math.ceil(totalItems / limit);
-    const paged = all.slice((currentPage - 1) * limit, currentPage * limit);
-
-    document.getElementById('totalBadge').textContent = `${totalItems} peminjaman`;
-
-    if (paged.length === 0) {
-      document.getElementById('tableBody').innerHTML = '';
-      document.getElementById('emptyState').style.display = 'flex';
-      return;
-    }
-
-    renderTable(paged, true);
-    renderPagination({ page: currentPage, totalPages, totalItems });
-    return;
-  }
-
-  // Status lain: pakai API seperti biasa
+  // Load data via API
   const params = new URLSearchParams({
     page: currentPage,
     limit: 10,
@@ -136,20 +102,22 @@ async function loadBorrowings() {
     return;
   }
 
-  renderTable(borrowings, false);
+  renderTable(borrowings);
   renderPagination(meta);
 }
 
 // ── RENDER TABLE ──
 // forceOverdue: true saat tab Terlambat — tampilkan badge Terlambat meski status APPROVED
-function renderTable(borrowings, forceOverdue = false) {
+function renderTable(borrowings) {
   const now = new Date();
   const tbody = document.getElementById('tableBody');
   tbody.innerHTML = borrowings.map(b => {
     const initials = b.user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
     const borrowedDate = formatDate(b.borrowAt);
     const dueDate = formatDate(b.dueDate);
-    const isOverdue = forceOverdue || (b.status === 'APPROVED' && new Date(b.dueDate) < now);
+    
+    // Status Terlambat: bisa dari backend (OVERDUE) atau deteksi frontend (APPROVED + lewat jatuh tempo)
+    const isOverdue = b.status === 'OVERDUE' || (b.status === 'APPROVED' && new Date(b.dueDate) < now);
     const displayStatus = isOverdue ? 'OVERDUE' : b.status;
 
     return `
