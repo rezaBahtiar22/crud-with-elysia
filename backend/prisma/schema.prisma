@@ -1,11 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -14,94 +8,84 @@ datasource db {
 }
 
 model User {
-  id           Int          @id @default(autoincrement())
-  name         String
-  email        String       @unique
-  password     String
-  role         Role         @default(USER)
-  tokens       String?
-
-  deletedAt    DateTime?
-
-  created_at   DateTime     @default(now())
-  updated_at   DateTime     @updatedAt
-
-  otps            EmailOTP[]
-  refreshTokens   RefreshToken[]
-  borrowings      Borrowing[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  password      String
+  role          Role           @default(USER)
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  deletedAt     DateTime?
+  borrowings    Borrowing[]
+  otps          EmailOTP[]
+  refreshTokens RefreshToken[]
 }
 
 model EmailOTP {
-  id            Int          @id @default(autoincrement())
-  userId        Int?
-  email         String
-  code          String
-  purpose       OtpPurpose
-  expiresAt     DateTime
-  used          Boolean      @default(false)
-  attempts      Int          @default(0)
-  blockedUntil  DateTime?
-  created_at    DateTime     @default(now())
-
-  user  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           Int        @id @default(autoincrement())
+  userId       Int?
+  email        String
+  code         String
+  purpose      OtpPurpose
+  expiresAt    DateTime
+  used         Boolean    @default(false)
+  created_at   DateTime   @default(now())
+  attempts     Int        @default(0)
+  blockedUntil DateTime?
+  user         User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([email])
 }
 
 model Book {
-  id            Int         @id @default(autoincrement())
-  title         String
-  author        String
-  isbn          String      @unique
-  publisher     String?
-  year          Int?
-  category      String?
-  description   String?
-  cover         String?
-  stock         Int         @default(0)
-  availableStock Int        @default(0)
-
-  deletedAt     DateTime?
-
-  created_at    DateTime    @default(now())
-  updated_at    DateTime    @updatedAt
-
-  borrowings    Borrowing[]
+  id             Int         @id @default(autoincrement())
+  title          String
+  author         String
+  isbn           String      @unique
+  publisher      String?
+  year           Int?
+  category       String?
+  description    String?
+  cover          String?
+  stock          Int         @default(0)
+  availableStock Int         @default(0)
+  deletedAt      DateTime?
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  borrowings     Borrowing[]
 }
 
 model Borrowing {
-  id            Int              @id @default(autoincrement())
-  userId        Int
-  bookId        Int
-  borrowedAt    DateTime         @default(now())
-  dueDate       DateTime
-  returnedAt    DateTime?
-  status        BorrowingStatus  @default(PENDING)
-  fine          Float            @default(0)
-
-  created_at    DateTime         @default(now())
-  updated_at    DateTime         @updatedAt
-
-  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  book          Book             @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  id         Int             @id @default(autoincrement())
+  userId     Int
+  bookId     Int
+  borrowedAt DateTime        @default(now())
+  dueDate    DateTime
+  returnedAt DateTime?
+  status     BorrowingStatus @default(PENDING)
+  fine       Int             @default(0)
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+  book       Book            @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([bookId])
+  @@index([userId, bookId, status])
 }
 
 model RefreshToken {
-  id            Int          @id @default(autoincrement())
-  userId        Int
-  tokens        String       @unique
-  device        String?
-  ipAddress     String?
-  userAgent     String?
-  expiresAt     DateTime
-  revoked       Boolean      @default(false)
-  created_at    DateTime     @default(now())
-  updated_at    DateTime     @updatedAt
-
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  tokens     String   @unique
+  device     String?
+  ipAddress  String?
+  userAgent  String?
+  expiresAt  DateTime
+  revoked    Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tokens])

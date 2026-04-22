@@ -64,7 +64,7 @@ export class RefreshTokenService {
 
             throw new ResponseError(
                 403,
-                "Expred_Refresh_Token",
+                "Expired_Refresh_Token",
                 "The provided refresh token is expired"
             );
         }

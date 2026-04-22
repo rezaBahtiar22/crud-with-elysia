@@ -1,4 +1,4 @@
-import type {  User, Role } from "../../generated/prisma/client";
+import type {  User, Role } from "../../generated/prisma";
 
 // interface untuk admin get user by id
 export interface AdminGetUserByIdResponse {

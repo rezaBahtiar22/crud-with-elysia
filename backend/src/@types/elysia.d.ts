@@ -1,5 +1,5 @@
 import 'elysia';
-import type { Role } from '../../generated/prisma/client';
+import type { Role } from '../../generated/prisma';
 
 declare module 'elysia' {
     interface Singleton {

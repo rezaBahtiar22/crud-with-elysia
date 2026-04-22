@@ -1,4 +1,4 @@
-import type {  BorrowingStatus } from "../../../generated/prisma/client";
+import type {  BorrowingStatus } from "../../../generated/prisma";
 
 
 // interface untuk request create borrowing

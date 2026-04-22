@@ -8,7 +8,7 @@ export class BorrowingController {
     static async createBorrowing({
         body, user, set
     }: AuthContext) {
-        const result = await BorrowingService.CreateBorrowing(user.id, body as any);
+        const result = await BorrowingService.CreateBorrowing(user!.id, body as any);
         set.status = 201;
         return { 
             success: true,
@@ -22,9 +22,9 @@ export class BorrowingController {
         query, user
     }: AuthContext) {
         const result =  await BorrowingService.getUserBorrowing(
-            user.id, {
+            user!.id, {
                 page: query.page ? Number(query.page) : 1,
-                limit: query.limit ? Number(query.limit) : 10,
+                limit: Math.min(query.limit ? Number(query.limit) : 10, 100),
                 status: query.status as any,
             }
         );
@@ -35,7 +35,7 @@ export class BorrowingController {
     static async getMyBorrowingById({
         params, user
     }: AuthContext) {
-        const result = await BorrowingService.getBorrowingById(Number(params.id), user.id);
+        const result = await BorrowingService.getBorrowingById(Number(params.id), user!.id);
         return { success: true, data: result };
     }
 
@@ -45,7 +45,7 @@ export class BorrowingController {
     }: AuthContext) {
         const result = await BorrowingService.getAllBorrowings({
             page: query.page ? Number(query.page) : 1,
-            limit: query.page ? Number(query.limit) : 10,
+            limit: Math.min(query.limit ? Number(query.limit) : 10, 100),
             status: query.status as any,
             search: query.search as string | undefined,
         });

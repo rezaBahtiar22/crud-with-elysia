@@ -1,4 +1,4 @@
-import type { Role } from "../../generated/prisma/client"
+import type { Role } from "../../generated/prisma"
 
 // interface untuk user register request DTO
 export interface AuthUserRegisterRequest  {
