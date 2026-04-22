@@ -116,9 +116,10 @@ function renderTable(borrowings) {
     const borrowedDate = formatDate(b.borrowAt);
     const dueDate = formatDate(b.dueDate);
     
-    // Status Terlambat: bisa dari backend (OVERDUE) atau deteksi frontend (APPROVED + lewat jatuh tempo)
+    // Status Terlambat: Prioritaskan status dari backend (OVERDUE)
+    // Fallback deteksi frontend hanya untuk kemudahan visual jika data belum ter-sync sempurna
     const isOverdue = b.status === 'OVERDUE' || (b.status === 'APPROVED' && new Date(b.dueDate) < now);
-    const displayStatus = isOverdue ? 'OVERDUE' : b.status;
+    const displayStatus = b.status; // Biarkan badge sesuai status asli backend agar sinkron dengan tab filter
 
     return `
     <tr>
