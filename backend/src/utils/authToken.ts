@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { prisma } from "../database/prisma"
 import { generateToken } from "./jwt"
-import type { User } from "../../generated/prisma/client"
+import type { User } from "../../generated/prisma"
 
 export async function issueAuthTokens(user: User) {
     const accessToken = generateToken({

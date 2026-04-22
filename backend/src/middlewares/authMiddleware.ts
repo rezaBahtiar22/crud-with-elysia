@@ -3,7 +3,7 @@ import { ResponseError } from "../utils/responseError";
 import { logger } from "../utils/logging";
 import type { AuthContext } from "../@types/context";
 
-export function AuthMiddleware(ctx: AuthContext) {
+export function AuthMiddleware(ctx: any) {
   // ambil token dari header
   const authHeader = ctx.request.headers.get("authorization");
 

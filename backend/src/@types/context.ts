@@ -1,8 +1,13 @@
-export type AuthContext = {
-    request: Request;
+import type { Context } from "elysia";
+import type { Role } from "../../generated/prisma";
+
+export type AuthContext = Omit<Context, "user" | "query" | "params" | "body"> & {
     user?: {
         id: number;
-        role: string;
+        role: Role;
     };
     accessToken?: string;
-} & any;
+    body: any;
+    query: any;
+    params: any;
+};

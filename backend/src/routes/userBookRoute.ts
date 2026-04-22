@@ -1,14 +1,15 @@
 import Elysia, { t } from "elysia";
 import { AdminBookController } from "../controllers/adminBookController";
 import { AuthMiddleware } from "../middlewares/authMiddleware";
+import type { AuthContext } from "../@types/context";
 
 // Route buku untuk user biasa (hanya read)
 export const UserBookRoute = new Elysia({ prefix: "/books" })
 
     // get all books (dengan pagination, search, filter kategori)
-    .get("/", async (ctx) => {
-        ctx.set.status = 200;
-        return AdminBookController.bookPagination(ctx);
+    .get("/", async (context) => {
+        context.set.status = 200;
+        return AdminBookController.bookPagination(context as any);
     }, {
         beforeHandle: [
             AuthMiddleware,

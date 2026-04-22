@@ -9,9 +9,9 @@ import type { AdminUpdateBookRequest } from "../interfaces/BookInterface/adminUp
 export const AdminBookRoute = new Elysia({ prefix: "/admin" })
 
     // get all books
-    .get("/books", async (ctx) => {
-        ctx.set.status = 200;
-        return AdminBookController.bookPagination(ctx);
+    .get("/books", async (context) => {
+        context.set.status = 200;
+        return AdminBookController.bookPagination(context as any);
     }, {
         beforeHandle: [
             AuthMiddleware,

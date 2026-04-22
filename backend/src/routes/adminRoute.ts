@@ -5,7 +5,7 @@ import { AdminUserController } from "../controllers/adminController";
 
 export const AdminRoute = new Elysia({ prefix: "/admin" })
     // .use(AuthMiddleware)
-    .get("/users", AdminUserController.getUsers, {
+    .get("/users", (context) => AdminUserController.getUsers(context as any), {
         beforeHandle: [
             AuthMiddleware,
             RoleMiddleware(["ADMIN"])
@@ -23,7 +23,7 @@ export const AdminRoute = new Elysia({ prefix: "/admin" })
         })
     })
 
-    .delete("/users/:id", AdminUserController.deleteUser, {
+    .delete("/users/:id", (context) => AdminUserController.deleteUser(context as any), {
         beforeHandle: [
             AuthMiddleware,
             RoleMiddleware(["ADMIN"])
@@ -40,7 +40,7 @@ export const AdminRoute = new Elysia({ prefix: "/admin" })
         })
     })
 
-    .get("/user/:id", AdminUserController.getUserById, {
+    .get("/user/:id", (context) => AdminUserController.getUserById(context as any), {
         beforeHandle: [
             AuthMiddleware,
             RoleMiddleware(["ADMIN"])

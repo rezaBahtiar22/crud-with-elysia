@@ -1,5 +1,6 @@
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { ResponseError } from "../utils/responseError";
+import type { Context } from "elysia";
 
 // rate limiter
 const loginRateLimiter = new RateLimiterMemory({
@@ -8,15 +9,15 @@ const loginRateLimiter = new RateLimiterMemory({
 });
 
 // fungsi untuk rate limiter
-export async function LoginRateLimit(ctx: any) {
+export async function LoginRateLimit(ctx: Context & { ip?: string }) {
     const ip =
         ctx.request.headers.get("x-forwarded-for") ||
         ctx.request.headers.get("cf-connecting-ip") ||
-        ctx.request.ip || "unknown";
+        (ctx as any).ip || "unknown";
 
-        const email = ctx.body?.email || "unknown";
+    const email = (ctx.body as any)?.email || "unknown";
 
-        const key = `${ip}_${email}`;
+    const key = `${ip}_${email}`;
 
         try {
             await loginRateLimiter.consume(key);

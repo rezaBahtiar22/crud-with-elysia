@@ -1,5 +1,5 @@
 import { prisma } from "../database/prisma";
-import { BorrowingStatus } from "../../generated/prisma/enums";
+import { BorrowingStatus } from "../../generated/prisma";
 import { ResponseError } from "../utils/responseError";
 
 import type {
@@ -16,7 +16,6 @@ import {
     toBorrowingResponse, 
     toBorrowingPaginationResponse 
 } from "../interfaces/borrowing/borrowingMapper";
-import { promise } from "zod";
 
 
 // denda keterlambatan per hari
@@ -329,7 +328,7 @@ export class BorrowingService {
 
         if (now > dueData) {
             const daysLate = Math.ceil((now.getTime() - dueData.getTime()) / (1000 * 60 * 60 * 24));
-            fine = daysLate * 1000;
+            fine = daysLate * FINE_PER_DAY;
         }
 
         // return dan tambah stok 

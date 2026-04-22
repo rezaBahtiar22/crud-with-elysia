@@ -42,7 +42,6 @@ describe("POST /auth/register", () => {
             role: "USER",
             created_at: new Date(),
             updated_at: new Date(),
-            tokens: null,
             deletedAt: null
         });
 
@@ -67,7 +66,6 @@ describe("POST /auth/register", () => {
             role: "USER",
             created_at: new Date(),
             updated_at: new Date(),
-            tokens: null,
             deletedAt: null
         });
 
@@ -99,7 +97,6 @@ describe("POST /auth/login", () => {
             role: "USER",
             created_at: new Date(),
             updated_at: new Date(),
-            tokens: null,
             deletedAt: null
         });
 
@@ -139,7 +136,6 @@ describe("POST /auth/login", () => {
             role: "USER",
             created_at: new Date(),
             updated_at: new Date(),
-            tokens: null,
             deletedAt: null
         });
 

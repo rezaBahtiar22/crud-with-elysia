@@ -66,10 +66,9 @@ export const BorrowingRoute = new Elysia({ prefix: "/borrowing" })
 // ── ADMIN ROUTES ──
 export const AdminBorrowingRoute = new Elysia({ prefix: "/admin" })
  
-    // Lihat semua peminjaman
-    .get("/borrowing", async ({ query, set }) => {
+    .get("/borrowing", async ({ query, set, ...ctx }) => {
         set.status = 200;
-        return BorrowingController.getAllBorrowings({ query, set } as any);
+        return BorrowingController.getAllBorrowings({ query, set, ...ctx } as any);
     }, {
         beforeHandle: [
             AuthMiddleware,
@@ -89,9 +88,9 @@ export const AdminBorrowingRoute = new Elysia({ prefix: "/admin" })
     })
  
     // Detail peminjaman (any user)
-    .get("/borrowing/:id", async ({ params, set }) => {
+    .get("/borrowing/:id", async ({ params, set, ...ctx }) => {
         set.status = 200;
-        return BorrowingController.getBorrowingById({ params, set } as any);
+        return BorrowingController.getBorrowingById({ params, set, ...ctx } as any);
     }, {
         beforeHandle: [
             AuthMiddleware,
@@ -108,9 +107,9 @@ export const AdminBorrowingRoute = new Elysia({ prefix: "/admin" })
     })
  
     // Approve peminjaman
-    .patch("/borrowing/:id/approve", async ({ params, set }) => {
+    .patch("/borrowing/:id/approve", async ({ params, set, ...ctx }) => {
         set.status = 200;
-        return BorrowingController.approveBorrowing({ params, set } as any);
+        return BorrowingController.approveBorrowing({ params, set, ...ctx } as any);
     }, {
         beforeHandle: [
             AuthMiddleware,
@@ -127,9 +126,9 @@ export const AdminBorrowingRoute = new Elysia({ prefix: "/admin" })
     })
  
     // Reject peminjaman
-    .patch("/borrowing/:id/reject", async ({ params, set }) => {
+    .patch("/borrowing/:id/reject", async ({ params, set, ...ctx }) => {
         set.status = 200;
-        return BorrowingController.rejectBorrowing({ params, set } as any);
+        return BorrowingController.rejectBorrowing({ params, set, ...ctx } as any);
     }, {
         beforeHandle: [
             AuthMiddleware,
@@ -146,9 +145,9 @@ export const AdminBorrowingRoute = new Elysia({ prefix: "/admin" })
     })
  
     // Return buku
-    .patch("/borrowing/:id/return", async ({ params, set }) => {
+    .patch("/borrowing/:id/return", async ({ params, set, ...ctx }) => {
         set.status = 200;
-        return BorrowingController.returnBorrowing({ params, set } as any);
+        return BorrowingController.returnBorrowing({ params, set, ...ctx } as any);
     }, {
         beforeHandle: [
             AuthMiddleware,

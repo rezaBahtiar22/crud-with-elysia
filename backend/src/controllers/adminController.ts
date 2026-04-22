@@ -25,7 +25,7 @@ export class AdminUserController {
     { params, user }: AuthContext
   ) {
     const id = Number(params.id);
-    return AdminUserService.deleteUser(user, id);
+    return AdminUserService.deleteUser(user!, id);
   }
 
   static async getUserById(ctx: AuthContext) {

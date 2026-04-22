@@ -7,17 +7,19 @@ import { AdminRoute } from "./routes/adminRoute.ts";
 import { RefreshTokenRoute } from "./routes/refreshTokenRoute.ts"
 import { ForgotPasswordRoute } from "./routes/forgotPasswordRoute.ts";
 import { ErrorMiddleware } from "./middlewares/errorMiddleware.ts";
-import { startOtpCleanerJob } from "./helper/otpCleanerJob.ts";
+import { startCronJobs } from "./helper/cronJobs.ts";
 import { swagger } from "@elysiajs/swagger";
 import { AdminBookRoute } from "./routes/adminBookRoute.ts";
 import { AdminBorrowingRoute, BorrowingRoute } from "./routes/borrowingRoute.ts";
 import { UserBookRoute } from "./routes/userBookRoute.ts";
+import { loggerMiddleware } from "./middlewares/loggerMiddleware.ts";
 
 
-startOtpCleanerJob();
+startCronJobs();
 
 const app = new Elysia()
     .use(ErrorMiddleware)
+    .use(loggerMiddleware)
     .use(
         swagger({
             documentation: {
@@ -39,7 +41,7 @@ const app = new Elysia()
         })
     )
     .use(cors({
-        origin: true,
+        origin: process.env.FRONTEND_URL || true,
         credentials: true
     }))
     .get("/", () => "Hello Jogja!")

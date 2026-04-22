@@ -25,8 +25,9 @@ export const UserRoute = new Elysia({ prefix: "/user" })
 
   .patch(
     "/update/profile",
-    (ctx: AuthContext) => {
-      return AuthController.updateProfile(ctx.user, ctx.body);
+    (context) => {
+      const ctx = context as any;
+      return AuthController.updateProfile(ctx.user, ctx.body as any);
     },
     {
       beforeHandle: AuthMiddleware,
@@ -40,7 +41,8 @@ export const UserRoute = new Elysia({ prefix: "/user" })
 
   .patch(
     "/update/password",
-    (ctx: AuthContext) => {
+    (context) => {
+      const ctx = context as any;
       return AuthController.updatePassword(
         ctx.user,
         ctx.body as AuthUserUpdatePasswordRequest
@@ -59,7 +61,8 @@ export const UserRoute = new Elysia({ prefix: "/user" })
 
   .get(
     "/profile",
-    (ctx: AuthContext) => {
+    (context) => {
+      const ctx = context as any;
       ctx.set.status = 200;
       return AuthController.profile(ctx.user);
     },

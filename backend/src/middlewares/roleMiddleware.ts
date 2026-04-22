@@ -1,5 +1,5 @@
 import { ResponseError } from "../utils/responseError";
-import type { Role } from "../../generated/prisma/client"
+import type { Role } from "../../generated/prisma"
 import type { AuthContext } from "../@types/context";
 
 export const RoleMiddleware = (allowedRoles: Role[]) =>
