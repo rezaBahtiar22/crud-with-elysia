@@ -1,3 +1,10 @@
+/**
+ * ══════════════════════════════
+ *   HISTORY & ANALYTICS MODULE SCRIPT
+ *   Heavenly Library — Reports
+ * ══════════════════════════════
+ */
+
 const BASE_URL = CONFIG.API_BASE_URL;
 let trendChart = null;
 let statusChart = null;
@@ -9,12 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
-      if (trendChart) setTimeout(updateChartTheme, 100);
+      setTimeout(() => {
+        if (trendChart) updateTrendChartTheme();
+        if (statusChart) updateStatusChartTheme();
+      }, 100);
     });
   }
   loadPage();
 });
-
 
 function loadPage() {
   const userData = JSON.parse(localStorage.getItem('userData') ?? '{}');
@@ -50,32 +59,36 @@ function loadPage() {
    ADMIN — Analytics
 ══════════════════════════════ */
 async function loadAdminHistory() {
-  const res = await apiFetch(`${BASE_URL}/admin/borrowing?page=1&limit=500`);
-  if (!res?.ok) return;
-  const json = await res.json();
-  const all = json.data ?? [];
+  try {
+    const res = await apiFetch(`${BASE_URL}/admin/borrowing?page=1&limit=500`);
+    if (!res?.ok) return;
+    const json = await res.json();
+    const all = json.data ?? [];
 
-  // Stat cards
-  const byStatus = {};
-  all.forEach(b => byStatus[b.status] = (byStatus[b.status] ?? 0) + 1);
-  const totalDenda = all.reduce((s, b) => s + (b.fine ?? 0), 0);
+    // Stat cards
+    const byStatus = {};
+    all.forEach(b => byStatus[b.status] = (byStatus[b.status] ?? 0) + 1);
+    const totalDenda = all.reduce((s, b) => s + (b.fine ?? 0), 0);
 
-  document.getElementById('aTotalTx').textContent = all.length;
-  document.getElementById('aReturned').textContent = byStatus.RETURNED ?? 0;
-  document.getElementById('aRejected').textContent = byStatus.REJECTED ?? 0;
-  document.getElementById('aTotalDenda').textContent = totalDenda > 0
-    ? `Rp ${totalDenda.toLocaleString('id-ID')}`
-    : 'Rp 0';
+    document.getElementById('aTotalTx').textContent = all.length;
+    document.getElementById('aReturned').textContent = byStatus.RETURNED ?? 0;
+    document.getElementById('aRejected').textContent = byStatus.REJECTED ?? 0;
+    document.getElementById('aTotalDenda').textContent = totalDenda > 0
+      ? `Rp ${totalDenda.toLocaleString('id-ID')}`
+      : 'Rp 0';
 
-  // Charts
-  renderTrendChart(all);
-  renderStatusChart(byStatus);
+    // Charts
+    renderTrendChart(all);
+    renderStatusChart(byStatus);
 
-  // Top users
-  renderTopUsers(all);
+    // Top users
+    renderTopUsers(all);
 
-  // Top books
-  renderTopBooks(all);
+    // Top books
+    renderTopBooks(all);
+  } catch (err) {
+    console.error('Error loading admin history:', err);
+  }
 }
 
 function getChartColors() {
@@ -86,6 +99,14 @@ function getChartColors() {
     tooltipBg: isLight ? '#fff' : '#1a1a26',
     tooltipTitle: isLight ? '#1a1a2e' : '#f0eff8',
     tooltipBorder: isLight ? 'rgba(0,0,0,0.08)' : 'rgba(124,106,255,0.3)',
+    // Status colors
+    status: {
+      APPROVED: '#22c55e',
+      RETURNED: '#7c6aff',
+      PENDING:  '#f59e0b',
+      OVERDUE:  '#ff5050',
+      REJECTED: '#ef4444'
+    }
   };
 }
 
@@ -106,7 +127,9 @@ function renderTrendChart(all) {
   );
 
   const c = getChartColors();
-  const ctx = document.getElementById('adminTrendChart').getContext('2d');
+  const canvas = document.getElementById('adminTrendChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
   if (trendChart) trendChart.destroy();
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 200);
@@ -136,54 +159,118 @@ function renderTrendChart(all) {
       responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: { backgroundColor: c.tooltipBg, titleColor: c.tooltipTitle, bodyColor: c.text, borderColor: c.tooltipBorder, borderWidth: 1, padding: 12, cornerRadius: 10, callbacks: { label: ctx => `  ${ctx.parsed.y} peminjaman` } }
+        tooltip: { 
+          backgroundColor: c.tooltipBg, 
+          titleColor: c.tooltipTitle, 
+          bodyColor: c.text, 
+          borderColor: c.tooltipBorder, 
+          borderWidth: 1, 
+          padding: 12, 
+          cornerRadius: 10, 
+          callbacks: { label: ctx => `  ${ctx.parsed.y} peminjaman` } 
+        }
       },
       scales: {
-        x: { grid: { color: c.grid }, ticks: { color: c.text, font: { family: 'DM Sans', size: 11 } }, border: { display: false } },
-        y: { beginAtZero: true, grid: { color: c.grid }, ticks: { color: c.text, font: { family: 'DM Sans', size: 11 }, stepSize: 1, padding: 8 }, border: { display: false } }
+        x: { grid: { color: c.grid, drawBorder: false }, ticks: { color: c.text, font: { family: 'DM Sans', size: 11 } }, border: { display: false } },
+        y: { beginAtZero: true, grid: { color: c.grid, drawBorder: false }, ticks: { color: c.text, font: { family: 'DM Sans', size: 11 }, stepSize: 1, padding: 8 }, border: { display: false } }
       }
     }
   });
 }
 
 function renderStatusChart(byStatus) {
+  const c = getChartColors();
   const labels = ['Aktif', 'Dikembalikan', 'Menunggu', 'Terlambat', 'Ditolak'];
   const keys   = ['APPROVED', 'RETURNED', 'PENDING', 'OVERDUE', 'REJECTED'];
-  const colors = ['#22c55e', '#7a7890', '#f59e0b', '#ff5050', '#ef4444'];
+  const colors = [c.status.APPROVED, c.status.RETURNED, c.status.PENDING, c.status.OVERDUE, c.status.REJECTED];
   const data   = keys.map(k => byStatus[k] ?? 0);
   const total  = data.reduce((s, v) => s + v, 0);
 
-  const ctx = document.getElementById('adminStatusChart').getContext('2d');
+  const canvas = document.getElementById('adminStatusChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
   if (statusChart) statusChart.destroy();
 
   statusChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels,
-      datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }]
+      datasets: [{ 
+        data, 
+        backgroundColor: colors, 
+        borderWidth: 0, 
+        hoverOffset: 8
+      }]
     },
     options: {
-      responsive: false,
-      cutout: '70%',
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} (${total > 0 ? Math.round(ctx.parsed / total * 100) : 0}%)` } } }
+      responsive: true,
+      maintainAspectRatio: true, // Memastikan tetap bulat sempurna
+      cutout: '75%', // Ketebalan yang lebih seimbang
+      plugins: { 
+        legend: { display: false }, 
+        tooltip: { 
+          backgroundColor: c.tooltipBg,
+          titleColor: c.tooltipTitle,
+          bodyColor: c.text,
+          borderColor: c.tooltipBorder,
+          borderWidth: 1,
+          padding: 12,
+          cornerRadius: 10,
+          callbacks: { 
+            label: ctx => ` ${ctx.label}: ${ctx.parsed} (${total > 0 ? Math.round(ctx.parsed / total * 100) : 0}%)` 
+          } 
+        } 
+      }
     }
   });
 
   // Legend
   const legend = document.getElementById('donutLegend');
-  legend.innerHTML = labels.map((l, i) => `
-    <div class="donut-legend-item">
-      <div class="donut-legend-left">
-        <div class="donut-legend-dot" style="background:${colors[i]}"></div>
-        <span class="donut-legend-label">${l}</span>
+  if (legend) {
+    legend.innerHTML = labels.map((l, i) => `
+      <div class="donut-legend-item">
+        <div class="donut-legend-left">
+          <div class="donut-legend-dot" style="background:${colors[i]}"></div>
+          <span class="donut-legend-label">${l}</span>
+        </div>
+        <span class="donut-legend-val">${data[i]}</span>
       </div>
-      <span class="donut-legend-val">${data[i]}</span>
-    </div>
-  `).join('');
+    `).join('');
+  }
+}
+
+function updateTrendChartTheme() {
+  if (!trendChart) return;
+  const c = getChartColors();
+  const canvas = document.getElementById('adminTrendChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+  gradient.addColorStop(0, 'rgba(124,106,255,0.3)');
+  gradient.addColorStop(1, 'rgba(124,106,255,0)');
+  trendChart.data.datasets[0].backgroundColor = gradient;
+  trendChart.options.scales.x.grid.color = c.grid;
+  trendChart.options.scales.x.ticks.color = c.text;
+  trendChart.options.scales.y.grid.color = c.grid;
+  trendChart.options.scales.y.ticks.color = c.text;
+  trendChart.options.plugins.tooltip.backgroundColor = c.tooltipBg;
+  trendChart.options.plugins.tooltip.titleColor = c.tooltipTitle;
+  trendChart.options.plugins.tooltip.borderColor = c.tooltipBorder;
+  trendChart.update();
+}
+
+function updateStatusChartTheme() {
+  if (!statusChart) return;
+  const c = getChartColors();
+  statusChart.options.plugins.tooltip.backgroundColor = c.tooltipBg;
+  statusChart.options.plugins.tooltip.titleColor = c.tooltipTitle;
+  statusChart.options.plugins.tooltip.borderColor = c.tooltipBorder;
+  statusChart.update();
 }
 
 function renderTopUsers(all) {
   const el = document.getElementById('topUsersList');
+  if (!el) return;
   const freq = {};
   all.forEach(b => {
     const id = b.user?.id; if (!id) return;
@@ -210,6 +297,7 @@ function renderTopUsers(all) {
 
 function renderTopBooks(all) {
   const el = document.getElementById('topBooksListH');
+  if (!el) return;
   const freq = {};
   all.forEach(b => {
     const id = b.book?.id; if (!id) return;
@@ -225,7 +313,7 @@ function renderTopBooks(all) {
       <div class="list-rank ${rankClass}">${i + 1}</div>
       <div class="list-cover">
         ${item.book.cover
-          ? `<img src="${escapeHtml(item.book.cover)}" alt="" onerror="this.style.display='none'">`
+          ? `<img src="${escapeHtml(item.book.cover)}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><path d=\\'M4 19.5A2.5 2.5 0 0 1 6.5 17H20\\'/><path d=\\'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z\\'/></svg>'">`
           : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`
         }
       </div>
@@ -238,80 +326,66 @@ function renderTopBooks(all) {
   }).join('');
 }
 
-function updateChartTheme() {
-  if (!trendChart) return;
-  const c = getChartColors();
-  const ctx = document.getElementById('adminTrendChart').getContext('2d');
-  const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-  gradient.addColorStop(0, 'rgba(124,106,255,0.3)');
-  gradient.addColorStop(1, 'rgba(124,106,255,0)');
-  trendChart.data.datasets[0].backgroundColor = gradient;
-  trendChart.options.scales.x.grid.color = c.grid;
-  trendChart.options.scales.x.ticks.color = c.text;
-  trendChart.options.scales.y.grid.color = c.grid;
-  trendChart.options.scales.y.ticks.color = c.text;
-  trendChart.options.plugins.tooltip.backgroundColor = c.tooltipBg;
-  trendChart.options.plugins.tooltip.titleColor = c.tooltipTitle;
-  trendChart.options.plugins.tooltip.borderColor = c.tooltipBorder;
-  trendChart.update();
-}
-
 /* ══════════════════════════════
    USER — Jurnal Bacaan
 ══════════════════════════════ */
 async function loadUserHistory(name) {
-  const res = await apiFetch(`${BASE_URL}/borrowing?page=1&limit=100`);
-  if (!res?.ok) { document.getElementById('userEmpty').style.display = 'flex'; return; }
-  const json = await res.json();
-  const all = json.data ?? [];
+  try {
+    const res = await apiFetch(`${BASE_URL}/borrowing?page=1&limit=100`);
+    if (!res?.ok) { document.getElementById('userEmpty').style.display = 'flex'; return; }
+    const json = await res.json();
+    const all = json.data ?? [];
 
-  // Stats
-  const aktif    = all.filter(b => b.status === 'APPROVED' || b.status === 'OVERDUE').length;
-  const selesai  = all.filter(b => b.status === 'RETURNED').length;
-  const total    = all.length;
+    // Stats
+    const aktif    = all.filter(b => b.status === 'APPROVED' || b.status === 'OVERDUE').length;
+    const selesai  = all.filter(b => b.status === 'RETURNED').length;
+    const total    = all.length;
 
-  // Kategori favorit
-  const catFreq = {};
-  all.forEach(b => { const c = b.book?.category; if (c) catFreq[c] = (catFreq[c] ?? 0) + 1; });
-  const topCat = Object.entries(catFreq).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—';
+    // Kategori favorit
+    const catFreq = {};
+    all.forEach(b => { const c = b.book?.category; if (c) catFreq[c] = (catFreq[c] ?? 0) + 1; });
+    const topCat = Object.entries(catFreq).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—';
 
-  document.getElementById('uTotalBuku').textContent = total;
-  document.getElementById('uSelesai').textContent   = selesai;
-  document.getElementById('uAktif').textContent     = aktif;
-  document.getElementById('uKatFav').textContent    = topCat;
+    document.getElementById('uTotalBuku').textContent = total;
+    document.getElementById('uSelesai').textContent   = selesai;
+    document.getElementById('uAktif').textContent     = aktif;
+    document.getElementById('uKatFav').textContent    = topCat;
 
-  if (all.length === 0) {
-    document.getElementById('timelineWrap').innerHTML = '';
-    document.getElementById('userEmpty').style.display = 'flex';
-    return;
+    if (all.length === 0) {
+      document.getElementById('timelineWrap').innerHTML = '';
+      document.getElementById('userEmpty').style.display = 'flex';
+      return;
+    }
+
+    // Kelompokkan per bulan
+    const byMonth = {};
+    const mn = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    all.forEach(b => {
+      const d = new Date(b.borrowAt ?? b.created_at);
+      const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}`;
+      const label = `${mn[d.getMonth()]} ${d.getFullYear()}`;
+      if (!byMonth[key]) byMonth[key] = { label, items: [] };
+      byMonth[key].items.push(b);
+    });
+
+    // Urutkan bulan terbaru dulu
+    const sorted = Object.entries(byMonth).sort((a, b) => b[0].localeCompare(a[0]));
+
+    document.getElementById('timelineWrap').innerHTML = sorted.map(([, { label, items }]) => `
+      <div class="timeline-month">
+        <div class="timeline-month-header">
+          <span class="timeline-month-label">${label}</span>
+          <div class="timeline-month-line"></div>
+          <span class="timeline-month-count">${items.length} buku</span>
+        </div>
+        <div class="timeline-items">
+          ${items.map(b => timelineCard(b)).join('')}
+        </div>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error('Error loading user history:', err);
   }
-
-  // Kelompokkan per bulan
-  const byMonth = {};
-  const mn = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  all.forEach(b => {
-    const d = new Date(b.borrowAt ?? b.created_at);
-    const key = `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}`;
-    const label = `${mn[d.getMonth()]} ${d.getFullYear()}`;
-    if (!byMonth[key]) byMonth[key] = { label, items: [] };
-    byMonth[key].items.push(b);
-  });
-
-  // Urutkan bulan terbaru dulu
-  const sorted = Object.entries(byMonth).sort((a, b) => b[0].localeCompare(a[0]));
-
-  document.getElementById('timelineWrap').innerHTML = sorted.map(([, { label, items }]) => `
-    <div class="timeline-month">
-      <div class="timeline-month-header">
-        <span class="timeline-month-label">${label}</span>
-        <div class="timeline-month-line"></div>
-        <span class="timeline-month-count">${items.length} buku</span>
-      </div>
-      <div class="timeline-items">
-        ${items.map(b => timelineCard(b)).join('')}
-      </div>
-    </div>
-  `).join('');
 }
 
 function timelineCard(b) {
