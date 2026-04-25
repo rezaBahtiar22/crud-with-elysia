@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 100);
     });
   }
+  initExport();
   loadPage();
 });
 
@@ -53,6 +54,51 @@ function loadPage() {
     document.getElementById('userSubtitle').textContent = `Perjalanan membaca ${name}`;
     loadUserHistory(name);
   }
+}
+
+// ── EXPORT EXCEL ──
+function initExport() {
+  const btn = document.getElementById('btnExportUser');
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    try {
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      const span = btn.querySelector('span');
+      const originalText = span.textContent;
+      span.textContent = 'Menyiapkan Jurnal...';
+
+      const res = await apiFetch(`${BASE_URL}/reports/user/borrowings`);
+      if (!res || !res.ok) {
+        throw new Error('Gagal mendownload jurnal');
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Riwayat_Bacaan_Saya.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+
+      // Show toast jika ada fungsi showToast (biasanya di common atau lokal)
+      if (typeof showToast === 'function') {
+        showToast('Jurnal bacaan berhasil didownload', 'success');
+      } else {
+        alert('Jurnal bacaan berhasil didownload');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal mengunduh jurnal bacaan');
+    } finally {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.querySelector('span').textContent = 'Unduh Jurnal Bacaan';
+    }
+  });
 }
 
 /* ══════════════════════════════

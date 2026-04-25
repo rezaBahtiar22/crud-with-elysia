@@ -162,3 +162,26 @@ body.light .donut-legend-item { border-bottom-color: rgba(0,0,0,0.03); }
   .stat-row, .user-stat-row { grid-template-columns: repeat(2, 1fr); }
   .charts-row, .bottom-row { grid-template-columns: 1fr; }
 }
+
+/* Export Button Styles */
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.btn-export { 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+  padding: 7px 14px; 
+  background: linear-gradient(135deg, #6366f1, #4f46e5); 
+  color: #fff; 
+  border: none; 
+  border-radius: 8px; 
+  font-size: 12px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+  margin-top: 15px;
+}
+.btn-export:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); filter: brightness(1.1); }
+.btn-export:active { transform: translateY(0); }
+.btn-export svg { width: 14px; height: 14px; }
+@media (max-width: 768px) { .header-actions { flex-direction: column-reverse; align-items: stretch; width: 100%; gap: 12px; } .btn-export { justify-content: center; width: 100%; } }

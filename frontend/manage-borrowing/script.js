@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Module-specific
   initStatusTabs();
   initSearch();
+  initExport();
   loadBorrowings();
   initModals();
 });
@@ -60,6 +61,47 @@ function initSearch() {
     currentSearch = '';
     currentPage = 1;
     loadBorrowings();
+  });
+}
+
+// ── EXPORT EXCEL ──
+function initExport() {
+  const btn = document.getElementById('btnExportExcel');
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    try {
+      // Nonaktifkan tombol saat proses
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      const originalText = btn.querySelector('span').textContent;
+      btn.querySelector('span').textContent = 'Mengekspor...';
+
+      const res = await apiFetch(`${BASE_URL}/reports/admin/borrowings`);
+      if (!res || !res.ok) {
+        throw new Error('Gagal mendownload laporan');
+      }
+
+      // Handle Blob (File mentah)
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Laporan_Peminjaman_Global.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+
+      showToast('Laporan berhasil didownload', 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Gagal mengekspor laporan', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.querySelector('span').textContent = 'Ekspor Excel';
+    }
   });
 }
 

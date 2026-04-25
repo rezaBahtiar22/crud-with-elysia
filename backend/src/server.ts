@@ -13,6 +13,7 @@ import { AdminBookRoute } from "./routes/adminBookRoute.ts";
 import { AdminBorrowingRoute, BorrowingRoute } from "./routes/borrowingRoute.ts";
 import { UserBookRoute } from "./routes/userBookRoute.ts";
 import { loggerMiddleware } from "./middlewares/loggerMiddleware.ts";
+import { ReportRoute } from "./routes/reportRoute.ts";
 
 
 startCronJobs();
@@ -60,6 +61,7 @@ const app = new Elysia()
     .use(UserBookRoute)
     .use(AdminBorrowingRoute)
     .use(BorrowingRoute)
+    .use(ReportRoute)
 
 
 export default app;

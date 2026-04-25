@@ -541,3 +541,10 @@ body.light .modal-box { background: #fff; border-color: rgba(98,85,224,0.15); }
 .toast-error   { background: #dc2626; color: #fff; }
 .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
 @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+/* Export Button Styles */
+.toolbar-actions { display: flex; align-items: center; gap: 16px; }
+.btn-export { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; border: none; border-radius: 10px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); }
+.btn-export:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4); filter: brightness(1.1); }
+.btn-export:active { transform: translateY(0); }
+.btn-export svg { width: 16px; height: 16px; }
