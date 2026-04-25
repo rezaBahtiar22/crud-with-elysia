@@ -11,6 +11,7 @@ import { toBookPaginationResponse } from "../interfaces/BookInterface/bookPagina
 import { ResponseError } from "../utils/responseError";
 import { Validation } from "../utils/validation";
 import { BookValidation } from "../utils/bookValidation";
+import { esClient } from "../utils/elasticsearch";
 
 
 
@@ -21,52 +22,82 @@ export class AdminBookService {
         const page = query.page ?? 1;
         const limit = query.limit ?? 10;
         const skip = (page - 1) * limit;
+        
+        let bookIds: number[] | null = null;
+        let totalItems = 0;
 
-        // total buku sesuai filter
-        const totalItems = await prisma.book.count({
-            where: {
-                deletedAt: null,
-                // filter berdasarkan judul atau penulis
-                ...(query.search && {
-                    OR: [
-                        { title: { contains: query.search, mode: "insensitive" } },
-                        { author: { contains: query.search, mode: "insensitive" } }
+        // JIKA ADA SEARCH, GUNAKAN ELASTICSEARCH
+        if (query.search) {
+            try {
+                const esResult = await esClient.search({
+                    index: 'books',
+                    query: {
+                        multi_match: {
+                            query: query.search,
+                            fields: ['title^3', 'author^2', 'publisher', 'description'], // title punya bobot lebih tinggi
+                            fuzziness: 'AUTO' // mendukung typo
+                        }
+                    },
+                    from: skip,
+                    size: limit,
+                    sort: [
+                        { _score: { order: 'desc' } }
                     ]
-                }),
-                // filter berdasarkan kategori
-                ...(query.category && {
-                    category: { equals: query.category, mode: "insensitive" }
-                })
-            }
-        });
+                });
 
-        // data buku dan filter search
+                const hits = esResult.hits.hits;
+                // @ts-ignore
+                totalItems = typeof esResult.hits.total === 'number' ? esResult.hits.total : esResult.hits.total?.value || 0;
+                bookIds = hits.map(hit => Number(hit._id));
+
+                // Jika tidak ada hasil di ES, kita bisa langsung kembalikan kosong
+                if (bookIds.length === 0) {
+                    return toBookPaginationResponse([], { page, limit, totalItems: 0, totalPages: 0 });
+                }
+            } catch (error) {
+                console.error("ES Search Error, falling back to Prisma:", error);
+                // Fallback tetap menggunakan prisma jika ES error
+            }
+        }
+
+        // total buku sesuai filter (Hanya dijalankan jika tidak pakai ES atau ES Fallback)
+        if (bookIds === null) {
+            totalItems = await prisma.book.count({
+                where: {
+                    deletedAt: null,
+                    ...(query.search && {
+                        OR: [
+                            { title: { contains: query.search, mode: "insensitive" } },
+                            { author: { contains: query.search, mode: "insensitive" } }
+                        ]
+                    }),
+                    ...(query.category && {
+                        category: { equals: query.category, mode: "insensitive" }
+                    })
+                }
+            });
+        }
+
+        // data buku
         const books = await prisma.book.findMany({
             where: {
                 deletedAt: null,
-
-                // filter berdasarkan judul atau penulis
-                ...(query.search && {
-                    OR: [
-                        {
-                            title: { contains: query.search, mode: "insensitive" }
-                        },
-                        {
-                            author: { contains: query.search, mode: "insensitive" }
-                        }
-                    ]
-                }),
-                
-                // filter berdasarkan kategori
-                ...(query.category && {
-                    category: { equals: query.category, mode: "insensitive" }
+                ...(bookIds !== null ? {
+                    id: { in: bookIds }
+                } : {
+                    ...(query.search && {
+                        OR: [
+                            { title: { contains: query.search, mode: "insensitive" } },
+                            { author: { contains: query.search, mode: "insensitive" } }
+                        ]
+                    }),
+                    ...(query.category && {
+                        category: { equals: query.category, mode: "insensitive" }
+                    })
                 })
             },
-            skip,
-            take: limit,
-            orderBy: {
-                created_at: "desc",
-            },
+            ...(bookIds === null ? { skip, take: limit } : {}), // pagination dilakukan di ES jika pakai ES
+            orderBy: bookIds !== null ? undefined : { created_at: "desc" },
             select: {
                 id: true,
                 title: true,
@@ -84,10 +115,16 @@ export class AdminBookService {
             },
         });
 
+        // Jika pakai ES, urutkan manual sesuai urutan ID dari ES agar relevansi terjaga
+        let finalBooks = books;
+        if (bookIds !== null) {
+            finalBooks = bookIds.map(id => books.find(b => b.id === id)!).filter(Boolean);
+        }
+
         const totalPages = Math.ceil(totalItems / limit);
 
         return toBookPaginationResponse(
-            books.map(book => ({
+            finalBooks.map(book => ({
                 id: book.id,
                 title: book.title,
                 author: book.author,
@@ -147,6 +184,26 @@ export class AdminBookService {
                 availableStock: data.stock
             }
         });
+
+        // INDEX KE ELASTICSEARCH
+        try {
+            await esClient.index({
+                index: 'books',
+                id: book.id.toString(),
+                document: {
+                    id: book.id,
+                    title: book.title,
+                    author: book.author,
+                    isbn: book.isbn,
+                    publisher: book.publisher,
+                    category: book.category,
+                    description: book.description,
+                    created_at: book.created_at
+                }
+            });
+        } catch (error) {
+            console.error("Gagal index ke ES:", error);
+        }
 
         return toAdminAddBookResponse(book);
     }
@@ -213,6 +270,26 @@ export class AdminBookService {
              }
         });
 
+        // UPDATE DI ELASTICSEARCH
+        try {
+            await esClient.index({
+                index: 'books',
+                id: updated.id.toString(),
+                document: {
+                    id: updated.id,
+                    title: updated.title,
+                    author: updated.author,
+                    isbn: updated.isbn,
+                    publisher: updated.publisher,
+                    category: updated.category,
+                    description: updated.description,
+                    created_at: updated.created_at
+                }
+            });
+        } catch (error) {
+            console.error("Gagal update ES:", error);
+        }
+
         return toAdminAddBookResponse(updated);
     }
 
@@ -237,6 +314,16 @@ export class AdminBookService {
             where: { id },
             data: { deletedAt: new Date() }
         });
+
+        // HAPUS DARI ELASTICSEARCH (atau kita bisa biarkan tapi filter deletedAt di query ES)
+        try {
+            await esClient.delete({
+                index: 'books',
+                id: id.toString()
+            });
+        } catch (error) {
+            console.error("Gagal hapus di ES:", error);
+        }
 
         return { message: "Buku berhasil dihapus" };
     }

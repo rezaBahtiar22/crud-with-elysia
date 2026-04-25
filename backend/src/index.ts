@@ -1,7 +1,11 @@
 import app from "./server.ts";
 import { prisma } from "./database/prisma.ts";
+import { initEsIndex } from "./utils/elasticsearch.ts";
 
 const port = Number(process.env.PORT) || 3000;
+
+// Inisialisasi Elasticsearch
+await initEsIndex();
 
 app.listen({ port });
 

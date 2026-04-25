@@ -79,6 +79,7 @@ export class AuthOtpService {
         });
 
         // kirim email
+        console.log(`[OTP] Code for ${user.email}: ${code}`); // Log untuk testing
         await sendOTPEmail(user.email, code, "LOGIN");
 
         return {
@@ -187,7 +188,13 @@ export class AuthOtpService {
         return {
             message: "Login Success",
             accessToken,
-            refreshToken
+            refreshToken,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
         };
     }
 
