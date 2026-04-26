@@ -386,16 +386,21 @@ async function loadUserHistory(name) {
     const aktif    = all.filter(b => b.status === 'APPROVED' || b.status === 'OVERDUE').length;
     const selesai  = all.filter(b => b.status === 'RETURNED').length;
     const total    = all.length;
-
-    // Kategori favorit
-    const catFreq = {};
-    all.forEach(b => { const c = b.book?.category; if (c) catFreq[c] = (catFreq[c] ?? 0) + 1; });
-    const topCat = Object.entries(catFreq).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—';
+    const totalDenda = all.reduce((acc, b) => acc + (b.fine || 0), 0);
 
     document.getElementById('uTotalBuku').textContent = total;
     document.getElementById('uSelesai').textContent   = selesai;
     document.getElementById('uAktif').textContent     = aktif;
-    document.getElementById('uKatFav').textContent    = topCat;
+    
+    const dendaEl = document.getElementById('uTotalDenda');
+    dendaEl.textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(totalDenda);
+    
+    // Beri warna merah jika ada denda
+    if (totalDenda > 0) {
+      dendaEl.style.color = '#ff5050';
+    } else {
+      dendaEl.style.color = 'inherit';
+    }
 
     if (all.length === 0) {
       document.getElementById('timelineWrap').innerHTML = '';
