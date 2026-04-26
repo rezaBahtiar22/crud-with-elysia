@@ -31,11 +31,11 @@ export class BookValidation {
             z.null()
         ]).optional(),
 
-        // stock default 0 jika tidak diisi
+        // stock default 1 jika tidak diisi
         stock: z.number()
             .int()
-            .min(0)
-            .default(0)
+            .min(1, "Stok minimal adalah 1")
+            .default(1)
     })
 
     // validasi update buku - semua field optional
@@ -56,6 +56,6 @@ export class BookValidation {
             z.literal(''),
             z.null()
         ]).optional(),
-        stock: z.number().int().optional()
+        stock: z.number().int().min(1, "Stok minimal adalah 1").optional()
     })
 }

@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadBooks();
   initToolbar();
   initModalBook();
+  initAutofill();
   initModalDelete();
 });
 
@@ -286,28 +287,123 @@ function initModalBook() {
 
   // Cover preview live
   document.getElementById('fieldCover').addEventListener('input', () => {
-    const url = document.getElementById('fieldCover').value.trim();
-    const img = document.getElementById('coverPreviewImg');
-    const placeholder = document.getElementById('coverPlaceholder');
-    if (url) {
-      img.src = url;
-      img.style.display = 'block';
-      placeholder.style.display = 'none';
-      img.onerror = () => {
-        img.style.display = 'none';
-        placeholder.style.display = 'flex';
-      };
-    } else {
-      img.style.display = 'none';
-      img.src = '';
-      placeholder.style.display = 'flex';
-    }
+    updateCoverPreview(document.getElementById('fieldCover').value.trim());
   });
 
   // Close on overlay click
   document.getElementById('bookModalOverlay').addEventListener('click', (e) => {
     if (e.target === document.getElementById('bookModalOverlay')) closeBookModal();
   });
+}
+
+function updateCoverPreview(url) {
+  const img = document.getElementById('coverPreviewImg');
+  const placeholder = document.getElementById('coverPlaceholder');
+  if (url) {
+    img.src = url;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+    img.onerror = () => {
+      img.style.display = 'none';
+      placeholder.style.display = 'flex';
+    };
+  } else {
+    img.style.display = 'none';
+    img.src = '';
+    placeholder.style.display = 'flex';
+  }
+}
+
+// ── Autofill Logic ──
+function initAutofill() {
+  const btn = document.getElementById('btnAutofill');
+  const isbnInput = document.getElementById('fieldIsbn');
+  const spinner = document.getElementById('autofillSpinner');
+  const icon = btn.querySelector('svg');
+
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    const isbn = isbnInput.value.trim().replace(/-/g, '');
+    if (!isbn) {
+      showToast('Masukkan nomor ISBN terlebih dahulu', 'error');
+      return;
+    }
+
+    try {
+      btn.disabled = true;
+      spinner.style.display = 'block';
+      icon.style.display = 'none';
+
+      // 1. Coba Open Library
+      let bookData = await fetchFromOpenLibrary(isbn);
+      
+      // 2. Jika tidak ada, coba Google Books
+      if (!bookData) {
+        bookData = await fetchFromGoogleBooks(isbn);
+      }
+
+      if (bookData) {
+        document.getElementById('fieldTitle').value = bookData.title || '';
+        document.getElementById('fieldAuthor').value = bookData.author || '';
+        document.getElementById('fieldPublisher').value = bookData.publisher || '';
+        document.getElementById('fieldYear').value = bookData.year || '';
+        document.getElementById('fieldDesc').value = bookData.description || '';
+        document.getElementById('fieldCover').value = bookData.cover || '';
+        if (bookData.category) document.getElementById('fieldCategory').value = bookData.category;
+
+        updateCoverPreview(bookData.cover);
+        showToast('Data buku berhasil ditemukan!', 'success');
+      } else {
+        showToast('Data buku tidak ditemukan', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Terjadi kesalahan saat mencari data', 'error');
+    } finally {
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      icon.style.display = 'block';
+    }
+  });
+}
+
+async function fetchFromOpenLibrary(isbn) {
+  try {
+    const res = await fetch(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
+    const json = await res.json();
+    const data = json[`ISBN:${isbn}`];
+    if (!data) return null;
+
+    return {
+      title: data.title,
+      author: data.authors?.map(a => a.name).join(', '),
+      publisher: data.publishers?.[0]?.name,
+      year: data.publish_date ? parseInt(data.publish_date.match(/\d{4}/)?.[0]) : null,
+      description: typeof data.notes === 'string' ? data.notes : '',
+      cover: data.cover?.large || data.cover?.medium,
+      category: data.subjects?.[0]?.name
+    };
+  } catch (e) { return null; }
+}
+
+async function fetchFromGoogleBooks(isbn) {
+  try {
+    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+    const json = await res.json();
+    if (!json.items || json.items.length === 0) return null;
+    const info = json.items[0].volumeInfo;
+
+    return {
+      title: info.title,
+      author: info.authors?.join(', '),
+      publisher: info.publisher,
+      year: info.publishedDate ? parseInt(info.publishedDate.substring(0,4)) : null,
+      description: info.description,
+      cover: info.imageLinks?.thumbnail?.replace('http:', 'https:'),
+      category: info.categories?.[0]
+    };
+  } catch (e) { return null; }
 }
 
 function openAddModal() {
@@ -409,6 +505,7 @@ async function saveBook() {
   if (!title) return showFormError('Judul wajib diisi');
   if (!author) return showFormError('Penulis wajib diisi');
   if (!isbn) return showFormError('ISBN wajib diisi');
+  if (!stock || parseInt(stock) < 1) return showFormError('Stok minimal adalah 1');
 
   const body = {
     title, author, isbn,

@@ -365,4 +365,12 @@ body.light .skeleton-line {
   .form-grid { flex-direction: column; }
   .form-cover-preview { width: 100%; }
   .book-modal-box { max-width: 95vw !important; margin: 0 12px; }
-}
+}
+
+/* Autofill Button */
+.input-with-btn { position: relative; display: flex; align-items: center; }
+.input-with-btn .form-input { padding-right: 44px; }
+.btn-autofill { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: none; background: rgba(124, 106, 255, 0.1); color: #7c6aff; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+.btn-autofill:hover { background: #7c6aff; color: #fff; transform: translateY(-50%) scale(1.05); }
+.btn-autofill:active { transform: translateY(-50%) scale(0.95); }
+.btn-autofill svg { width: 16px; height: 16px; }
