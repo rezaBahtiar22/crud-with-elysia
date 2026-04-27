@@ -429,8 +429,8 @@ body.light .user-dropdown {
 .toggle-btn {
   position: fixed;
   top: 20px;
-  left: calc(var(--sidebar-width) - 14px);
-  z-index: 300;
+  left: calc(var(--sidebar-width) - 14px) !important;
+  z-index: 500 !important;
   width: 28px;
   height: 28px;
   background: var(--sidebar-bg);
@@ -443,6 +443,11 @@ body.light .user-dropdown {
   color: var(--text-muted);
   box-shadow: 0 2px 8px var(--shadow);
   transition: left 0.3s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s, border-color 0.2s, background 0.3s;
+}
+
+.toggle-btn svg {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: rotate(180deg) !important; /* Menunjuk ke kiri saat sidebar terbuka */
 }
 
 .toggle-btn:hover {
@@ -502,7 +507,11 @@ body.collapsed .sidebar {
 }
 
 body.collapsed .toggle-btn {
-  left: calc(var(--sidebar-collapsed-width) - 14px);
+  left: calc(var(--sidebar-collapsed-width) - 14px) !important;
+}
+
+body.collapsed .toggle-btn svg {
+  transform: rotate(0deg) !important; /* Menunjuk ke kanan saat sidebar tertutup */
 }
 
 body.collapsed .logo-text-wrap,
