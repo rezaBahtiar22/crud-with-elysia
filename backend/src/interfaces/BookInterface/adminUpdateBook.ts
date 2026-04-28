@@ -12,6 +12,8 @@ export interface AdminUpdateBookRequest {
     category?: string
     description?: string
     cover?: string | null
+    readLink?: string | null
+    bookFile?: any
     stock?: number
 }
 
@@ -33,6 +35,8 @@ export function toAdminUpdateBookResponse(book: Book): AdminUpdateBookResponse {
             publisher: book.publisher,
             year: book.year,
             category: book.category,
+            readLink: book.readLink,
+            bookFile: book.bookFile,
             description: book.description,
             cover: book.cover,
             stock: book.stock,

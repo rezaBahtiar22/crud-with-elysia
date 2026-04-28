@@ -49,6 +49,8 @@ model Book {
   cover          String?
   stock          Int         @default(0)
   availableStock Int         @default(0)
+  readLink       String?     
+  bookFile       String?     
   deletedAt      DateTime?
   created_at     DateTime    @default(now())
   updated_at     DateTime    @updatedAt

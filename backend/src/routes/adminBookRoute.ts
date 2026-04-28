@@ -66,11 +66,13 @@ export const AdminBookRoute = new Elysia({ prefix: "/admin" })
             author:         t.String(),
             isbn:           t.String(),
             publisher:      t.Optional(t.String()),
-            year:           t.Optional(t.Number()),
+            year:           t.Optional(t.Any()), // Gunakan Any karena FormData mengirim string
             category:       t.Optional(t.String()),
             description:    t.Optional(t.String()),
+            readLink:       t.Optional(t.Union([t.String(), t.Null()])),
+            bookFile:       t.Optional(t.Any()), // Menampung File
             cover:          t.Optional(t.Union([t.String(), t.Null()])),
-            stock:          t.Optional(t.Number())
+            stock:          t.Optional(t.Any())
         })
     })
 
@@ -96,11 +98,13 @@ export const AdminBookRoute = new Elysia({ prefix: "/admin" })
             author:         t.Optional(t.String()),
             isbn:           t.Optional(t.String()),
             publisher:      t.Optional(t.String()),
-            year:           t.Optional(t.Number()),
+            year:           t.Optional(t.Any()),
             category:       t.Optional(t.String()),
             description:    t.Optional(t.String()),
+            readLink:       t.Optional(t.Union([t.String(), t.Null()])),
+            bookFile:       t.Optional(t.Any()),
             cover:          t.Optional(t.Union([t.String(), t.Null()])),
-            stock:          t.Optional(t.Number())
+            stock:          t.Optional(t.Any())
         })
     })
 

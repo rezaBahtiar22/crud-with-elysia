@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 export class BookValidation {
     // validasi tambah buku
     static readonly createBook = z.object({
@@ -18,13 +17,15 @@ export class BookValidation {
 
         // field optional
         publisher: z.string().optional(),
-        year: z.number()
+        year: z.coerce.number() // Gunakan coerce agar string "1984" jadi number 1984
             .int()
             .min(1000)
             .max(new Date().getFullYear())
             .optional(),
         category: z.string().optional(),
         description: z.string().optional(),
+        readLink: z.string().url("Read link must be a valid URL").optional().nullable(),
+        bookFile: z.any().optional(),
         cover: z.union([
             z.string().url("Cover must be a valid URL"),
             z.literal(''),
@@ -32,7 +33,7 @@ export class BookValidation {
         ]).optional(),
 
         // stock default 1 jika tidak diisi
-        stock: z.number()
+        stock: z.coerce.number() // Gunakan coerce agar string "9" jadi number 9
             .int()
             .min(1, "Stok minimal adalah 1")
             .default(1)
@@ -44,18 +45,16 @@ export class BookValidation {
         author: z.string().min(4).optional(),
         isbn: z.string().min(4).optional(),
         publisher: z.string().optional(),
-        year: z.number()
-            .int()
-            .min(1000)
-            .max(new Date().getFullYear())
-            .optional(),
+        year: z.coerce.number().int().min(1000).max(new Date().getFullYear()).optional(),
         category: z.string().optional(),
         description: z.string().optional(),
+        readLink: z.string().url().optional().nullable(),
+        bookFile: z.any().optional(),
         cover: z.union([
             z.string().url("Cover must be a valid URL"),
             z.literal(''),
             z.null()
         ]).optional(),
-        stock: z.number().int().min(1, "Stok minimal adalah 1").optional()
+        stock: z.coerce.number().int().min(1, "Stok minimal adalah 1").optional()
     })
 }

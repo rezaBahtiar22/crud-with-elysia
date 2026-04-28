@@ -108,6 +108,8 @@ export class AdminBookService {
                 category: true,
                 description: true,
                 cover: true,
+                readLink: true,
+                bookFile: true,
                 stock: true,
                 availableStock: true,
                 created_at: true,
@@ -134,6 +136,8 @@ export class AdminBookService {
                 category: book.category,
                 description: book.description,
                 cover: book.cover,
+                readLink: book.readLink,
+                bookFile: book.bookFile,
                 stock: book.stock,
                 availableStock: book.availableStock,
                 created_at: book.created_at.toISOString(),
@@ -147,45 +151,98 @@ export class AdminBookService {
     static async addBook(
         body: BookDataRequest
     ): Promise<BookDataResponse> {
-        // validasi request
-        const data = Validation.validate<BookDataRequest>(BookValidation.createBook, body);
+        try {
+            // validasi request
+            const data = Validation.validate<BookDataRequest>(BookValidation.createBook, body);
 
-        // cek apakah ISBN sudah terdaftar
-        const exist = await prisma.book.findUnique({
-            where: {
-                isbn: data.isbn
+            // cek apakah ISBN sudah terdaftar (termasuk yang soft-deleted)
+            const exist = await prisma.book.findUnique({
+                where: {
+                    isbn: data.isbn
+                }
+            });
+
+            if (exist) {
+                // Jika buku ada tapi TIDAK terhapus, baru throw error
+                if (exist.deletedAt === null) {
+                    throw new ResponseError(
+                        409,
+                        "ISBN_Already_Exist",
+                        "ISBN sudah terdaftar"
+                    );
+                }
+
+                // JIKA BUKU ADA TAPI STATUSNYA TERHAPUS (Soft-Deleted)
+                // Kita "Restore" atau bangkitkan kembali datanya
+                if (data.cover === '') data.cover = null;
+                
+                let savedFilePath: string | null = null;
+                if (data.bookFile && data.bookFile instanceof File) {
+                    savedFilePath = await AdminBookService.saveBookFile(data.bookFile, data.isbn);
+                }
+
+                const restoredBook = await prisma.book.update({
+                    where: { id: exist.id },
+                    data: {
+                        title: data.title,
+                        author: data.author,
+                        publisher: data.publisher ?? null,
+                        year: data.year ?? null,
+                        category: data.category ?? null,
+                        description: data.description ?? null,
+                        cover: data.cover ?? null,
+                        readLink: data.readLink ?? null,
+                        bookFile: savedFilePath,
+                        stock: data.stock,
+                        availableStock: data.stock,
+                        deletedAt: null // BATALKAN PENGHAPUSAN
+                    }
+                });
+
+                // Index ulang ke ES
+                await this.indexToES(restoredBook);
+                return toAdminAddBookResponse(restoredBook);
             }
-        });
 
-        if (exist) {
-            throw new ResponseError(
-                409,
-                "ISBN_Already_Exist",
-                "ISBN sudah terdaftar"
-            );
-        }
-
-        if (data.cover === '') {
-            data.cover = null;
-        }
-
-        // buat buku baru
-        const book = await prisma.book.create({
-            data: {
-                title: data.title,
-                author: data.author,
-                isbn: data.isbn,
-                publisher: data.publisher ?? null,
-                year: data.year ?? null,
-                category: data.category ?? null,
-                description: data.description ?? null,
-                cover: data.cover ?? null,
-                stock: data.stock,
-                availableStock: data.stock
+            if (data.cover === '') {
+                data.cover = null;
             }
-        });
 
-        // INDEX KE ELASTICSEARCH
+            // Simpan file buku jika ada
+            let savedFilePath: string | null = null;
+            if (data.bookFile && data.bookFile instanceof File) {
+                savedFilePath = await AdminBookService.saveBookFile(data.bookFile, data.isbn);
+            }
+
+            // buat buku baru
+            const book = await prisma.book.create({
+                data: {
+                    title: data.title,
+                    author: data.author,
+                    isbn: data.isbn,
+                    publisher: data.publisher ?? null,
+                    year: data.year ?? null,
+                    category: data.category ?? null,
+                    description: data.description ?? null,
+                    cover: data.cover ?? null,
+                    readLink: data.readLink ?? null,
+                    bookFile: savedFilePath,
+                    stock: data.stock,
+                    availableStock: data.stock
+                }
+            });
+
+            // INDEX KE ELASTICSEARCH
+            await AdminBookService.indexToES(book);
+
+            return toAdminAddBookResponse(book);
+        } catch (e) {
+            console.error("ERROR DI ADDBOOK:", e);
+            throw e;
+        }
+    }
+
+    private static async indexToES(book: any) {
         try {
             await esClient.index({
                 index: 'books',
@@ -198,14 +255,32 @@ export class AdminBookService {
                     publisher: book.publisher,
                     category: book.category,
                     description: book.description,
+                    readLink: book.readLink,
+                    bookFile: book.bookFile,
                     created_at: book.created_at
                 }
             });
         } catch (error) {
             console.error("Gagal index ke ES:", error);
         }
+    }
 
-        return toAdminAddBookResponse(book);
+    // Helper untuk simpan file buku
+    private static async saveBookFile(file: File, isbn: string): Promise<string> {
+        const uploadDir = 'public/uploads/books';
+        const fs = require('fs');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const extension = file.name.split('.').pop();
+        const fileName = `${isbn}_${Date.now()}.${extension}`;
+        const filePath = `${uploadDir}/${fileName}`;
+        
+        const arrayBuffer = await file.arrayBuffer();
+        await Bun.write(filePath, arrayBuffer);
+        
+        return `/uploads/books/${fileName}`;
     }
 
     // update buku
@@ -261,34 +336,41 @@ export class AdminBookService {
             data.cover = null;
         }
 
+        // Simpan file buku baru jika diunggah
+        let savedFilePath = book.bookFile;
+        if (data.bookFile && data.bookFile instanceof File) {
+            // Hapus file lama jika ada
+            if (book.bookFile) {
+                const fs = require('fs');
+                const oldPath = `public${book.bookFile}`;
+                if (fs.existsSync(oldPath)) {
+                    fs.unlinkSync(oldPath);
+                }
+            }
+            savedFilePath = await AdminBookService.saveBookFile(data.bookFile, data.isbn || book.isbn);
+        }
+
         // update buku
         const updated = await prisma.book.update({
             where: { id },
             data: { 
-                ...data,
+                title: data.title ?? book.title,
+                author: data.author ?? book.author,
+                isbn: data.isbn ?? book.isbn,
+                publisher: data.publisher ?? book.publisher,
+                year: data.year ?? book.year,
+                category: data.category ?? book.category,
+                description: data.description ?? book.description,
+                cover: data.cover !== undefined ? data.cover : book.cover,
+                readLink: data.readLink !== undefined ? data.readLink : book.readLink,
+                bookFile: savedFilePath,
+                stock: data.stock ?? book.stock,
                 availableStock
              }
         });
 
         // UPDATE DI ELASTICSEARCH
-        try {
-            await esClient.index({
-                index: 'books',
-                id: updated.id.toString(),
-                document: {
-                    id: updated.id,
-                    title: updated.title,
-                    author: updated.author,
-                    isbn: updated.isbn,
-                    publisher: updated.publisher,
-                    category: updated.category,
-                    description: updated.description,
-                    created_at: updated.created_at
-                }
-            });
-        } catch (error) {
-            console.error("Gagal update ES:", error);
-        }
+        await AdminBookService.indexToES(updated);
 
         return toAdminAddBookResponse(updated);
     }

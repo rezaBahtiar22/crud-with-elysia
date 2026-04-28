@@ -12,6 +12,8 @@ export interface BookData {
     category: string | null
     description: string | null
     cover: string | null
+    readLink: string | null
+    bookFile: string | null
     stock: number
     availableStock: number
     created_at: string
@@ -26,6 +28,8 @@ export interface BookDataRequest {
     publisher?: string | null
     year?: number | null
     category?: string | null
+    readLink?: string | null
+    bookFile?: File | null
     description?: string | null
     cover?: string | null
     stock?: number
@@ -51,6 +55,8 @@ export function toAdminAddBookResponse(book: Book): BookDataResponse {
             category: book.category,
             description: book.description,
             cover: book.cover,
+            readLink: book.readLink,
+            bookFile: book.bookFile,
             stock: book.stock,
             availableStock: book.availableStock,
             created_at: book.created_at.toISOString(),

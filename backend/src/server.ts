@@ -14,11 +14,16 @@ import { AdminBorrowingRoute, BorrowingRoute } from "./routes/borrowingRoute.ts"
 import { UserBookRoute } from "./routes/userBookRoute.ts";
 import { loggerMiddleware } from "./middlewares/loggerMiddleware.ts";
 import { ReportRoute } from "./routes/reportRoute.ts";
+import { staticPlugin } from "@elysiajs/static";
 
 
 startCronJobs();
 
 const app = new Elysia()
+    .use(staticPlugin({
+        assets: "public",
+        prefix: ""
+    }))
     .use(ErrorMiddleware)
     .use(loggerMiddleware)
     .use(
