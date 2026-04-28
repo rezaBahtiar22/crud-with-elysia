@@ -297,6 +297,22 @@
                 <input class="form-input" id="fieldCover" type="text" placeholder="https://..." />
               </div>
             </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Link Baca Online (Otomatis)</label>
+                <input class="form-input" id="fieldReadLink" type="text" placeholder="https://..." />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Unggah File Buku (PDF/EPUB)</label>
+                <div class="input-file-wrap">
+                  <input type="file" id="fieldBookFile" accept=".pdf,.epub" style="display:none" />
+                  <button type="button" class="btn-upload-file" id="btnUploadFile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <span id="uploadFileName">Pilih File...</span>
+                  </button>
+                </div>
+              </div>
+            </div>
             <div class="form-group form-group--full">
               <label class="form-label">Deskripsi</label>
               <textarea class="form-input form-textarea" id="fieldDesc" placeholder="Deskripsi singkat buku..." rows="3"></textarea>

@@ -374,3 +374,28 @@ body.light .skeleton-line {
 .btn-autofill:hover { background: #7c6aff; color: #fff; transform: translateY(-50%) scale(1.05); }
 .btn-autofill:active { transform: translateY(-50%) scale(0.95); }
 .btn-autofill svg { width: 16px; height: 16px; }
+
+
+/* Upload File Button */
+.input-file-wrap { display: flex; align-items: center; width: 100%; }
+.btn-upload-file { 
+  width: 100%; 
+  padding: 9px 12px;
+  background: var(--user-card-bg); 
+  border: 1px solid var(--sidebar-border); 
+  border-radius: 9px;
+  color: var(--text-muted); 
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  display: flex; 
+  align-items: center; 
+  justify-content: flex-start; 
+  gap: 10px; 
+  cursor: pointer; 
+  transition: all 0.2s ease; 
+  overflow: hidden; 
+  white-space: nowrap; 
+  text-overflow: ellipsis; 
+}
+.btn-upload-file:hover { background: var(--hover-bg); border-color: var(--accent); color: var(--text-primary); }
+.btn-upload-file svg { width: 16px; height: 16px; flex-shrink: 0; }

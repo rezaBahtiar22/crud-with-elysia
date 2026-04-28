@@ -290,6 +290,21 @@ function initModalBook() {
     updateCoverPreview(document.getElementById('fieldCover').value.trim());
   });
 
+  // File upload handler
+  const fileBtn = document.getElementById('btnUploadFile');
+  const fileInput = document.getElementById('fieldBookFile');
+  const fileNameDisplay = document.getElementById('uploadFileName');
+
+  fileBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (file) {
+      fileNameDisplay.textContent = file.name;
+    } else {
+      fileNameDisplay.textContent = 'Pilih File...';
+    }
+  });
+
   // Close on overlay click
   document.getElementById('bookModalOverlay').addEventListener('click', (e) => {
     if (e.target === document.getElementById('bookModalOverlay')) closeBookModal();
@@ -350,6 +365,7 @@ function initAutofill() {
         document.getElementById('fieldYear').value = bookData.year || '';
         document.getElementById('fieldDesc').value = bookData.description || '';
         document.getElementById('fieldCover').value = bookData.cover || '';
+        document.getElementById('fieldReadLink').value = bookData.readLink || '';
         if (bookData.category) document.getElementById('fieldCategory').value = bookData.category;
 
         updateCoverPreview(bookData.cover);
@@ -382,7 +398,8 @@ async function fetchFromOpenLibrary(isbn) {
       year: data.publish_date ? parseInt(data.publish_date.match(/\d{4}/)?.[0]) : null,
       description: typeof data.notes === 'string' ? data.notes : '',
       cover: data.cover?.large || data.cover?.medium,
-      category: data.subjects?.[0]?.name
+      category: data.subjects?.[0]?.name,
+      readLink: data.url // Link ke halaman buku di Open Library
     };
   } catch (e) { return null; }
 }
@@ -401,7 +418,8 @@ async function fetchFromGoogleBooks(isbn) {
       year: info.publishedDate ? parseInt(info.publishedDate.substring(0,4)) : null,
       description: info.description,
       cover: info.imageLinks?.thumbnail?.replace('http:', 'https:'),
-      category: info.categories?.[0]
+      category: info.categories?.[0],
+      readLink: info.previewLink // Link baca/preview dari Google Books
     };
   } catch (e) { return null; }
 }
@@ -441,7 +459,9 @@ async function openEditModal(id) {
     document.getElementById('fieldCategory').value = book.category ?? '';
     document.getElementById('fieldStock').value = book.stock ?? '';
     document.getElementById('fieldCover').value = book.cover ?? '';
+    document.getElementById('fieldReadLink').value = book.readLink ?? '';
     document.getElementById('fieldDesc').value = book.description ?? '';
+    document.getElementById('uploadFileName').textContent = book.bookFile ? 'File Terpasang' : 'Pilih File...';
 
     // Preview cover
     const img = document.getElementById('coverPreviewImg');
@@ -471,8 +491,10 @@ function closeBookModal() {
 }
 
 function clearForm() {
-  ['fieldTitle','fieldAuthor','fieldIsbn','fieldPublisher','fieldYear','fieldCategory','fieldStock','fieldCover','fieldDesc']
+  ['fieldTitle','fieldAuthor','fieldIsbn','fieldPublisher','fieldYear','fieldCategory','fieldStock','fieldCover','fieldDesc','fieldReadLink']
     .forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('fieldBookFile').value = '';
+  document.getElementById('uploadFileName').textContent = 'Pilih File...';
   document.getElementById('coverPreviewImg').style.display = 'none';
   document.getElementById('coverPreviewImg').src = '';
   document.getElementById('coverPlaceholder').style.display = 'flex';
@@ -499,7 +521,9 @@ async function saveBook() {
   const category = document.getElementById('fieldCategory').value.trim();
   const stock = document.getElementById('fieldStock').value.trim();
   const cover = document.getElementById('fieldCover').value.trim();
+  const readLink = document.getElementById('fieldReadLink').value.trim();
   const description = document.getElementById('fieldDesc').value.trim();
+  const bookFile = document.getElementById('fieldBookFile').files[0];
 
   // Validasi minimal
   if (!title) return showFormError('Judul wajib diisi');
@@ -507,19 +531,18 @@ async function saveBook() {
   if (!isbn) return showFormError('ISBN wajib diisi');
   if (!stock || parseInt(stock) < 1) return showFormError('Stok minimal adalah 1');
 
-  const body = {
-    title, author, isbn,
-    ...(publisher && { publisher }),
-    ...(year && { year: parseInt(year) }),
-    ...(category && { category }),
-    ...(stock !== '' && { stock: parseInt(stock) }),
-    cover: cover || null,
-    ...(description && { description })
-  };
-
-  if (editingId !== null && cover === '') {
-    body.cover = null;
-  }
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('author', author);
+  formData.append('isbn', isbn);
+  formData.append('stock', stock);
+  if (publisher) formData.append('publisher', publisher);
+  if (year) formData.append('year', year);
+  if (category) formData.append('category', category);
+  if (cover) formData.append('cover', cover);
+  if (readLink) formData.append('readLink', readLink);
+  if (description) formData.append('description', description);
+  if (bookFile) formData.append('bookFile', bookFile);
 
   // Loading state
   const saveBtn = document.getElementById('modalSave');
@@ -534,13 +557,20 @@ async function saveBook() {
     const url = isEdit ? `${BASE_URL}/admin/books/${editingId}` : `${BASE_URL}/admin/books`;
     const method = isEdit ? 'PATCH' : 'POST';
 
-    const res = await apiFetch(url, { method, body: JSON.stringify(body) });
-    if (!res) return;
-
+    // Gunakan fetch manual karena apiFetch mungkin hanya support JSON
+    const accessToken = localStorage.getItem('accessToken');
+    const res = await fetch(url, { 
+      method, 
+      headers: { 'Authorization': `Bearer ${accessToken}` },
+      body: formData 
+    });
+    
     const data = await res.json();
 
     if (!res.ok) {
-      return showFormError(formatApiError(data));
+      // Jika server memberikan detail error (misal dari Zod atau ResponseError)
+      const errorMsg = data.message || data.error || (data.errors && data.errors[0]?.message) || 'Terjadi kesalahan sistem';
+      return showFormError(errorMsg);
     }
 
     closeBookModal();

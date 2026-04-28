@@ -550,3 +550,8 @@ body.light .select-options-wrap {
   .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .catalog-title { font-size: 22px; }
 }
+
+/* Read Now Button */
+.btn-read-now { width: 100%; margin-top: 12px; padding: 10px; background: rgba(124,106,255,0.1); border: 1px solid rgba(124,106,255,0.2); border-radius: 10px; color: var(--accent); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+.btn-read-now:hover { background: var(--accent); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(124,106,255,0.3); }
+.btn-read-now svg { width: 14px; height: 14px; }

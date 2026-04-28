@@ -75,10 +75,13 @@ function renderBooks(books) {
            <span class="book-cover-placeholder-title">${escapeHtml(book.title)}</span>
          </div>`;
 
+    const hasDigital = book.readLink || book.bookFile;
+    const readUrl = book.bookFile ? `${API_BASE}${book.bookFile}` : book.readLink;
+
     card.innerHTML = `
       ${coverHTML}
       <div class="book-info">
-        <div class="book-title">${escapeHtml(book.title)}</div>
+        <div class="book-title" title="${escapeHtml(book.title)}">${escapeHtml(book.title)}</div>
         <div class="book-author">${escapeHtml(book.author)}</div>
         <div class="book-meta">
           ${book.category
@@ -90,6 +93,13 @@ function renderBooks(books) {
             ${hasStock ? book.availableStock : 'Habis'}
           </span>
         </div>
+        ${hasDigital 
+          ? `<button class="btn-read-now" onclick="window.open('${readUrl}', '_blank')">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+               Baca Sekarang
+             </button>`
+          : ''
+        }
       </div>
     `;
 
