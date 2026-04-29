@@ -29,6 +29,61 @@ function initCommon() {
   setupThemeToggle();
   setupUserDropdown();
   setupLogoutModal();
+  setupNavigation(); // Tambahkan ini
+}
+
+/**
+ * Centrally handles navigation clicks for all sidebar items.
+ * This fixes the issue where some nav-items don't have onclick in HTML.
+ */
+function setupNavigation() {
+  // Ambil semua nav-item baik yang punya data-page maupun tidak
+  const navItems = document.querySelectorAll('.nav-item');
+  
+  const pathMap = {
+    'beranda':           '../dashboard/index.html',
+    'dasbor':            '../admin-dashboard/index.html',
+    'katalog':           '../catalog/index.html',
+    'peminjaman':        '../borrowing/index.html',
+    'riwayat':           '../history/index.html',
+    'anggota':           '../members/index.html',
+    'kelola-buku':       '../manage-books/index.html',
+    'kelola-peminjaman': '../manage-borrowing/index.html',
+    'pengaturan':        '../settings/index.html',
+    'bantuan':           '../help-center/index.html'
+  };
+
+  navItems.forEach(item => {
+    // Tambahkan kursor pointer
+    item.style.cursor = 'pointer';
+
+    item.addEventListener('click', (e) => {
+      // 1. Coba ambil dari data-page
+      let page = item.getAttribute('data-page');
+      
+      // 2. Jika tidak ada, coba deteksi dari teks di dalamnya
+      if (!page) {
+        const text = item.textContent.trim().toLowerCase();
+        if (text.includes('beranda')) page = 'beranda';
+        else if (text.includes('dashboard')) page = 'dasbor';
+        else if (text.includes('katalog')) page = 'katalog';
+        else if (text.includes('peminjaman') && !text.includes('kelola')) page = 'peminjaman';
+        else if (text.includes('riwayat')) page = 'riwayat';
+        else if (text.includes('anggota')) page = 'anggota';
+        else if (text.includes('kelola buku')) page = 'kelola-buku';
+        else if (text.includes('kelola peminjaman')) page = 'kelola-peminjaman';
+        else if (text.includes('pengaturan')) page = 'pengaturan';
+        else if (text.includes('bantuan')) page = 'bantuan';
+      }
+
+      const targetPath = pathMap[page];
+      if (targetPath) {
+        // Jangan redirect jika sudah di halaman yang sama
+        if (window.location.pathname.includes(targetPath.replace('../', ''))) return;
+        window.location.href = targetPath;
+      }
+    });
+  });
 }
 
 // ── SHARED UI: USER INFO ──

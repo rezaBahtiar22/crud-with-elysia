@@ -1,0 +1,243 @@
+/* ══ HELP CENTER (STANDARDIZED FLEX LAYOUT) ══ */
+
+:root {
+  --h-bg: #0b0e14;
+  --h-hero: linear-gradient(180deg, #1a154a 0%, #0b0e14 100%);
+  --h-card: rgba(255, 255, 255, 0.04);
+  --h-border: rgba(255, 255, 255, 0.08);
+  --h-accent: #7c6aff;
+  --h-text: #ffffff;
+  --h-text-dim: rgba(255, 255, 255, 0.5);
+}
+
+body.light {
+  --h-bg: #f3f4f6;
+  --h-hero: linear-gradient(180deg, #6366f1 0%, #f3f4f6 100%);
+  --h-card: #ffffff;
+  --h-border: rgba(0, 0, 0, 0.05);
+  --h-accent: #4f46e5;
+  --h-text: #0f172a;
+  --h-text-dim: #475569;
+}
+
+/* ── Standard App Layout (Body should not scroll) ── */
+body.help-page {
+  background-color: var(--h-bg) !important;
+  margin: 0;
+  display: flex !important; /* Gunakan flex agar sidebar & main sejajar */
+  height: 100vh; /* Kunci tinggi layar */
+  overflow: hidden !important; /* Body jangan scroll */
+}
+
+/* ── Main Content (This scrolls) ── */
+.help-main {
+  flex: 1; /* Ambil sisa ruang layar */
+  height: 100vh;
+  overflow-y: auto !important; /* Hanya area ini yang bisa scroll */
+  background-color: var(--h-bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Hero (Start from Top) ── */
+.help-hero {
+  background: var(--h-hero);
+  padding: 60px 40px 100px;
+  text-align: center;
+  width: 100%;
+}
+
+.hero-title { 
+  font-family: 'Syne', sans-serif; 
+  font-size: 32px; 
+  font-weight: 800; 
+  margin-top: 0; /* Pastikan menempel ke atas */
+  margin-bottom: 10px; 
+  color: var(--h-text) !important; 
+}
+.hero-subtitle { font-size: 15px; color: var(--h-text-dim) !important; margin-bottom: 24px; }
+
+.search-wrap { max-width: 540px; margin: 0 auto; }
+.search-bar {
+  background: var(--h-card);
+  border: 1px solid var(--h-border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  gap: 12px;
+}
+.help-search-icon { width: 18px !important; height: 18px !important; color: var(--h-accent); }
+.search-bar input { flex: 1; height: 48px; background: none; border: none; outline: none; color: var(--h-text); font-size: 15px; }
+
+/* ── Inner Content ── */
+.help-content-inner {
+  max-width: 1100px;
+  width: 100%;
+  margin: -60px auto 0; /* Angkat konten */
+  padding: 0 24px 40px;
+  box-sizing: border-box;
+}
+
+.category-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 50px;
+}
+
+.help-card {
+  background: var(--h-card);
+  border: 1px solid var(--h-border);
+  border-radius: 18px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(10px);
+}
+.help-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); border-color: var(--h-accent); }
+
+.c-icon { width: 44px; height: 44px; border-radius: 12px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; }
+.c-icon svg { width: 22px !important; height: 22px !important; }
+.ic-p { background: rgba(124, 106, 255, 0.15); color: #7c6aff; }
+.ic-b { background: rgba(61, 142, 255, 0.15); color: #3d8eff; }
+.ic-c { background: rgba(0, 242, 254, 0.15); color: #00f2fe; }
+.ic-o { background: rgba(255, 126, 95, 0.15); color: #ff7e5f; }
+
+.help-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--h-text); }
+.help-card p { font-size: 12px; color: var(--h-text-dim); line-height: 1.4; }
+
+/* ── FAQ ── */
+.faq-section { max-width: 800px; margin: 0 auto 60px; width: 100%; }
+.faq-head { font-family: 'Syne', sans-serif; font-size: 22px; margin-bottom: 24px; text-align: center; color: var(--h-text); }
+.faq-list { display: flex; flex-direction: column; gap: 12px; }
+.faq-item { background: var(--h-card); border: 1px solid var(--h-border); border-radius: 14px; }
+.faq-question { padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.faq-question h4 { font-size: 15px; font-weight: 600; color: var(--h-text); }
+.faq-chevron { width: 16px !important; height: 16px !important; color: var(--h-text-dim); transition: 0.3s; }
+
+.faq-item.active { border-color: var(--h-accent); }
+.faq-item.active .faq-chevron { transform: rotate(180deg); color: var(--h-accent); }
+.faq-answer { max-height: 0; overflow: hidden; transition: 0.3s; padding: 0 24px; font-size: 14px; color: var(--h-text-dim); line-height: 1.8; }
+.faq-item.active .faq-answer { max-height: 200px; padding-bottom: 20px; }
+
+/* ── Footer ── */
+.contact-footer { margin-top: auto; padding-bottom: 60px; padding-left: 24px; padding-right: 24px; }
+.contact-card {
+  background: var(--h-card);
+  border: 1px solid var(--h-border);
+  border-radius: 20px;
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.contact-info h2 { font-size: 18px; margin-bottom: 4px; color: var(--h-text); }
+.contact-info p { font-size: 14px; color: var(--h-text-dim); }
+.contact-actions { display: flex; gap: 12px; }
+
+.c-btn { padding: 10px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 13px; }
+.wa { background: #25d366; color: #fff; }
+.mail { background: var(--h-accent); color: #fff; }
+
+@media (max-width: 1024px) {
+  .category-row { grid-template-columns: repeat(2, 1fr); }
+  .contact-card { flex-direction: column; text-align: center; gap: 20px; }
+  .contact-info { text-align: center; }
+}
+
+/* ── LOGOUT MODAL STYLES (MATCHING GLOBAL) ── */
+.logout-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.8); /* Gelap tapi jernih */
+  backdrop-filter: blur(3px); /* Blur dikurangi agar tidak terlalu kabur */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.logout-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.logout-modal {
+  background: #161921;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 32px 24px; /* Padding dirapatkan */
+  border-radius: 24px;
+  max-width: 360px; /* Diperkecil */
+  width: 85%;
+  text-align: center;
+  transform: scale(0.95);
+  transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logout-overlay.active .logout-modal {
+  transform: scale(1);
+}
+
+.logout-icon-box {
+  width: 52px; /* Diperkecil */
+  height: 52px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.logout-icon-box svg { width: 24px; height: 24px; }
+
+.logout-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 19px; /* Diperkecil */
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.logout-subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px; /* Diperkecil */
+  line-height: 1.5;
+  margin-bottom: 28px;
+}
+
+.logout-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.logout-btn {
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.logout-btn.cancel {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn.confirm {
+  background: #ff4d4d;
+  color: #ffffff;
+}
+.logout-btn.confirm:hover { background: #f43f5e; }
