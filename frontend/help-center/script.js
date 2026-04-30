@@ -9,8 +9,8 @@
 const FAQ_DATA = [
   {
     category: 'borrow',
-    q: 'Bagaimana cara meminjam buku fisik?',
-    a: 'Cukup datang ke perpustakaan, pilih buku di katalog, dan tunjukkan kartu anggota digital Anda di dashboard kepada petugas.'
+    q: 'Apakah bisa meminjam buku fisik?',
+    a: 'Buku fisik tidak bisa dipinjam. Buku ini hanya tersedia untuk dibaca secara online atau dapat mengunduh file pdf/epub jika tersedia.'
   },
   {
     category: 'borrow',
@@ -35,7 +35,7 @@ const FAQ_DATA = [
   {
     category: 'account',
     q: 'Dapatkah saya mengubah foto profil?',
-    a: 'Ya, Anda dapat mengubah foto profil melalui menu "Profil Saya" di sidebar dan mengklik ikon kamera pada avatar.'
+    a: 'Ya, Anda dapat mengubah foto profil melalui menu "Profil Saya" di sidebar dan mengklik ikon kamera pada avatar. Tapi saat ini layanan untuk update foto profile belum tersedia, tunggu info selanjutnya.'
   }
 ];
 

@@ -221,13 +221,16 @@ function renderTable(books) {
         </td>
         <td>
           <div class="action-btns">
-            <button class="action-btn action-btn--edit" title="Edit" onclick="openEditModal(${book.id})">
+            <button class="action-btn action-btn--edit" title="Edit" 
+              data-id="${book.id}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
               </svg>
             </button>
-            <button class="action-btn action-btn--delete" title="Hapus" onclick="openDeleteModal(${book.id}, '${escapeHtml(book.title).replace(/'/g, "\\'")}')">
+            <button class="action-btn action-btn--delete" title="Hapus" 
+              data-id="${book.id}" 
+              data-title="${escapeHtml(book.title)}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <polyline points="3 6 5 6 21 6"/>
                 <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
@@ -240,6 +243,29 @@ function renderTable(books) {
       </tr>
     `;
   }).join('');
+
+  // Attach dynamic listeners (Event Delegation)
+  setupTableActions();
+}
+
+function setupTableActions() {
+  const tbody = document.getElementById('bookTableBody');
+  // Remove existing listeners if any (by replacing the node or using a flag)
+  // But since we overwrite innerHTML, old listeners are gone. 
+  
+  tbody.onclick = (e) => {
+    const editBtn = e.target.closest('.action-btn--edit');
+    const deleteBtn = e.target.closest('.action-btn--delete');
+
+    if (editBtn) {
+      const id = editBtn.dataset.id;
+      openEditModal(id);
+    } else if (deleteBtn) {
+      const id = deleteBtn.dataset.id;
+      const title = deleteBtn.dataset.title;
+      openDeleteModal(id, title);
+    }
+  };
 }
 
 // ── Pagination ──
@@ -536,12 +562,15 @@ async function saveBook() {
   formData.append('author', author);
   formData.append('isbn', isbn);
   formData.append('stock', stock);
-  if (publisher) formData.append('publisher', publisher);
-  if (year) formData.append('year', year);
-  if (category) formData.append('category', category);
-  if (cover) formData.append('cover', cover);
-  if (readLink) formData.append('readLink', readLink);
-  if (description) formData.append('description', description);
+  
+  // Kirim data meskipun kosong agar server bisa melakukan "clear" (null)
+  formData.append('publisher', publisher || '');
+  formData.append('year', year || '');
+  formData.append('category', category || '');
+  formData.append('cover', cover || '');
+  formData.append('readLink', readLink || '');
+  formData.append('description', description || '');
+  
   if (bookFile) formData.append('bookFile', bookFile);
 
   // Loading state
