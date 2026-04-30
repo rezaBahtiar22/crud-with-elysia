@@ -255,6 +255,7 @@ export class AdminBookService {
                     publisher: book.publisher,
                     category: book.category,
                     description: book.description,
+                    cover: book.cover,
                     readLink: book.readLink,
                     bookFile: book.bookFile,
                     created_at: book.created_at
@@ -332,9 +333,8 @@ export class AdminBookService {
             if (availableStock < 0) availableStock = 0;
         }
 
-        if (data.cover === '') {
-            data.cover = null;
-        }
+        if (data.cover === '') data.cover = null;
+        if (data.readLink === '') data.readLink = null;
 
         // Simpan file buku baru jika diunggah
         let savedFilePath = book.bookFile;
@@ -354,17 +354,17 @@ export class AdminBookService {
         const updated = await prisma.book.update({
             where: { id },
             data: { 
-                title: data.title ?? book.title,
-                author: data.author ?? book.author,
-                isbn: data.isbn ?? book.isbn,
-                publisher: data.publisher ?? book.publisher,
-                year: data.year ?? book.year,
-                category: data.category ?? book.category,
-                description: data.description ?? book.description,
+                title: data.title !== undefined ? data.title : book.title,
+                author: data.author !== undefined ? data.author : book.author,
+                isbn: data.isbn !== undefined ? data.isbn : book.isbn,
+                publisher: data.publisher !== undefined ? data.publisher : book.publisher,
+                year: data.year !== undefined ? data.year : book.year,
+                category: data.category !== undefined ? data.category : book.category,
+                description: data.description !== undefined ? data.description : book.description,
                 cover: data.cover !== undefined ? data.cover : book.cover,
                 readLink: data.readLink !== undefined ? data.readLink : book.readLink,
                 bookFile: savedFilePath,
-                stock: data.stock ?? book.stock,
+                stock: data.stock !== undefined ? data.stock : book.stock,
                 availableStock
              }
         });

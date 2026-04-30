@@ -17,14 +17,20 @@ export class BookValidation {
 
         // field optional
         publisher: z.string().optional(),
-        year: z.coerce.number() // Gunakan coerce agar string "1984" jadi number 1984
-            .int()
-            .min(1000)
-            .max(new Date().getFullYear())
-            .optional(),
+        year: z.preprocess((val) => (val === "" ? undefined : val), 
+            z.coerce.number()
+                .int()
+                .min(1000)
+                .max(new Date().getFullYear())
+                .optional()
+        ),
         category: z.string().optional(),
         description: z.string().optional(),
-        readLink: z.string().url("Read link must be a valid URL").optional().nullable(),
+        readLink: z.union([
+            z.string().url("Read link must be a valid URL"),
+            z.literal(''),
+            z.null()
+        ]).optional(),
         bookFile: z.any().optional(),
         cover: z.union([
             z.string().url("Cover must be a valid URL"),
@@ -33,7 +39,7 @@ export class BookValidation {
         ]).optional(),
 
         // stock default 1 jika tidak diisi
-        stock: z.coerce.number() // Gunakan coerce agar string "9" jadi number 9
+        stock: z.coerce.number()
             .int()
             .min(1, "Stok minimal adalah 1")
             .default(1)
@@ -45,10 +51,16 @@ export class BookValidation {
         author: z.string().min(4).optional(),
         isbn: z.string().min(4).optional(),
         publisher: z.string().optional(),
-        year: z.coerce.number().int().min(1000).max(new Date().getFullYear()).optional(),
+        year: z.preprocess((val) => (val === "" ? undefined : val),
+            z.coerce.number().int().min(1000).max(new Date().getFullYear()).optional()
+        ),
         category: z.string().optional(),
         description: z.string().optional(),
-        readLink: z.string().url().optional().nullable(),
+        readLink: z.union([
+            z.string().url("Read link must be a valid URL"),
+            z.literal(''),
+            z.null()
+        ]).optional(),
         bookFile: z.any().optional(),
         cover: z.union([
             z.string().url("Cover must be a valid URL"),
