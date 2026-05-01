@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package.json bun.lock ./
 
 # Install dependency via Bun
-RUN bun install --frozen-lockfile
+RUN bun install
 
 # Copy seluruh project
 COPY . .

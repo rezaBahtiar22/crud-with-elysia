@@ -4,8 +4,8 @@ import { initEsIndex } from "./utils/elasticsearch.ts";
 
 const port = Number(process.env.PORT) || 3000;
 
-// Inisialisasi Elasticsearch
-await initEsIndex();
+// Inisialisasi Elasticsearch (Dinonaktifkan sementara)
+// await initEsIndex();
 
 app.listen({ port });
 
