@@ -274,6 +274,11 @@ function setupUserDropdown() {
   if (editProfile) {
     editProfile.addEventListener('click', () => window.location.href = '../edit-profile/index.html');
   }
+  
+  const settings = document.getElementById('ddSettings');
+  if (settings) {
+    settings.addEventListener('click', () => window.location.href = '../settings/index.html');
+  }
 }
 
 // ── LOGOUT MODAL ──

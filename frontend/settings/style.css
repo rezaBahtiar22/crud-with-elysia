@@ -1,0 +1,209 @@
+/* ── Settings Module Styles ── */
+
+:root {
+  --s-bg: #0f1115;
+  --s-card: rgba(255, 255, 255, 0.04);
+  --s-card-hover: rgba(255, 255, 255, 0.08);
+  --s-border: rgba(255, 255, 255, 0.08);
+  --s-text: #ffffff;
+  --s-text-dim: #94a3b8;
+  --accent: #6366f1;
+}
+
+body.light {
+  --s-bg: #f8fafc;
+  --s-card: #ffffff;
+  --s-card-hover: #f1f5f9;
+  --s-border: #e2e8f0;
+  --s-text: #1e293b;
+  --s-text-dim: #64748b;
+}
+
+/* ── Layout Fix ── */
+body {
+  display: flex;
+  min-height: 100vh;
+  background: var(--s-bg);
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.settings-container {
+  width: 100%;
+  padding: 32px 40px 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+.settings-header {
+  margin-bottom: 32px;
+}
+
+.settings-header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--s-text);
+  margin-bottom: 2px;
+}
+
+.settings-header p {
+  color: var(--s-text-dim);
+  font-size: 13px;
+}
+
+/* ── Settings Grid ── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 32px;
+  width: 100%;
+}
+
+.s-section {
+  margin-bottom: 0;
+}
+
+.s-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--s-text-dim);
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+.s-card-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.s-card {
+  background: var(--s-card);
+  border: 1px solid var(--s-border);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 68px;
+}
+
+.s-card:hover {
+  background: var(--s-card-hover);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.s-card-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.s-card-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Icon Colors */
+.ic-blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.ic-purple { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+.ic-teal { background: rgba(20, 184, 166, 0.1); color: #14b8a6; }
+.ic-pink { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
+.ic-yellow { background: rgba(234, 179, 8, 0.1); color: #eab308; }
+.ic-grey { background: rgba(148, 163, 184, 0.1); color: #94a3b8; }
+.ic-red { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+.s-card-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.s-card-text h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--s-text);
+  margin-bottom: 1px;
+}
+
+.s-card-text p {
+  font-size: 12px;
+  color: var(--s-text-dim);
+}
+
+.s-chevron {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  color: var(--s-text-dim);
+  opacity: 0.4;
+}
+
+.s-tag-coming {
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+/* ── Language Badge ── */
+.lang-badge {
+  background: rgba(99, 102, 241, 0.1);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* ── Custom Toggle ── */
+.custom-toggle {
+  width: 38px;
+  height: 20px;
+  min-width: 38px;
+  background: #334155;
+  border-radius: 100px;
+  position: relative;
+}
+
+.toggle-circle {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-card.active .custom-toggle { background: var(--accent); }
+.toggle-card.active .toggle-circle { left: 21px; }
+
+/* ── Footer ── */
+.settings-footer {
+  margin-top: 48px;
+  text-align: center;
+  color: var(--s-text-dim);
+  font-size: 12px;
+}
